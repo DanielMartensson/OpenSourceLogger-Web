@@ -5,7 +5,7 @@ store them into a MySQL database. You need to have a Raspberry Pi for this.
 
 # How to install
 
--0. Install Java 11, Maven, NodeJS
+* 0. Install Java 11, Maven, NodeJS
 
 Java 11
 ```
@@ -23,12 +23,13 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
--1. Begin first to install MySQL Community Server
+* 1. Begin first to install MySQL Community Server
+
 ```
 sudo apt-get install mysql-server
 ```
 
--2. Then create a user e.g `myUser` with the password e.g `myPassword`
+* 2. Then create a user e.g `myUser` with the password e.g `myPassword`
 
 Login and enter your sudo password
 ```
@@ -46,7 +47,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'myUser'@'%';
 ```
 
 
--3. Change your MySQL server so you listening to your LAN address
+* 3. Change your MySQL server so you listening to your LAN address
 
 Open this file
 ```
@@ -65,12 +66,13 @@ bind-address            = 192.168.1.34
 
 If you don't know your LAN address, you can type in this command in linux `ifconfig` in the terminal
 
--4. Create a Gmail account
+* 4. Create a Gmail account
+
 Create a Gmail account and go to `https://myaccount.google.com/security` and enable so you can login from `less secure apps`.
 Because `OpenSourceLogger` uses `Java Mail` to logg into Gmail. This feature exist because if `OpenSourceLogger` is on the fly over a
 night and something happens, then it will stop everything and send a message back to you.
 
--5. Download `OpenSourceLogger`
+* 5. Download `OpenSourceLogger`
 
 Download the `OpenSourceLogger` and change the `application.properties` in the `/src/main/resources` folder.
 Here you can set the configuration for your database LAN address, user and password. You can also set a gmail address and its
@@ -105,7 +107,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 pi4j.pwmFrequency=100
 ```
 
--6. Pack this project and run
+* 6. Pack this project and run
 
 First stand inside of the folder `ÒpenSourceLogger` and write
 ```
@@ -117,7 +119,8 @@ Now a JAR file is created inside the `ÒpenSourceLogger/target` folder. Run it o
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
 ```
 
--7. Access the web application
+* 7. Access the web application
+
 To enter the web application, you need to find out what IP address your Raspberry Pi as. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL link
 
 ```
