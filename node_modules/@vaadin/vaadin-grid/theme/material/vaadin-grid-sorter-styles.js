@@ -60,6 +60,13 @@ const $_documentContainer = html`<dom-module id="material-grid-sorter" theme-for
         top: -8px;
         font-size: 10px;
       }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) [part="order"] {
+        left: 4px;
+        right: auto;
+      }
     </style>
   </template>
 </dom-module>`;

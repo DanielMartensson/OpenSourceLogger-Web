@@ -12,12 +12,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <vaadin.version>14.2.1</vaadin.version>
+        <vaadin.version>14.3.0</vaadin.version>
         
         <!-- DEPENDENCIES VERSIONS for Pi4J -->
         <slf4j.version>2.0.0-alpha0</slf4j.version>
         <pi4j.version>2.0-SNAPSHOT</pi4j.version>
-
+		
     </properties>
 
     <parent>

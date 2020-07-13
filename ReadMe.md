@@ -3,7 +3,7 @@
 This software creates a web application with Pi4J and Vaadin and with this, you can control and measure analog inputs and outputs and 
 store them into a MySQL database. You need to have a Raspberry Pi for this.
 
-# How to install
+# How to install - Ubuntu user
 
 1. Install Java 11, Maven, NodeJS
 
@@ -14,7 +14,7 @@ sudo apt-get install openjdk-11-jdk
 
 Maven
 ```
-sudo apt-get install mvn
+sudo apt-get install maven
 ```
 
 NodeJS
@@ -29,7 +29,7 @@ sudo apt-get install -y nodejs
 sudo apt-get install mysql-server
 ```
 
-Don't install any servero onto Raspberry Pi is you care about your data. 
+Don't install any server onto Raspberry Pi if you care about your data. 
 
 
 3. Then create a user e.g `myUser` with the password e.g `myPassword`
@@ -117,12 +117,12 @@ pi4j.pwmFrequency=100
 
 7. Pack this project and run
 
-First stand inside of the folder `ÒpenSourceLogger` and write
+First stand inside of the folder `OpenSourceLogger` and write inside your terminal
 ```
 mvn package -Pproduction
 ```
 
-Now a JAR file is created inside the `ÒpenSourceLogger/target` folder. Run it on your Raspberry Pi.
+Now a JAR file is created inside the `OpenSourceLogger/target` folder. Run it on your Raspberry Pi by open your terminal and type
 ```
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
 ```

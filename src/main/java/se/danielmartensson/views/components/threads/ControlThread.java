@@ -60,17 +60,25 @@ public class ControlThread extends Thread {
 			// Control loop - When sampling thread are done, then this will quit too
 			while (ControlView.loggingNow.get() == true) {
 				// Command signals to the device
-				do0 = ControlView.do0SliderSelected;
-				do1 = ControlView.do1SliderSelected;
-				do2 = ControlView.do2SliderSelected;
-				do3 = ControlView.do3SliderSelected;
 				try {
-					pwm0.setDutyCycle(do0/4095);
-					pwm1.setDutyCycle(do1/4095);
-					pwm2.setDutyCycle(do2/4095);
-					pwm3.setDutyCycle(do3/4095);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					if(ControlView.do0SliderSelected != do0) {
+						pwm0.setDutyCycle(do0/ControlView.MAX_SLIDER_VALE);
+						do0 = ControlView.do0SliderSelected;
+					}
+					if(ControlView.do1SliderSelected != do1) {
+						pwm1.setDutyCycle(do1/ControlView.MAX_SLIDER_VALE);
+						do1 = ControlView.do1SliderSelected;
+					}
+					if(ControlView.do2SliderSelected != do2) {
+						pwm2.setDutyCycle(do2/ControlView.MAX_SLIDER_VALE);
+						do2 = ControlView.do2SliderSelected;
+					}
+					if(ControlView.do3SliderSelected != do3) {
+						pwm3.setDutyCycle(do3/ControlView.MAX_SLIDER_VALE);
+						do3 = ControlView.do3SliderSelected;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 
 				// Wait
@@ -96,5 +104,4 @@ public class ControlThread extends Thread {
 			}
 		}
 	}
-
 }

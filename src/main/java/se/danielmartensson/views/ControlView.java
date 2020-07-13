@@ -55,6 +55,7 @@ public class ControlView extends AppLayout {
 
 	public static final String START_LOGGING = "Start logging";
 	public static final String STOP_LOGGING = "Stop logging";
+	public static final Integer MAX_SLIDER_VALE = 4095;
 	
 	@Autowired
 	private DataLoggRepository dataLoggRepository;
@@ -301,22 +302,22 @@ public class ControlView extends AppLayout {
 	}
 
 	private void createSliders() {
-		do0Slider = new PaperSlider(4095);
+		do0Slider = new PaperSlider(MAX_SLIDER_VALE);
 		do0Slider.setEnabled(false); // Important to set these to disabled at first
 		do0Slider.addValueChangeListener(e -> do0SliderSelected = e.getValue());
 		do0Slider.setValue(do0SliderSelected);
 		
-		do1Slider = new PaperSlider(4095);
+		do1Slider = new PaperSlider(MAX_SLIDER_VALE);
 		do1Slider.setEnabled(false);
 		do1Slider.addValueChangeListener(e -> do1SliderSelected = e.getValue());
 		do1Slider.setValue(do1SliderSelected);
 		
-		do2Slider = new PaperSlider(4095);
+		do2Slider = new PaperSlider(MAX_SLIDER_VALE);
 		do2Slider.setValue(do2SliderSelected);
 		do2Slider.setEnabled(false);
 		do2Slider.addValueChangeListener(e -> do2SliderSelected = e.getValue());
 		
-		do3Slider = new PaperSlider(4095);
+		do3Slider = new PaperSlider(MAX_SLIDER_VALE);
 		do3Slider.setValue(do3SliderSelected);
 		do3Slider.setEnabled(false);
 		do3Slider.addValueChangeListener(e -> do3SliderSelected = e.getValue());

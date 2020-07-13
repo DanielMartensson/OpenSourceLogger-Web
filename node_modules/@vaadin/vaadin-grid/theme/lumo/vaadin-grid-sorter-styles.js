@@ -34,6 +34,13 @@ const $_documentContainer = html`<dom-module id="lumo-grid-sorter" theme-for="va
         font-size: var(--lumo-font-size-xxs);
         line-height: 1;
       }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) [part="indicators"] {
+        margin-right: var(--lumo-space-s);
+        margin-left: 0;
+      }
     </style>
   </template>
 </dom-module>`;

@@ -28,6 +28,9 @@ const $_documentContainer = html`<dom-module id="lumo-grid-tree-toggle" theme-fo
         /* Increase touch target area */
         padding: calc(1em / 3);
         margin: calc(1em / -3);
+      }
+
+      :host(:not([dir="rtl"])) [part="toggle"] {
         margin-right: 0;
       }
 
@@ -68,6 +71,31 @@ const $_documentContainer = html`<dom-module id="lumo-grid-tree-toggle" theme-fo
         background-image: linear-gradient(to right, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
         background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
         background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
+      }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) {
+        margin-left: 0;
+        margin-right: calc(var(--lumo-space-s) * -1);
+      }
+
+      :host([dir="rtl"]) [part="toggle"] {
+        margin-left: 0;
+      }
+
+      :host([dir="rtl"][expanded]) [part="toggle"]::before {
+        transform: rotate(-90deg);
+      }
+
+      :host([dir="rtl"][theme~="connectors"]) #level-spacer::before {
+        background-image: linear-gradient(to left, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
+        background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
+      }
+
+      :host([dir="rtl"]:not([expanded])) [part="toggle"]::before,
+      :host([dir="rtl"][expanded]) [part="toggle"]::before {
+        content: var(--lumo-icons-angle-left);
       }
     </style>
   </template>

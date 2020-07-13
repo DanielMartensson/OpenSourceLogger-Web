@@ -10,12 +10,13 @@ const $_documentContainer = html`<dom-module id="material-grid-tree-toggle" them
         --_material-grid-tree-toggle-collapsed-icon-transform: rotate(0);
       }
 
-      :host(:dir(rtl)) {
+      :host([dir="rtl"]) {
         --_material-grid-tree-toggle-collapsed-icon-transform: rotate(180deg);
       }
 
       [part="toggle"] {
         width: calc(var(--material-icon-font-size) + 8px);
+        position: relative;
         align-self: stretch; /* NOTE(platosha): helps to maintain baseline */
       }
 
