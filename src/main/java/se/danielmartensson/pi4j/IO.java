@@ -1,5 +1,7 @@
 package se.danielmartensson.pi4j;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,7 @@ import lombok.Getter;
 public class IO {
 	
 	// Frequency for the PWM 
-	@Value("${pi4j.pwmFrequency}")
+	@Value("${IO.pi4j.pwmFrequency}")
 	private int pwmFrequency;
 	
 	// PWM outputs
@@ -40,7 +42,8 @@ public class IO {
 	// ADS1115 16-Bit ADC
 	private ADS1115_ADS1015 ads;
 	
-	public IO() {
+	@PostConstruct
+	public void init() {
 		try {
 			Context pi4j = Pi4J.newAutoContext();
 			pwm0 = createDigitalPWMOutput(12, pi4j, "pwm0");

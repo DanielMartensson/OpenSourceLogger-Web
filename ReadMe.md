@@ -112,7 +112,7 @@ spring.mail.properties.mail.smtp.writetimeout=5000
 spring.mail.properties.mail.smtp.starttls.enable=true
 
 # Pi4J
-pi4j.pwmFrequency=100
+IO.pi4j.pwmFrequency=100
 ```
 
 7. Pack this project and run
