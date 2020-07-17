@@ -3,6 +3,10 @@
 This software creates a web application with Pi4J and Vaadin and with this, you can control and measure analog inputs and outputs and 
 store them into a MySQL database. You need to have a Raspberry Pi for this.
 
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/S%C3%A9lection_044.png)
+
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/Schematic_bb.png)
+
 
 # How to install - Ubuntu user
 
@@ -114,6 +118,10 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 # Pi4J
 IO.pi4j.pwmFrequency=100
+views.ControlView.ground4mAValueAnalog0=0
+views.ControlView.ground4mAValueAnalog1=0
+views.ControlView.ground4mAValueAnalog2=0
+views.ControlView.ground4mAValueAnalog3=0
 ```
 
 7. Pack this project and run
