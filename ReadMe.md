@@ -139,12 +139,30 @@ First stand inside of the folder `OpenSourceLogger` and write inside your termin
 mvn package -Pproduction
 ```
 
-Now a JAR file is created inside the `OpenSourceLogger/target` folder. Run it on your Raspberry Pi by open your terminal and type
+Now a JAR file is created inside the `OpenSourceLogger/target` folder. Test it on your Raspberry Pi by open your terminal and type
 ```
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
 ```
 
-8. Access the web application
+8. Add the jar file to autostart
+
+Open `rc.local` in `/etc/rc.local`
+
+```
+sudo nano /etc/rc.local
+```
+
+Paste this above `exit 0`
+
+```
+cd /home/pi/your/folder/opensourcelogger-1.0-SNAPSHOT.jar
+sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar & 
+```
+
+Important with &, else it will stop here
+
+
+9. Access the web application
 
 To enter the web application, you need to find out what IP address your Raspberry Pi as. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL link
 

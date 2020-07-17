@@ -127,6 +127,8 @@ public class ControlView extends AppLayout {
 	
 	private Checkbox lowFirstDo3;
 	
+	private Checkbox countOnHighSignal;
+	
 	private Button loggingActivate;
 	
 	private Select<Integer> showSamples;
@@ -200,6 +202,8 @@ public class ControlView extends AppLayout {
 	
 	static public boolean do3LowFirst = false;
 	
+	static public boolean countPulseOnHighSignal = true;
+	
 	static public int selectedBreakPulseLimit = 1;
 	
 	static public AtomicBoolean loggingNow;
@@ -271,7 +275,8 @@ public class ControlView extends AppLayout {
 									lowFirstDo0,
 									lowFirstDo1,
 									lowFirstDo2,
-									lowFirstDo3);
+									lowFirstDo3,
+									countOnHighSignal);
 			
 	}
 
@@ -348,6 +353,9 @@ public class ControlView extends AppLayout {
 		breakAtPulse.setHasControls(true);
 		breakAtPulse.setValue(selectedBreakPulseLimit);
 		breakAtPulse.addValueChangeListener(e -> selectedBreakPulseLimit = e.getValue());
+		countOnHighSignal = new Checkbox(countPulseOnHighSignal);
+		countOnHighSignal.setLabel("Count on high signal");
+		countOnHighSignal.addValueChangeListener(e -> countPulseOnHighSignal = e.getValue());
 		
 	}
 
@@ -514,7 +522,7 @@ public class ControlView extends AppLayout {
 		do3PulseLayout.setAlignItems(Alignment.CENTER);
 		
 		// Pulse counters
-		VerticalLayout pulseCounters = new VerticalLayout(new Label("Pulses"), countedPulses, breakAtPulse);
+		VerticalLayout pulseCounters = new VerticalLayout(new Label("Pulses"), countedPulses, breakAtPulse, countOnHighSignal);
 		pulseCounters.setAlignItems(Alignment.CENTER); 
 		
 		// Layout

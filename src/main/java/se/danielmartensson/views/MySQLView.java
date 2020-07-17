@@ -230,7 +230,7 @@ public class MySQLView extends AppLayout {
 				dialog.close();
 				
 				// This will prevent us to plot values that don't exist - You need to press the counting button first
-				countAmoutOfSamples.setValue(countAmoutOfSamples.getValue() - (lastIndex - firstIndex-1));
+				countAmoutOfSamples.setValue(countAmoutOfSamples.getValue() - (lastIndex - firstIndex + 1));
 				
 			});
 			NativeButton cancelButton = new NativeButton("Cancel", event -> {

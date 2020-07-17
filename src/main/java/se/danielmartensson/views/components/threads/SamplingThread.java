@@ -74,6 +74,7 @@ public class SamplingThread extends Thread{
 	private Checkbox lowFirstDo1;
 	private Checkbox lowFirstDo2;
 	private Checkbox lowFirstDo3;
+	private Checkbox countOnHighSignal;
 
 
 	public SamplingThread(DataLoggRepository dataLoggRepository, CalibrationLoggRepository calibrationLoggRepository, AlarmLoggRepository alarmLoggRepository, UserLoggRepository userLoggRepository, Mail mail) {
@@ -101,6 +102,7 @@ public class SamplingThread extends Thread{
 			int showSamplesValue = ControlView.selectedShowSamples;
 			long loggerIdValue = ControlView.selectedLoggerId;
 			int samplingTimeValue = ControlView.selectedSamplingTime;
+			boolean countPulseOnHighSignal = ControlView.countPulseOnHighSignal;
 			dataAI0 = new Float[showSamplesValue];
 			dataAI1 = new Float[showSamplesValue];
 			dataAI2 = new Float[showSamplesValue];
@@ -154,10 +156,9 @@ public class SamplingThread extends Thread{
 				float AI3 = SAI3*ControlThread.ai3 + BAI3;
 				
 				// Read the pulse signal and count it if...
-				if((ControlThread.pulse != pastPulse) && ControlThread.pulse == true) {
+				if((ControlThread.pulse != pastPulse) && ControlThread.pulse == countPulseOnHighSignal)
 					pulseNumber++;
-					pastPulse = ControlThread.pulse;
-				}
+				pastPulse = ControlThread.pulse;
 				
 				// Read the alarm signal
 				boolean stopSignal = ControlThread.stopSignal;
@@ -242,7 +243,7 @@ public class SamplingThread extends Thread{
 
 	}
 
-	public void setComponentsToThread(UI ui, ApexCharts apexChart, IntegerField countedPulses, Button loggingActivate, Select<Long> calibration, Select<Long> alarm, Select<Long> loggerId, PaperSlider do0Slider, PaperSlider do1Slider, PaperSlider do2Slider, PaperSlider do3Slider, IntegerField do0HighPulse, IntegerField do1HighPulse, IntegerField do2HighPulse, IntegerField do3HighPulse, IntegerField do0LowPulse, IntegerField do1LowPulse, IntegerField do2LowPulse, IntegerField do3LowPulse, Select<Integer> samplingTime, Select<Integer> showSamples, Checkbox showPlot, RadioButtonGroup<String> radioGroup, Checkbox lowFirstDo0, Checkbox lowFirstDo1, Checkbox lowFirstDo2, Checkbox lowFirstDo3) {
+	public void setComponentsToThread(UI ui, ApexCharts apexChart, IntegerField countedPulses, Button loggingActivate, Select<Long> calibration, Select<Long> alarm, Select<Long> loggerId, PaperSlider do0Slider, PaperSlider do1Slider, PaperSlider do2Slider, PaperSlider do3Slider, IntegerField do0HighPulse, IntegerField do1HighPulse, IntegerField do2HighPulse, IntegerField do3HighPulse, IntegerField do0LowPulse, IntegerField do1LowPulse, IntegerField do2LowPulse, IntegerField do3LowPulse, Select<Integer> samplingTime, Select<Integer> showSamples, Checkbox showPlot, RadioButtonGroup<String> radioGroup, Checkbox lowFirstDo0, Checkbox lowFirstDo1, Checkbox lowFirstDo2, Checkbox lowFirstDo3, Checkbox countOnHighSignal) {
 		this.ui = ui;
 		this.apexChart = apexChart;
 		this.countedPulses = countedPulses;
@@ -270,6 +271,7 @@ public class SamplingThread extends Thread{
 		this.lowFirstDo1 = lowFirstDo1;
 		this.lowFirstDo2 = lowFirstDo2;
 		this.lowFirstDo3 = lowFirstDo3;
+		this.countOnHighSignal = countOnHighSignal;
 		disableOrEnableComponents(); // Once we have set our components, disable them or not.
 	}
 	
@@ -300,6 +302,8 @@ public class SamplingThread extends Thread{
 			lowFirstDo1.setEnabled(false);
 			lowFirstDo2.setEnabled(false);
 			lowFirstDo3.setEnabled(false);
+			countOnHighSignal.setEnabled(false);
+			
 		}else{
 			loggingActivate.setText(ControlView.START_LOGGING);
 			calibration.setEnabled(true);
@@ -325,6 +329,7 @@ public class SamplingThread extends Thread{
 			lowFirstDo1.setEnabled(true);
 			lowFirstDo2.setEnabled(true);
 			lowFirstDo3.setEnabled(true);
+			countOnHighSignal.setEnabled(true);
 			
 			// Set zero values
 			do0Slider.setValue(0);
