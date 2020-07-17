@@ -134,7 +134,7 @@ public class ADS1115_ADS1015 {
 				     .bus(i2cBus)
 				     .device(i2cDevice)
 				     .build();
-			I2CProvider i2CProvider = pi4j.provider("pigpio-i2c");
+			I2CProvider i2CProvider = pi4j.i2c();
 			return i2CProvider.create(config);
 		} catch (Exception e) {
 			e.printStackTrace();
