@@ -7,6 +7,7 @@ import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CConfig;
 import com.pi4j.io.i2c.I2CProvider;
 
+@SuppressWarnings("unused")
 public class ADS1115_ADS1015 {
 
 	// Gains

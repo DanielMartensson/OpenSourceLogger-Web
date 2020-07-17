@@ -47,8 +47,8 @@
     "@vaadin/vaadin-rich-text-editor": "1.2.0",
     "apexcharts": "3.17.0",
     "onecolor": "3.1.0",
-    "@polymer/paper-slider": "3.0.1",
-    "lit-element": "^2.2.1"
+    "lit-element": "^2.2.1",
+    "@polymer/paper-slider": "3.0.1"
   },
   "devDependencies": {
     "webpack": "4.42.0",

@@ -165,19 +165,15 @@ public class MySQLView extends AppLayout {
 			Float[] dataDO2 = new Float[lastIndex - firstIndex];
 			Float[] dataDO3 = new Float[lastIndex - firstIndex];
 			for(int i = firstIndex; i < lastIndex; i++) {
-				try {
 					DataLogg dataLogg = selectedLogger.get(i);
-					if(dataLogg != null) {
-						dataAI0[i - firstIndex] = dataLogg.getAI0();
-						dataAI1[i - firstIndex] = dataLogg.getAI1();
-						dataAI2[i - firstIndex] = dataLogg.getAI2();
-						dataAI3[i - firstIndex] = dataLogg.getAI3();
-						dataDO0[i - firstIndex] = (float) dataLogg.getDO0();
-						dataDO1[i - firstIndex] = (float) dataLogg.getDO1();
-						dataDO2[i - firstIndex] = (float) dataLogg.getDO2();
-						dataDO3[i - firstIndex] = (float) dataLogg.getDO3();
-					}
-				}catch(Exception e1) {}
+					dataAI0[i - firstIndex] = dataLogg.getAI0();
+					dataAI1[i - firstIndex] = dataLogg.getAI1();
+					dataAI2[i - firstIndex] = dataLogg.getAI2();
+					dataAI3[i - firstIndex] = dataLogg.getAI3();
+					dataDO0[i - firstIndex] = (float) dataLogg.getDO0();
+					dataDO1[i - firstIndex] = (float) dataLogg.getDO1();
+					dataDO2[i - firstIndex] = (float) dataLogg.getDO2();
+					dataDO3[i - firstIndex] = (float) dataLogg.getDO3();
 			}
 			  
 			// Update
@@ -227,14 +223,15 @@ public class MySQLView extends AppLayout {
 			
 			NativeButton delete = new NativeButton("Delete", event -> {
 				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
-				for(int i = firstIndex-1; i < lastIndex; i++) {
-					try {
-						DataLogg dataLogg = selectedLogger.get(i);
-						if(dataLogg != null)
-							dataLoggRepository.delete(dataLogg);
-					}catch(Exception e1) {}
-				}
+				List<DataLogg> deleteThese = new ArrayList<DataLogg>();
+				for(int i = firstIndex-1; i < lastIndex; i++) 
+						deleteThese.add(selectedLogger.get(i));
+				dataLoggRepository.deleteInBatch(deleteThese);
 				dialog.close();
+				
+				// This will prevent us to plot values that don't exist - You need to press the counting button first
+				countAmoutOfSamples.setValue(countAmoutOfSamples.getValue() - (lastIndex - firstIndex-1));
+				
 			});
 			NativeButton cancelButton = new NativeButton("Cancel", event -> {
 				dialog.close();

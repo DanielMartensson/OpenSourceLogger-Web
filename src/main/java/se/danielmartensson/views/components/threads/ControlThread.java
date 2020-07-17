@@ -34,13 +34,13 @@ public class ControlThread extends Thread {
 	private DigitalInput pulseOn;
 	private DigitalInput stopSignalOn;
 	private ADS1115_ADS1015 ads;
-	private int ground4mAValueAnalog0;
-	private int ground4mAValueAnalog1;
-	private int ground4mAValueAnalog2;
-	private int ground4mAValueAnalog3;
+	private int adcAt4mAforAnalog0;
+	private int adcAt4mAforAnalog1;
+	private int adcAt4mAforAnalog2;
+	private int adcAt4mAforAnalog3;
 	
 
-	public ControlThread(IO io, int ground4mAValueAnalog0, int ground4mAValueAnalog1, int ground4mAValueAnalog2, int ground4mAValueAnalog3) {
+	public ControlThread(IO io, int adcAt4mAforAnalog0, int adcAt4mAforAnalog1, int adcAt4mAforAnalog2, int adcAt4mAforAnalog3) {
 		pwm0 = io.getPwm0();
 		pwm1 = io.getPwm1();
 		pwm2 = io.getPwm2();
@@ -48,10 +48,10 @@ public class ControlThread extends Thread {
 		pulseOn = io.getPulseOn();
 		stopSignalOn = io.getStopSignalOn();
 		ads = io.getAds();
-		this.ground4mAValueAnalog0 = ground4mAValueAnalog0;
-		this.ground4mAValueAnalog1 = ground4mAValueAnalog1;
-		this.ground4mAValueAnalog2 = ground4mAValueAnalog2;
-		this.ground4mAValueAnalog3 = ground4mAValueAnalog3;
+		this.adcAt4mAforAnalog0 = adcAt4mAforAnalog0;
+		this.adcAt4mAforAnalog1 = adcAt4mAforAnalog1;
+		this.adcAt4mAforAnalog2 = adcAt4mAforAnalog2;
+		this.adcAt4mAforAnalog3 = adcAt4mAforAnalog3;
 	}
 
 	@Override
@@ -162,28 +162,28 @@ public class ControlThread extends Thread {
 
 				// Read the input 4-20 mA signals
 				int rawAi0 = ads.ADSreadADC_SingleEnded(0);
-				if(rawAi0 < ground4mAValueAnalog0)
+				if(rawAi0 < adcAt4mAforAnalog0)
 					ai0 = 0; // No sensor connected
 				else
-					ai0 = rawAi0 - ground4mAValueAnalog0; // At 4mA, then ai0 = 0
+					ai0 = rawAi0 - adcAt4mAforAnalog0; // At 4mA, then ai0 = 0
 				
 				int rawAi1 = ads.ADSreadADC_SingleEnded(1);
-				if(rawAi1 < ground4mAValueAnalog1)
+				if(rawAi1 < adcAt4mAforAnalog1)
 					ai1 = 0; 
 				else
-					ai1 = rawAi1 - ground4mAValueAnalog1;
+					ai1 = rawAi1 - adcAt4mAforAnalog1;
 				
 				int rawAi2 = ads.ADSreadADC_SingleEnded(2);
-				if(rawAi2 < ground4mAValueAnalog2)
+				if(rawAi2 < adcAt4mAforAnalog2)
 					ai2 = 0; 
 				else
-					ai2 = rawAi2 - ground4mAValueAnalog2;
+					ai2 = rawAi2 - adcAt4mAforAnalog2;
 				
 				int rawAi3 = ads.ADSreadADC_SingleEnded(3);
-				if(rawAi3 < ground4mAValueAnalog3)
+				if(rawAi3 < adcAt4mAforAnalog3)
 					ai3 = 0; 
 				else
-					ai3 = rawAi3 - ground4mAValueAnalog3; 
+					ai3 = rawAi3 - adcAt4mAforAnalog3; 
 				
 	
 				// Read the pulse

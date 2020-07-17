@@ -78,17 +78,17 @@ public class ControlView extends AppLayout {
 	@Autowired
 	private IO io;
 	
-	@Value("${views.ControlView.ground4mAValueAnalog0}")
-	int ground4mAValueAnalog0;
+	@Value("${views.ControlView.adcAt4mAforAnalog0}")
+	int adcAt4mAforAnalog0;
 	
-	@Value("${views.ControlView.ground4mAValueAnalog1}")
-	int ground4mAValueAnalog1;
+	@Value("${views.ControlView.adcAt4mAforAnalog1}")
+	int adcAt4mAforAnalog1;
 	
-	@Value("${views.ControlView.ground4mAValueAnalog2}")
-	int ground4mAValueAnalog2;
+	@Value("${views.ControlView.adcAt4mAforAnalog2}")
+	int adcAt4mAforAnalog2;
 	
-	@Value("${views.ControlView.ground4mAValueAnalog3}")
-	int ground4mAValueAnalog3;
+	@Value("${views.ControlView.adcAt4mAforAnalog3}")
+	int adcAt4mAforAnalog3;
 	
 	
 	/* Layout components */
@@ -166,7 +166,7 @@ public class ControlView extends AppLayout {
 
 	static public int selectedShowSamples = 10; // Minimum of showSamples component
 
-	static public int selectedSamplingTime = 20; // Minimum of samplingTime component
+	static public int selectedSamplingTime = 100; // Minimum of samplingTime component
 
 	static public long selectedAID = 0L;
 
@@ -234,8 +234,8 @@ public class ControlView extends AppLayout {
 		
 		// Start the tread forcontrol
 		if(control == null) {
-			System.out.println(ground4mAValueAnalog0);
-			control = new ControlThread(io, ground4mAValueAnalog0, ground4mAValueAnalog1, ground4mAValueAnalog2, ground4mAValueAnalog3);
+			System.out.println(adcAt4mAforAnalog0);
+			control = new ControlThread(io, adcAt4mAforAnalog0, adcAt4mAforAnalog1, adcAt4mAforAnalog2, adcAt4mAforAnalog3);
 			control.start();
 		}
 		
@@ -473,7 +473,7 @@ public class ControlView extends AppLayout {
 		alarm.addValueChangeListener(e -> selectedAID = e.getValue());
 				
 		// Sampling time for the thread
-		samplingTime = new Select<Integer>(new Integer[] {20, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000});
+		samplingTime = new Select<Integer>(new Integer[] {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 10000, 20000, 30000, 40000, 50000, 60000});
 		samplingTime.setLabel("Sampling time");
 		samplingTime.setValue(selectedSamplingTime);
 		samplingTime.addValueChangeListener(e -> selectedSamplingTime = e.getValue());
