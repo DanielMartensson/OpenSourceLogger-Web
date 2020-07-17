@@ -11,6 +11,7 @@ store them into a MySQL database. You need to have a Raspberry Pi for this.
 * Loads: They are valves, motors, lamps etc
 * 1 kOhm: They are protecting the digital PWM outputs
 * ADC1115: Used for measure 4-20 mA sensors
+* FQP30N06L: They are the "relays" to control e.g motors, lamps, cylinders, valves
 
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/Schematic_bb.png)
 
