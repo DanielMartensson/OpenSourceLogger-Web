@@ -155,7 +155,7 @@ sudo nano /etc/rc.local
 Paste this above `exit 0`
 
 ```
-cd /home/pi/your/folder
+cd /home/pi/your/folder/where/the/jar/file/is
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar & 
 ```
 
