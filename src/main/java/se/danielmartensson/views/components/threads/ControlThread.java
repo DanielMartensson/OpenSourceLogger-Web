@@ -34,9 +34,13 @@ public class ControlThread extends Thread {
 	private DigitalInput pulseOn;
 	private DigitalInput stopSignalOn;
 	private ADS1115_ADS1015 ads;
+	private int ground4mAValueAnalog0;
+	private int ground4mAValueAnalog1;
+	private int ground4mAValueAnalog2;
+	private int ground4mAValueAnalog3;
 	
 
-	public ControlThread(IO io) {
+	public ControlThread(IO io, int ground4mAValueAnalog0, int ground4mAValueAnalog1, int ground4mAValueAnalog2, int ground4mAValueAnalog3) {
 		pwm0 = io.getPwm0();
 		pwm1 = io.getPwm1();
 		pwm2 = io.getPwm2();
@@ -44,6 +48,10 @@ public class ControlThread extends Thread {
 		pulseOn = io.getPulseOn();
 		stopSignalOn = io.getStopSignalOn();
 		ads = io.getAds();
+		this.ground4mAValueAnalog0 = ground4mAValueAnalog0;
+		this.ground4mAValueAnalog1 = ground4mAValueAnalog1;
+		this.ground4mAValueAnalog2 = ground4mAValueAnalog2;
+		this.ground4mAValueAnalog3 = ground4mAValueAnalog3;
 	}
 
 	@Override
@@ -56,26 +64,89 @@ public class ControlThread extends Thread {
 				} catch (InterruptedException e) {
 				}
 			}
-
+			
+			// Pulses counter
+			boolean do0LowFirst = ControlView.do0LowFirst;
+			boolean do1LowFirst = ControlView.do1LowFirst;
+			boolean do2LowFirst = ControlView.do2LowFirst;
+			boolean do3LowFirst = ControlView.do3LowFirst;
+			long counterForPulsesD0 = 0;
+			long counterForPulsesD1 = 0;
+			long counterForPulsesD2 = 0;
+			long counterForPulsesD3 = 0;
+			
+			// What program should we use
+			String selectedProgram = ControlView.selectedProgram;
+			
+			int[] sliderSlected = new int[4];
+			int[] highPulseSelected = new int[4];
+			int[] lowPulseSelected = new int[4];
+			long[] counterForPulses = new long[4];
+			boolean[] lowFirst = {do0LowFirst, do1LowFirst, do2LowFirst, do3LowFirst};
+			
 			// Control loop - When sampling thread are done, then this will quit too
 			while (ControlView.loggingNow.get() == true) {
-				// Command signals to the device
+				// Change the sliderSelected by using this loop program
+				if(selectedProgram.equals(ControlView.PULSE_PROGRAM)) {
+					
+					// Set
+					sliderSlected[0] = ControlView.do0SliderSelected;
+					sliderSlected[1] = ControlView.do1SliderSelected;
+					sliderSlected[2] = ControlView.do2SliderSelected;
+					sliderSlected[3] = ControlView.do3SliderSelected;
+					highPulseSelected[0] = ControlView.do0HighPulseSelected;
+					highPulseSelected[1] = ControlView.do1HighPulseSelected;
+					highPulseSelected[2] = ControlView.do2HighPulseSelected;
+					highPulseSelected[3] = ControlView.do3HighPulseSelected;
+					lowPulseSelected[0] = ControlView.do0HighPulseSelected;
+					lowPulseSelected[1] = ControlView.do1LowPulseSelected;
+					lowPulseSelected[2] = ControlView.do2LowPulseSelected;
+					lowPulseSelected[3] = ControlView.do3LowPulseSelected;
+					counterForPulses[0] = counterForPulsesD0;
+					counterForPulses[1] = counterForPulsesD1;
+					counterForPulses[2] = counterForPulsesD2;
+					counterForPulses[3] = counterForPulsesD3;
+					
+					// Do things
+					changeSliderValues(sliderSlected, highPulseSelected, lowPulseSelected, counterForPulses, lowFirst);
+					
+					// Get
+					ControlView.do0SliderSelected = sliderSlected[0];
+					ControlView.do1SliderSelected = sliderSlected[1];
+					ControlView.do2SliderSelected = sliderSlected[2];
+					ControlView.do3SliderSelected = sliderSlected[3];
+					ControlView.do0HighPulseSelected = highPulseSelected[0];
+					ControlView.do1HighPulseSelected = highPulseSelected[1];
+					ControlView.do2HighPulseSelected = highPulseSelected[2];
+					ControlView.do3HighPulseSelected = highPulseSelected[3];
+					ControlView.do0HighPulseSelected = lowPulseSelected[0];
+					ControlView.do1LowPulseSelected = lowPulseSelected[1];
+					ControlView.do2LowPulseSelected = lowPulseSelected[2];
+					ControlView.do3LowPulseSelected = lowPulseSelected[3];
+					counterForPulsesD0 = counterForPulses[0];
+					counterForPulsesD1 = counterForPulses[1];
+					counterForPulsesD2 = counterForPulses[2];
+					counterForPulsesD3 = counterForPulses[3];
+					
+				}
+				
+				// Command signals to the device with change only
 				try {
 					if(ControlView.do0SliderSelected != do0) {
-						pwm0.setDutyCycle(do0/ControlView.MAX_SLIDER_VALE);
 						do0 = ControlView.do0SliderSelected;
+						pwm0.setDutyCycle(do0/ControlView.MAX_SLIDER_VALE);
 					}
 					if(ControlView.do1SliderSelected != do1) {
-						pwm1.setDutyCycle(do1/ControlView.MAX_SLIDER_VALE);
 						do1 = ControlView.do1SliderSelected;
+						pwm1.setDutyCycle(do1/ControlView.MAX_SLIDER_VALE);
 					}
 					if(ControlView.do2SliderSelected != do2) {
-						pwm2.setDutyCycle(do2/ControlView.MAX_SLIDER_VALE);
 						do2 = ControlView.do2SliderSelected;
+						pwm2.setDutyCycle(do2/ControlView.MAX_SLIDER_VALE);
 					}
 					if(ControlView.do3SliderSelected != do3) {
-						pwm3.setDutyCycle(do3/ControlView.MAX_SLIDER_VALE);
 						do3 = ControlView.do3SliderSelected;
+						pwm3.setDutyCycle(do3/ControlView.MAX_SLIDER_VALE);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -89,18 +160,63 @@ public class ControlThread extends Thread {
 					e.printStackTrace();
 				}
 
-				// Read the input signals
-				ai0 = ads.ADSreadADC_SingleEnded(0);
-				ai1 = ads.ADSreadADC_SingleEnded(1);
-				ai2 = ads.ADSreadADC_SingleEnded(2);
-				ai3 = ads.ADSreadADC_SingleEnded(3);
-
+				// Read the input 4-20 mA signals
+				int rawAi0 = ads.ADSreadADC_SingleEnded(0);
+				if(rawAi0 < ground4mAValueAnalog0)
+					ai0 = 0; // No sensor connected
+				else
+					ai0 = rawAi0 - ground4mAValueAnalog0; // At 4mA, then ai0 = 0
+				
+				int rawAi1 = ads.ADSreadADC_SingleEnded(1);
+				if(rawAi1 < ground4mAValueAnalog1)
+					ai1 = 0; 
+				else
+					ai1 = rawAi1 - ground4mAValueAnalog1;
+				
+				int rawAi2 = ads.ADSreadADC_SingleEnded(2);
+				if(rawAi2 < ground4mAValueAnalog2)
+					ai2 = 0; 
+				else
+					ai2 = rawAi2 - ground4mAValueAnalog2;
+				
+				int rawAi3 = ads.ADSreadADC_SingleEnded(3);
+				if(rawAi3 < ground4mAValueAnalog3)
+					ai3 = 0; 
+				else
+					ai3 = rawAi3 - ground4mAValueAnalog3; 
+				
+	
 				// Read the pulse
 				pulse = pulseOn.isHigh();
 
 				// Read the stop signal
 				stopSignal = stopSignalOn.isHigh();
 
+			}
+		}
+	}
+
+	private void changeSliderValues(int[] sliderSlected, int[] highPulseSelected, int[] lowPulseSelected, long[] counterForPulses, boolean[] lowFirst) {
+		for(int i = 0; i < sliderSlected.length; i++) {
+			// <Zero>---4095 PWM----<HighPulseSelected>----0 PWM-----<LowPulseSelected>
+			// <Zero>-------------------------------counterForPulses------------------------------<HighPulseSelected + LowPulseSelected>
+			
+			if((counterForPulses[i] <= highPulseSelected[i]) && (counterForPulses[i] <= lowPulseSelected[i]))
+				sliderSlected[i] = ControlView.MAX_SLIDER_VALE;
+			else
+				sliderSlected[i] = 0;
+		
+			// Count the period
+			if(lowFirst[i]) {
+				if((counterForPulses[i] > 0) && (counterForPulses[i] <= highPulseSelected[i] + lowPulseSelected[i]))
+					counterForPulses[i]--;
+				else 
+					counterForPulses[i] = highPulseSelected[i] + lowPulseSelected[i];
+			}else {
+				if(counterForPulses[i] < highPulseSelected[i] + lowPulseSelected[i])
+					counterForPulses[i]++;
+				else
+					counterForPulses[i] = 0;
 			}
 		}
 	}

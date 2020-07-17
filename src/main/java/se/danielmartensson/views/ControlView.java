@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.flow.component.UI;
@@ -56,6 +57,8 @@ public class ControlView extends AppLayout {
 	public static final String START_LOGGING = "Start logging";
 	public static final String STOP_LOGGING = "Stop logging";
 	public static final Integer MAX_SLIDER_VALE = 4095;
+	public static final String VARIABLE_PROGRAM = "Variable program";
+	public static final String PULSE_PROGRAM = "Pulse program";
 	
 	@Autowired
 	private DataLoggRepository dataLoggRepository;
@@ -75,6 +78,19 @@ public class ControlView extends AppLayout {
 	@Autowired
 	private IO io;
 	
+	@Value("${views.ControlView.ground4mAValueAnalog0}")
+	int ground4mAValueAnalog0;
+	
+	@Value("${views.ControlView.ground4mAValueAnalog1}")
+	int ground4mAValueAnalog1;
+	
+	@Value("${views.ControlView.ground4mAValueAnalog2}")
+	int ground4mAValueAnalog2;
+	
+	@Value("${views.ControlView.ground4mAValueAnalog3}")
+	int ground4mAValueAnalog3;
+	
+	
 	/* Layout components */
 
 	private ApexCharts apexChart;
@@ -87,21 +103,29 @@ public class ControlView extends AppLayout {
 	
 	private PaperSlider do3Slider;
 	
-	private IntegerField do0Pulse;
+	private IntegerField do0HighPulse;
 	
-	private IntegerField do0Period;
+	private IntegerField do0LowPulse;
 	
-	private IntegerField do1Pulse;
+	private IntegerField do1HighPulse;
 	
-	private IntegerField do1Period;
+	private IntegerField do1LowPulse;
 		
-	private IntegerField do2Pulse;
+	private IntegerField do2HighPulse;
 	
-	private IntegerField do2Period;
+	private IntegerField do2LowPulse;
 	
-	private IntegerField do3Pulse;
+	private IntegerField do3HighPulse;
 	
-	private IntegerField do3Period;
+	private IntegerField do3LowPulse;
+	
+	private Checkbox lowFirstDo0;
+	
+	private Checkbox lowFirstDo1;
+	
+	private Checkbox lowFirstDo2;
+	
+	private Checkbox lowFirstDo3;
 	
 	private Button loggingActivate;
 	
@@ -127,6 +151,7 @@ public class ControlView extends AppLayout {
 	
 	private HorizontalLayout thirdRow;
 
+
 	/* Static holders */
 	
 	static public int do0SliderSelected = 0;
@@ -139,9 +164,9 @@ public class ControlView extends AppLayout {
 
 	static public boolean selectedShowPlot = false;
 
-	static public int selectedShowSamples = 10; // Minimum
+	static public int selectedShowSamples = 10; // Minimum of showSamples component
 
-	static public int selectedSamplingTime = 10; // Minimum
+	static public int selectedSamplingTime = 20; // Minimum of samplingTime component
 
 	static public long selectedAID = 0L;
 
@@ -149,23 +174,31 @@ public class ControlView extends AppLayout {
 
 	static public long selectedLoggerId = 0L;
 	
-	static public int do0PulseSelected = 0;
+	static public int do0HighPulseSelected = 0;
 	
-	static public int do1PulseSelected = 0;
+	static public int do1HighPulseSelected = 0;
 	
-	static public int do2PulseSelected = 0;
+	static public int do2HighPulseSelected = 0;
 	
-	static public int do3PulseSelected = 0;
+	static public int do3HighPulseSelected = 0;
 	
-	static public String selectedProgram = "Variable";
+	static public String selectedProgram = VARIABLE_PROGRAM;
 	
-	static public int do0PeriodSelected = 0;
+	static public int do0LowPulseSelected = 0;
 	
-	static public int do1PeriodSelected = 0;
+	static public int do1LowPulseSelected = 0;
 	
-	static public int do2PeriodSelected = 0;
+	static public int do2LowPulseSelected = 0;
 	
-	static public int do3PeriodSelected = 0;
+	static public int do3LowPulseSelected = 0;
+	
+	static public boolean do0LowFirst = false;
+	
+	static public boolean do1LowFirst = false;
+	
+	static public boolean do2LowFirst = false;
+	
+	static public boolean do3LowFirst = false;
 	
 	static public int selectedBreakPulseLimit = 1;
 	
@@ -201,16 +234,17 @@ public class ControlView extends AppLayout {
 		
 		// Start the tread forcontrol
 		if(control == null) {
-			control = new ControlThread(io);
+			System.out.println(ground4mAValueAnalog0);
+			control = new ControlThread(io, ground4mAValueAnalog0, ground4mAValueAnalog1, ground4mAValueAnalog2, ground4mAValueAnalog3);
 			control.start();
 		}
 		
 		// Start the thread for sampling
 		if(sampling == null) {
-			sampling = new SamplingThread(dataLoggRepository, calibrationLoggRepository, alarmLoggRepository, mail);
+			sampling = new SamplingThread(dataLoggRepository, calibrationLoggRepository, alarmLoggRepository, userLoggRepository, mail);
 			sampling.start();
 		}
-		// Set components to sampling thread
+		// Set components to sampling thread - So we can disable and enable inside the thread
 		sampling.setComponentsToThread(UI.getCurrent(),
 									apexChart, 
 									countedPulses,
@@ -222,73 +256,89 @@ public class ControlView extends AppLayout {
 									do1Slider,
 									do2Slider,
 									do3Slider,
-									do0Pulse,
-									do1Pulse,
-									do2Pulse,
-									do3Pulse,
-									do0Period,
-									do1Period,
-									do2Period,
-									do3Period,
+									do0HighPulse,
+									do1HighPulse,
+									do2HighPulse,
+									do3HighPulse,
+									do0LowPulse,
+									do1LowPulse,
+									do2LowPulse,
+									do3LowPulse,
 									samplingTime,
 									showSamples,
 									showPlot,
-									radioGroup);
+									radioGroup,
+									lowFirstDo0,
+									lowFirstDo1,
+									lowFirstDo2,
+									lowFirstDo3);
 			
 	}
 
 	private void createPulseLists() {
-		do0Pulse = new IntegerField("Activated D0");
-		do0Pulse.setMin(-100);
-		do0Pulse.setMax(100);
-		do0Pulse.setHasControls(true);
-		do0Pulse.setValue(do0PulseSelected);
-		do0Pulse.addValueChangeListener(e -> do0PulseSelected = e.getValue());
+		do0HighPulse = new IntegerField("High D0");
+		do0HighPulse.setMin(0);
+		do0HighPulse.setHasControls(true);
+		do0HighPulse.setValue(do0HighPulseSelected);
+		do0HighPulse.addValueChangeListener(e -> do0HighPulseSelected = e.getValue());
 		
-		do0Period = new IntegerField("Count D0");
-		do0Period.setMin(0);
-		do0Period.setHasControls(true);
-		do0Period.setValue(do0PeriodSelected);
-		do0Period.addValueChangeListener(e -> do0PeriodSelected = e.getValue());
+		do0LowPulse = new IntegerField("Low D0");
+		do0LowPulse.setMin(0);
+		do0LowPulse.setHasControls(true);
+		do0LowPulse.setValue(do0LowPulseSelected);
+		do0LowPulse.addValueChangeListener(e -> do0LowPulseSelected = e.getValue());
 		
-		do1Pulse = new IntegerField("Activated D1");
-		do1Pulse.setMin(-100);
-		do1Pulse.setMax(100);
-		do1Pulse.setHasControls(true);
-		do1Pulse.setValue(do1PulseSelected);
-		do1Pulse.addValueChangeListener(e -> do1PulseSelected = e.getValue());
+		lowFirstDo0 = new Checkbox(do0LowFirst);
+		lowFirstDo0.setLabel("Low first");
+		lowFirstDo0.addValueChangeListener(e -> do0LowFirst = e.getValue());
 		
-		do1Period = new IntegerField("Count D1");
-		do1Period.setMin(0);
-		do1Period.setHasControls(true);
-		do1Period.setValue(do1PeriodSelected);
-		do1Period.addValueChangeListener(e -> do1PeriodSelected = e.getValue());
+		do1HighPulse = new IntegerField("High D1");
+		do1HighPulse.setMin(0);
+		do1HighPulse.setHasControls(true);
+		do1HighPulse.setValue(do1HighPulseSelected);
+		do1HighPulse.addValueChangeListener(e -> do1HighPulseSelected = e.getValue());
 		
-		do2Pulse = new IntegerField("Activated D2");
-		do2Pulse.setMin(-100);
-		do2Pulse.setMax(100);
-		do2Pulse.setHasControls(true);
-		do2Pulse.setValue(do2PulseSelected);
-		do2Pulse.addValueChangeListener(e -> do2PulseSelected = e.getValue());
+		do1LowPulse = new IntegerField("Low D1");
+		do1LowPulse.setMin(0);
+		do1LowPulse.setHasControls(true);
+		do1LowPulse.setValue(do1LowPulseSelected);
+		do1LowPulse.addValueChangeListener(e -> do1LowPulseSelected = e.getValue());
 		
-		do2Period = new IntegerField("Count D2");
-		do2Period.setMin(0);
-		do2Period.setHasControls(true);
-		do2Period.setValue(do2PeriodSelected);
-		do2Period.addValueChangeListener(e -> do2PeriodSelected = e.getValue());
+		lowFirstDo1 = new Checkbox(do1LowFirst);
+		lowFirstDo1.setLabel("Low first");
+		lowFirstDo1.addValueChangeListener(e -> do1LowFirst = e.getValue());
 		
-		do3Pulse = new IntegerField("Activated D3");
-		do3Pulse.setMin(-100);
-		do3Pulse.setMax(100);
-		do3Pulse.setHasControls(true);
-		do3Pulse.setValue(do3PulseSelected);
-		do3Pulse.addValueChangeListener(e -> do3PulseSelected = e.getValue());
+		do2HighPulse = new IntegerField("High D2");
+		do2HighPulse.setMin(0);
+		do2HighPulse.setHasControls(true);
+		do2HighPulse.setValue(do2HighPulseSelected);
+		do2HighPulse.addValueChangeListener(e -> do1HighPulseSelected = e.getValue());
 		
-		do3Period = new IntegerField("Count D3");
-		do3Period.setMin(0);
-		do3Period.setHasControls(true);
-		do3Period.setValue(do3PeriodSelected);
-		do3Period.addValueChangeListener(e -> do3PeriodSelected = e.getValue());
+		do2LowPulse = new IntegerField("Low D2");
+		do2LowPulse.setMin(0);
+		do2LowPulse.setHasControls(true);
+		do2LowPulse.setValue(do2LowPulseSelected);
+		do2LowPulse.addValueChangeListener(e -> do2LowPulseSelected = e.getValue());
+		
+		lowFirstDo2 = new Checkbox(do2LowFirst);
+		lowFirstDo2.setLabel("Low first");
+		lowFirstDo2.addValueChangeListener(e -> do2LowFirst = e.getValue());
+		
+		do3HighPulse = new IntegerField("High D3");
+		do3HighPulse.setMin(0);
+		do3HighPulse.setHasControls(true);
+		do3HighPulse.setValue(do3HighPulseSelected);
+		do3HighPulse.addValueChangeListener(e -> do3HighPulseSelected = e.getValue());
+		
+		do3LowPulse = new IntegerField("Low D3");
+		do3LowPulse.setMin(0);
+		do3LowPulse.setHasControls(true);
+		do3LowPulse.setValue(do3LowPulseSelected);
+		do3LowPulse.addValueChangeListener(e -> do3LowPulseSelected = e.getValue());
+		
+		lowFirstDo3 = new Checkbox(do3LowFirst);
+		lowFirstDo3.setLabel("Low first");
+		lowFirstDo3.addValueChangeListener(e -> do3LowFirst = e.getValue());
 		
 		// Pulse counters
 		countedPulses = new IntegerField("Counted pulses");
@@ -352,11 +402,13 @@ public class ControlView extends AppLayout {
 				new Notification("Forgot selecting something?", 3000).open();
 				return;
 			}
-			
-			if(loggingNow.get() == true) 
+						
+			// Flipp the flag
+			if(loggingNow.get() == true) {
 				loggingNow.set(false);
-			else 
+			}else { 
 				loggingNow.set(true);
+			}
 		});
 				
 		return new HorizontalLayout(showPlot, loggingActivate);
@@ -366,7 +418,7 @@ public class ControlView extends AppLayout {
 		// Radio button for selecting program
 		radioGroup = new RadioButtonGroup<>();
 		radioGroup.setLabel("Program:");
-		radioGroup.setItems("Variable", "Pulse");
+		radioGroup.setItems(VARIABLE_PROGRAM, PULSE_PROGRAM);
 		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.setValue(selectedProgram);
 		radioGroup.addValueChangeListener(e -> {
@@ -421,7 +473,7 @@ public class ControlView extends AppLayout {
 		alarm.addValueChangeListener(e -> selectedAID = e.getValue());
 				
 		// Sampling time for the thread
-		samplingTime = new Select<Integer>(new Integer[] {10, 15, 20, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000});
+		samplingTime = new Select<Integer>(new Integer[] {20, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000});
 		samplingTime.setLabel("Sampling time");
 		samplingTime.setValue(selectedSamplingTime);
 		samplingTime.addValueChangeListener(e -> selectedSamplingTime = e.getValue());
@@ -437,7 +489,7 @@ public class ControlView extends AppLayout {
 	}
 
 	private void createThirdRow() {
-		if(selectedProgram.equals("Variable")) {
+		if(selectedProgram.equals(VARIABLE_PROGRAM)) {
 			thirdRow = createVariableLayout();
 		}else {
 			thirdRow = createPulseLayout();
@@ -446,19 +498,19 @@ public class ControlView extends AppLayout {
 
 	private HorizontalLayout createPulseLayout() {
 		// Pulse layout 0
-		VerticalLayout do0PulseLayout = new VerticalLayout(new Label("DO0"), do0Pulse, do0Period);
+		VerticalLayout do0PulseLayout = new VerticalLayout(new Label("DO0"), do0HighPulse, do0LowPulse, lowFirstDo0);
 		do0PulseLayout.setAlignItems(Alignment.CENTER);
 
 		// Pulse layout 1
-		VerticalLayout do1PulseLayout = new VerticalLayout(new Label("DO1"), do1Pulse, do1Period);
+		VerticalLayout do1PulseLayout = new VerticalLayout(new Label("DO1"), do1HighPulse, do1LowPulse, lowFirstDo1);
 		do1PulseLayout.setAlignItems(Alignment.CENTER);
 
 		// Pulse layout 2
-		VerticalLayout do2PulseLayout = new VerticalLayout(new Label("DO2"), do2Pulse, do2Period);
+		VerticalLayout do2PulseLayout = new VerticalLayout(new Label("DO2"), do2HighPulse, do2LowPulse, lowFirstDo2);
 		do2PulseLayout.setAlignItems(Alignment.CENTER);
 
 		// Pulse layout 3
-		VerticalLayout do3PulseLayout = new VerticalLayout(new Label("DO3"), do3Pulse, do3Period);
+		VerticalLayout do3PulseLayout = new VerticalLayout(new Label("DO3"), do3HighPulse, do3LowPulse, lowFirstDo3);
 		do3PulseLayout.setAlignItems(Alignment.CENTER);
 		
 		// Pulse counters

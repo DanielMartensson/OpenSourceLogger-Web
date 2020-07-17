@@ -26,7 +26,7 @@ import lombok.Getter;
 public class IO {
 	
 	// Frequency for the PWM 
-	@Value("${IO.pi4j.pwmFrequency}")
+	@Value("${pi4j.IO.pwmFrequency}")
 	private int pwmFrequency;
 	
 	// PWM outputs
@@ -46,14 +46,15 @@ public class IO {
 	public void init() {
 		try {
 			Context pi4j = Pi4J.newAutoContext();
-			pwm0 = createDigitalPWMOutput(12, pi4j, "pwm0");
+			pwm0 = createDigitalPWMOutput(6, pi4j, "pwm0");
 			pwm1 = createDigitalPWMOutput(13, pi4j, "pwm1");
-			pwm2 = createDigitalPWMOutput(18, pi4j, "pwm2");
-			pwm3 = createDigitalPWMOutput(19, pi4j, "pwm3");
+			pwm2 = createDigitalPWMOutput(19, pi4j, "pwm2");
+			pwm3 = createDigitalPWMOutput(26, pi4j, "pwm3");
 			pulseOn = createDigitalInput(23, pi4j, "di0");
 			stopSignalOn = createDigitalInput(24, pi4j, "di1");
 			ads = new ADS1115_ADS1015(pi4j, 1, ADS1115_ADS1015.ADS_ADDR_GND); // I2C bus = 1
 			ads.useADS1115();
+			ads.ADSsetGain(ADS1115_ADS1015.GAIN_TWO); // Important to set GAIN_TWO when we have Vdd = 3.3 and 150 Ohm resistors between analog in and GND
 			
 		} catch (Pi4JException e) {
 			// TODO Auto-generated catch block

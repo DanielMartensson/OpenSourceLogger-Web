@@ -14,7 +14,10 @@ import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -92,8 +95,10 @@ public class MySQLView extends AppLayout {
 				return;
 			long selectedLoggerId = loggerId.getValue();
 			List<DataLogg> dataLogg = dataLoggRepository.findByLoggerId(selectedLoggerId);
-			int amountOfSamples = dataLogg.size()-1;
-			int pulses = dataLogg.get(amountOfSamples).getPulseNumber();
+			int amountOfSamples = dataLogg.size();
+			int pulses = 0;
+			if(amountOfSamples > 0)
+				dataLogg.get(amountOfSamples-1).getPulseNumber();
 			countAmoutOfSamples.setValue(amountOfSamples);
 			pulseField.setValue(pulses);
 		});
@@ -110,11 +115,11 @@ public class MySQLView extends AppLayout {
         
 		// Range settings
 		IntegerField indexFirst = new IntegerField();
-		indexFirst.setMin(0);
+		indexFirst.setMin(1);
 		indexFirst.setPlaceholder("No index");
 		indexFirst.setLabel("First index");
 		IntegerField indexLast = new IntegerField();
-		indexLast.setMin(0);
+		indexLast.setMin(1);
 		indexLast.setPlaceholder("No index");
 		indexLast.setLabel("Last index");
 		
@@ -126,17 +131,28 @@ public class MySQLView extends AppLayout {
 				new Notification("You need to count samples or set the index", 3000).open();
 				return;
 			}
-			Integer firstIndex = indexFirst.getValue();
-			Integer lastIndex = indexLast.getValue() + 1; // This resulting indexing from 0 
+			Integer firstIndex = indexFirst.getValue(); // Min 1
+			Integer lastIndex = indexLast.getValue(); // Min 1
 			Integer samples = countAmoutOfSamples.getValue();
-			if(firstIndex >= lastIndex) {
-				new Notification("First index cannot be greater or equal to last index", 3000).open();
+			if(firstIndex > lastIndex) {
+				new Notification("First index cannot be greater than last index", 3000).open();
 				return;
 			}
 			if(lastIndex > samples) {
-				new Notification("Notice that we have indexing from zero here!", 3000).open();
+				new Notification("Not enough of samples", 3000).open();
 				return;
 			}
+			if(lastIndex <= 0) {
+				new Notification("Last index cannot be under 1", 3000).open();
+				return;
+			}
+			if(firstIndex <= 0) {
+				new Notification("First index cannot be under 1", 3000).open();
+				return;
+			}
+			
+			// Change to zero indexing by removing one value from firstIndex
+			firstIndex--;
 			
 			// Get the selected rows in the database depending on choice of loggerId
 			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
@@ -149,14 +165,19 @@ public class MySQLView extends AppLayout {
 			Float[] dataDO2 = new Float[lastIndex - firstIndex];
 			Float[] dataDO3 = new Float[lastIndex - firstIndex];
 			for(int i = firstIndex; i < lastIndex; i++) {
-				dataAI0[i - firstIndex] = selectedLogger.get(i).getAI0();
-				dataAI1[i - firstIndex] = selectedLogger.get(i).getAI1();
-				dataAI2[i - firstIndex] = selectedLogger.get(i).getAI2();
-				dataAI3[i - firstIndex] = selectedLogger.get(i).getAI3();
-				dataDO0[i - firstIndex] = (float) selectedLogger.get(i).getDO0();
-				dataDO1[i - firstIndex] = (float) selectedLogger.get(i).getDO1();
-				dataDO2[i - firstIndex] = (float) selectedLogger.get(i).getDO2();
-				dataDO3[i - firstIndex] = (float) selectedLogger.get(i).getDO3();
+				try {
+					DataLogg dataLogg = selectedLogger.get(i);
+					if(dataLogg != null) {
+						dataAI0[i - firstIndex] = dataLogg.getAI0();
+						dataAI1[i - firstIndex] = dataLogg.getAI1();
+						dataAI2[i - firstIndex] = dataLogg.getAI2();
+						dataAI3[i - firstIndex] = dataLogg.getAI3();
+						dataDO0[i - firstIndex] = (float) dataLogg.getDO0();
+						dataDO1[i - firstIndex] = (float) dataLogg.getDO1();
+						dataDO2[i - firstIndex] = (float) dataLogg.getDO2();
+						dataDO3[i - firstIndex] = (float) dataLogg.getDO3();
+					}
+				}catch(Exception e1) {}
 			}
 			  
 			// Update
@@ -171,9 +192,62 @@ public class MySQLView extends AppLayout {
 					createSerie(dataDO3, "DO3"));
 		});
 		
+		// Delete
+		Button deletePlot = new Button("Delete");
+		deletePlot.addClickListener(e -> {
+			// Quick check if we have selected values
+			if(indexFirst.getValue() == null || indexLast.getValue() == null || countAmoutOfSamples.getValue() == null) {
+				new Notification("You need to count samples or set the index", 3000).open();
+				return;
+			}
+			Integer firstIndex = indexFirst.getValue(); // Min 1
+			Integer lastIndex = indexLast.getValue(); // Min 1
+			Integer samples = countAmoutOfSamples.getValue();
+			if(firstIndex > lastIndex) {
+				new Notification("First index cannot be greater than last index", 3000).open();
+				return;
+			}
+			if(lastIndex > samples) {
+				new Notification("Not enough of samples", 3000).open();
+				return;
+			}
+			if(lastIndex <= 0) {
+				new Notification("Last index cannot be under 1", 3000).open();
+				return;
+			}
+			if(firstIndex <= 0) {
+				new Notification("First index cannot be under 1", 3000).open();
+				return;
+			}
+			
+			// Show dialog and ask
+			Dialog dialog = new Dialog(new Label("Do you want to delete samples between " + firstIndex + " and " + lastIndex));
+			dialog.setCloseOnEsc(false);
+			dialog.setCloseOnOutsideClick(false);
+			
+			NativeButton delete = new NativeButton("Delete", event -> {
+				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
+				for(int i = firstIndex-1; i < lastIndex; i++) {
+					try {
+						DataLogg dataLogg = selectedLogger.get(i);
+						if(dataLogg != null)
+							dataLoggRepository.delete(dataLogg);
+					}catch(Exception e1) {}
+				}
+				dialog.close();
+			});
+			NativeButton cancelButton = new NativeButton("Cancel", event -> {
+				dialog.close();
+			});
+			
+			dialog.add(delete, cancelButton);
+			dialog.open();
+			
+		});
+		
 		// Layout
 		HorizontalLayout firstRow = new HorizontalLayout(loggerId, indexFirst, indexLast, countAmoutOfSamples, pulseField);
-		HorizontalLayout secondRow = new HorizontalLayout(countSamples, createPlot, download);
+		HorizontalLayout secondRow = new HorizontalLayout(countSamples, createPlot, download, deletePlot);
 		VerticalLayout layout = new VerticalLayout(firstRow, secondRow, apexChart);
 		setContent(layout);
 	}
@@ -188,7 +262,7 @@ public class MySQLView extends AppLayout {
 	public StreamResource getStreamResource(String filename, List<DataLogg> selectedLogger) {
 		// Create a large CSV file in a form of StringBuilder and then convert it all to bytes
 		StringWriter stringWriter = new StringWriter();
-		stringWriter.write("id, dateTime, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerId, samplingTime, pulseNumber, breakPulseLimit, stopSignal\n");
+		stringWriter.write("id, dateTime, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerId, samplingTime, pulseNumber, breakPulseLimit, stopSignal, comment\n");
 		for (int i = 0; i < selectedLogger.size(); ++ i) {
 			DataLogg dataLogg = selectedLogger.get(i);
 			String row = dataLogg.getId() + "," +
@@ -205,7 +279,8 @@ public class MySQLView extends AppLayout {
 			dataLogg.getSamplingTime() + "," +
 			dataLogg.getPulseNumber() + "," +
 			dataLogg.getBreakPulseLimit() + "," +
-			dataLogg.isStopSignal() + "\n";
+			dataLogg.isStopSignal() + "," +
+			dataLogg.getComment() + "\n";
 			stringWriter.write(row);
 		}
 		

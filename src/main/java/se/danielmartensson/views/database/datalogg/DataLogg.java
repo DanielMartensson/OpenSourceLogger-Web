@@ -39,4 +39,5 @@ public class DataLogg {
 	private int pulseNumber;
 	private int breakPulseLimit;
 	private boolean stopSignal;
+	private String comment;
 }

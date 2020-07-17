@@ -22,6 +22,8 @@ import se.danielmartensson.views.database.calibrationlogg.CalibrationLogg;
 import se.danielmartensson.views.database.calibrationlogg.CalibrationLoggRepository;
 import se.danielmartensson.views.database.datalogg.DataLogg;
 import se.danielmartensson.views.database.datalogg.DataLoggRepository;
+import se.danielmartensson.views.database.userlogg.UserLogg;
+import se.danielmartensson.views.database.userlogg.UserLoggRepository;
 
 public class SamplingThread extends Thread{
 	// For the settings
@@ -29,6 +31,7 @@ public class SamplingThread extends Thread{
 	private DataLoggRepository dataLoggRepository;
 	private CalibrationLoggRepository calibrationLoggRepository;
 	private AlarmLoggRepository alarmLoggRepository;
+	private UserLoggRepository userLoggRepository;
 	private Mail mail;
 
 	// For logging values
@@ -55,23 +58,29 @@ public class SamplingThread extends Thread{
 	private PaperSlider do1Slider;
 	private PaperSlider do2Slider;
 	private PaperSlider do3Slider;
-	private IntegerField do0Pulse;
-	private IntegerField do1Pulse;
-	private IntegerField do2Pulse;
-	private IntegerField do3Pulse;
-	private IntegerField do0Period;
-	private IntegerField do1Period;
-	private IntegerField do2Period;
-	private IntegerField do3Period;
+	private IntegerField do0HighPulse;
+	private IntegerField do1HighPulse;
+	private IntegerField do2HighPulse;
+	private IntegerField do3HighPulse;
+	private IntegerField do0LowPulse;
+	private IntegerField do1LowPulse;
+	private IntegerField do2LowPulse;
+	private IntegerField do3LowPulse;
 	private Select<Integer> samplingTime;
 	private Select<Integer> showSamples;
 	private Checkbox showPlot;
 	private RadioButtonGroup<String> radioGroup;
+	private Checkbox lowFirstDo0;
+	private Checkbox lowFirstDo1;
+	private Checkbox lowFirstDo2;
+	private Checkbox lowFirstDo3;
 
-	public SamplingThread(DataLoggRepository dataLoggRepository, CalibrationLoggRepository calibrationLoggRepository, AlarmLoggRepository alarmLoggRepository, Mail mail) {
+
+	public SamplingThread(DataLoggRepository dataLoggRepository, CalibrationLoggRepository calibrationLoggRepository, AlarmLoggRepository alarmLoggRepository, UserLoggRepository userLoggRepository, Mail mail) {
 		this.dataLoggRepository = dataLoggRepository;
 		this.calibrationLoggRepository = calibrationLoggRepository;
 		this.alarmLoggRepository = alarmLoggRepository;
+		this.userLoggRepository = userLoggRepository;
 		this.mail = mail;
 		
 		// Time format
@@ -92,7 +101,6 @@ public class SamplingThread extends Thread{
 			int showSamplesValue = ControlView.selectedShowSamples;
 			long loggerIdValue = ControlView.selectedLoggerId;
 			int samplingTimeValue = ControlView.selectedSamplingTime;
-			int breakPulseLimit = ControlView.selectedBreakPulseLimit;
 			dataAI0 = new Float[showSamplesValue];
 			dataAI1 = new Float[showSamplesValue];
 			dataAI2 = new Float[showSamplesValue];
@@ -107,16 +115,16 @@ public class SamplingThread extends Thread{
 			pastPulse = false; 
 			updatePlotAndPulse();
 			
-			// Get the calibration and alarm
+			// Get the calibration and alarm and comment from userlogg
 			CalibrationLogg calibrationLogg = calibrationLoggRepository.findByCID(ControlView.selectedCID);			
 			float BAI0 = calibrationLogg.getBAI0();
-			float SAI0 =calibrationLogg.getSAI0();
+			float SAI0 = calibrationLogg.getSAI0();
 			float BAI1 = calibrationLogg.getBAI1();
-			float SAI1 =calibrationLogg.getSAI0();
+			float SAI1 = calibrationLogg.getSAI0();
 			float BAI2 = calibrationLogg.getBAI2();
-			float SAI2 =calibrationLogg.getSAI0();
+			float SAI2 = calibrationLogg.getSAI0();
 			float BAI3 = calibrationLogg.getBAI3();
-			float SAI3 =calibrationLogg.getSAI0();
+			float SAI3 = calibrationLogg.getSAI0();
 			AlarmLogg alarmLogg = alarmLoggRepository.findByAID(ControlView.selectedAID);
 			float AI0Max = alarmLogg.getAI0Max();
 			float AI0Min = alarmLogg.getAI0Min();
@@ -128,6 +136,8 @@ public class SamplingThread extends Thread{
 			float AI3Min = alarmLogg.getAI3Min();
 			String email = alarmLogg.getEmail();
 			boolean alarmActivated = alarmLogg.isAlarm();
+			UserLogg userLogg = userLoggRepository.findByLoggerId(ControlView.selectedLoggerId);
+			String comment = userLogg.getComment();
 			
 			// Sampling loop
 			while(ControlView.loggingNow.get() == true) {
@@ -144,17 +154,17 @@ public class SamplingThread extends Thread{
 				float AI3 = SAI3*ControlThread.ai3 + BAI3;
 				
 				// Read the pulse signal and count it if...
-				if(ControlThread.pulse != pastPulse) {
+				if((ControlThread.pulse != pastPulse) && ControlThread.pulse == true) {
 					pulseNumber++;
 					pastPulse = ControlThread.pulse;
 				}
 				
 				// Read the alarm signal
 				boolean stopSignal = ControlThread.stopSignal;
-
+				
 				// Save them to the database
 				String time = dtf.format(LocalDateTime.now());
-				DataLogg dataLogg = new DataLogg(0, time, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, breakPulseLimit, stopSignal);
+				DataLogg dataLogg = new DataLogg(0, time, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, ControlView.selectedBreakPulseLimit, stopSignal, comment);
 				dataLoggRepository.save(dataLogg);
 				
 				// Show the values on the plot - First shift it back 1 step, set the last element and update the plot
@@ -179,7 +189,7 @@ public class SamplingThread extends Thread{
 				}
 				
 				// If we exceeded number of pulse limit
-				if(pulseNumber >= breakPulseLimit) {
+				if(pulseNumber >= ControlView.selectedBreakPulseLimit) {
 					interuptMessage(email, "Number of pulse limits exceeded", alarmActivated);
 					break; // Jump out from the while loop and update the ControlView
 				}
@@ -232,7 +242,7 @@ public class SamplingThread extends Thread{
 
 	}
 
-	public void setComponentsToThread(UI ui, ApexCharts apexChart, IntegerField countedPulses, Button loggingActivate, Select<Long> calibration, Select<Long> alarm, Select<Long> loggerId, PaperSlider do0Slider, PaperSlider do1Slider, PaperSlider do2Slider, PaperSlider do3Slider, IntegerField do0Pulse, IntegerField do1Pulse, IntegerField do2Pulse, IntegerField do3Pulse, IntegerField do0Period, IntegerField do1Period, IntegerField do2Period, IntegerField do3Period, Select<Integer> samplingTime, Select<Integer> showSamples, Checkbox showPlot, RadioButtonGroup<String> radioGroup) {
+	public void setComponentsToThread(UI ui, ApexCharts apexChart, IntegerField countedPulses, Button loggingActivate, Select<Long> calibration, Select<Long> alarm, Select<Long> loggerId, PaperSlider do0Slider, PaperSlider do1Slider, PaperSlider do2Slider, PaperSlider do3Slider, IntegerField do0HighPulse, IntegerField do1HighPulse, IntegerField do2HighPulse, IntegerField do3HighPulse, IntegerField do0LowPulse, IntegerField do1LowPulse, IntegerField do2LowPulse, IntegerField do3LowPulse, Select<Integer> samplingTime, Select<Integer> showSamples, Checkbox showPlot, RadioButtonGroup<String> radioGroup, Checkbox lowFirstDo0, Checkbox lowFirstDo1, Checkbox lowFirstDo2, Checkbox lowFirstDo3) {
 		this.ui = ui;
 		this.apexChart = apexChart;
 		this.countedPulses = countedPulses;
@@ -244,18 +254,23 @@ public class SamplingThread extends Thread{
 		this.do1Slider = do1Slider;
 		this.do2Slider = do2Slider;
 		this.do3Slider = do3Slider;
-		this.do0Pulse = do0Pulse;
-		this.do1Pulse = do1Pulse;
-		this.do2Pulse = do2Pulse;
-		this.do3Pulse = do3Pulse;
-		this.do0Period = do0Period;
-		this.do1Period = do1Period;
-		this.do2Period = do2Period;
-		this.do3Period = do3Period;
+		this.do0HighPulse = do0HighPulse;
+		this.do1HighPulse = do1HighPulse;
+		this.do2HighPulse = do2HighPulse;
+		this.do3HighPulse = do3HighPulse;
+		this.do0LowPulse = do0LowPulse;
+		this.do1LowPulse = do1LowPulse;
+		this.do2LowPulse = do2LowPulse;
+		this.do3LowPulse = do3LowPulse;
 		this.samplingTime = samplingTime;
 		this.showSamples = showSamples;
 		this.showPlot = showPlot;
 		this.radioGroup = radioGroup;
+		this.lowFirstDo0 = lowFirstDo0;
+		this.lowFirstDo1 = lowFirstDo1;
+		this.lowFirstDo2 = lowFirstDo2;
+		this.lowFirstDo3 = lowFirstDo3;
+		disableOrEnableComponents(); // Once we have set our components, disable them or not.
 	}
 	
 	private void disableOrEnableComponents() {
@@ -269,18 +284,22 @@ public class SamplingThread extends Thread{
 			do1Slider.setEnabled(true);
 			do2Slider.setEnabled(true);
 			do3Slider.setEnabled(true);
-			do0Pulse.setEnabled(true);
-			do1Pulse.setEnabled(true);
-			do2Pulse.setEnabled(true);
-			do3Pulse.setEnabled(true);
-			do0Period.setEnabled(true);
-			do1Period.setEnabled(true);
-			do2Period.setEnabled(true);
-			do3Period.setEnabled(true);
+			do0HighPulse.setEnabled(true);
+			do1HighPulse.setEnabled(true);
+			do2HighPulse.setEnabled(true);
+			do3HighPulse.setEnabled(true);
+			do0LowPulse.setEnabled(true);
+			do1LowPulse.setEnabled(true);
+			do2LowPulse.setEnabled(true);
+			do3LowPulse.setEnabled(true);
 			samplingTime.setEnabled(false);
 			showSamples.setEnabled(false);
 			showPlot.setEnabled(false);
 			radioGroup.setEnabled(false);
+			lowFirstDo0.setEnabled(false);
+			lowFirstDo1.setEnabled(false);
+			lowFirstDo2.setEnabled(false);
+			lowFirstDo3.setEnabled(false);
 		}else{
 			loggingActivate.setText(ControlView.START_LOGGING);
 			calibration.setEnabled(true);
@@ -290,32 +309,36 @@ public class SamplingThread extends Thread{
 			do1Slider.setEnabled(false);
 			do2Slider.setEnabled(false);
 			do3Slider.setEnabled(false);
-			do0Pulse.setEnabled(false);
-			do1Pulse.setEnabled(false);
-			do2Pulse.setEnabled(false);
-			do3Pulse.setEnabled(false);
-			do0Period.setEnabled(false);
-			do1Period.setEnabled(false);
-			do2Period.setEnabled(false);
-			do3Period.setEnabled(false);
+			do0HighPulse.setEnabled(false);
+			do1HighPulse.setEnabled(false);
+			do2HighPulse.setEnabled(false);
+			do3HighPulse.setEnabled(false);
+			do0LowPulse.setEnabled(false);
+			do1LowPulse.setEnabled(false);
+			do2LowPulse.setEnabled(false);
+			do3LowPulse.setEnabled(false);
 			samplingTime.setEnabled(true);
 			showSamples.setEnabled(true);
 			showPlot.setEnabled(true);
 			radioGroup.setEnabled(true);
+			lowFirstDo0.setEnabled(true);
+			lowFirstDo1.setEnabled(true);
+			lowFirstDo2.setEnabled(true);
+			lowFirstDo3.setEnabled(true);
 			
 			// Set zero values
 			do0Slider.setValue(0);
 			do1Slider.setValue(0);
 			do2Slider.setValue(0);
 			do3Slider.setValue(0);
-			do0Pulse.setValue(0);
-			do1Pulse.setValue(0);
-			do2Pulse.setValue(0);
-			do3Pulse.setValue(0);
-			do0Period.setValue(0);
-			do1Period.setValue(0);
-			do2Period.setValue(0);
-			do3Period.setValue(0);
+			do0HighPulse.setValue(0);
+			do1HighPulse.setValue(0);
+			do2HighPulse.setValue(0);
+			do3HighPulse.setValue(0);
+			do0LowPulse.setValue(0);
+			do1LowPulse.setValue(0);
+			do2LowPulse.setValue(0);
+			do3LowPulse.setValue(0);
 		}
 	}
 }
