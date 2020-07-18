@@ -12,6 +12,7 @@ import se.danielmartensson.views.AboutView;
 import se.danielmartensson.views.AlarmView;
 import se.danielmartensson.views.JobbView;
 import se.danielmartensson.views.MySQLView;
+import se.danielmartensson.views.security.SecurityConfig;
 import se.danielmartensson.views.CalibrationView;
 import se.danielmartensson.views.ControlView;
 
@@ -53,7 +54,11 @@ public class Top {
         aboutTab.getElement().addEventListener("click", e -> {
         	UI.getCurrent().navigate(AboutView.class);
         });
-        tabs = new Tabs(jobbTab, controlTab, mySQLTab, calibrationTab, alarmTab, aboutTab);
+        Tab logoutTab = new Tab("Logout");
+        logoutTab.getElement().addEventListener("click", e -> {
+        	UI.getCurrent().getPage().setLocation(SecurityConfig.LOGOUT);
+        });
+        tabs = new Tabs(jobbTab, controlTab, mySQLTab, calibrationTab, alarmTab, aboutTab, logoutTab);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         
 	}

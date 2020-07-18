@@ -354,7 +354,7 @@ public class ControlView extends AppLayout {
 		breakAtPulse.setValue(selectedBreakPulseLimit);
 		breakAtPulse.addValueChangeListener(e -> selectedBreakPulseLimit = e.getValue());
 		countOnHighSignal = new Checkbox(countPulseOnHighSignal);
-		countOnHighSignal.setLabel("Count on high signal");
+		countOnHighSignal.setLabel("High trigg");
 		countOnHighSignal.addValueChangeListener(e -> countPulseOnHighSignal = e.getValue());
 		
 	}

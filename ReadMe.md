@@ -3,6 +3,22 @@
 This software creates a web application with Pi4J and Vaadin and with this, you can control and measure analog inputs and outputs and 
 store them into a MySQL database. You need to have a Raspberry Pi for this.
 
+# Features
+
+* Vaadin 14 Long Time Support
+* 4 Measuring 4-20 mA inputs
+* 4 PWM control outputs
+* 1 Pulse counter input
+* 1 Break signal input
+* Spring Security Login
+* MySQL database direct write, read and delete
+* Plotting functionality
+* Gmail alarm functionality
+* Pulse sequence and slider PWM program
+* CSV generation of measurements
+* User friendly interface
+* 16 Bit ADC
+
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/S%C3%A9lection_044.png)
 
 * 3.3v Zener diodes: They are protecting the digital inputs
@@ -130,6 +146,10 @@ views.ControlView.adcAt4mAforAnalog0=0
 views.ControlView.adcAt4mAforAnalog1=0
 views.ControlView.adcAt4mAforAnalog2=0
 views.ControlView.adcAt4mAforAnalog3=0
+
+# Login
+spring.security.user.name=myUserLogin
+spring.security.user.password=myPasswordLogin
 ```
 
 7. Pack this project and run
