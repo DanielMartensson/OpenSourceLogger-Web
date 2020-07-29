@@ -23,7 +23,7 @@ store them into a MySQL database. You need to have a Raspberry Pi for this.
 
 * 3.3v Zener diodes: They are protecting the digital inputs
 * 10 kOhm resistors: They are scaling down high voltage e.g 24 volt, to about 3.3 volt 
-* 150 Ohm: They are there because measuring of 4-20 mA. At 20 mA, the pressure drop will be 3.0 volt
+* 150 Ohm: They are there because measuring of 4-20 mA. At 20 mA, the voltage drop will be 3.0 volt
 * Loads: They are valves, motors, lamps etc
 * 1 kOhm: They are protecting the digital PWM outputs
 * ADS1115: Used for measure 4-20 mA sensors

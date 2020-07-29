@@ -5,6 +5,8 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,9 +133,9 @@ public class MySQLView extends AppLayout {
 				new Notification("You need to count samples or set the index", 3000).open();
 				return;
 			}
-			Integer firstIndex = indexFirst.getValue(); // Min 1
-			Integer lastIndex = indexLast.getValue(); // Min 1
-			Integer samples = countAmoutOfSamples.getValue();
+			int firstIndex = indexFirst.getValue(); // Min 1
+			int lastIndex = indexLast.getValue(); // Min 1
+			int samples = countAmoutOfSamples.getValue();
 			if(firstIndex > lastIndex) {
 				new Notification("First index cannot be greater than last index", 3000).open();
 				return;
@@ -151,30 +153,33 @@ public class MySQLView extends AppLayout {
 				return;
 			}
 			
-			// Change to zero indexing by removing one value from firstIndex
+			// Change to zero-indexing by removing one value from firstIndex
 			firstIndex--;
+			
+			// Get the amount of samples we want to show
+			int selectedSamples = lastIndex - firstIndex;
 			
 			// Get the selected rows in the database depending on choice of loggerId
 			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
-			Float[] dataAI0 = new Float[lastIndex - firstIndex];
-			Float[] dataAI1 = new Float[lastIndex - firstIndex];
-			Float[] dataAI2 = new Float[lastIndex - firstIndex];
-			Float[] dataAI3 = new Float[lastIndex - firstIndex];
-			Float[] dataDO0 = new Float[lastIndex - firstIndex];
-			Float[] dataDO1 = new Float[lastIndex - firstIndex];
-			Float[] dataDO2 = new Float[lastIndex - firstIndex];
-			Float[] dataDO3 = new Float[lastIndex - firstIndex];
-			for(int i = firstIndex; i < lastIndex; i++) {
-					DataLogg dataLogg = selectedLogger.get(i);
-					dataAI0[i - firstIndex] = dataLogg.getAI0();
-					dataAI1[i - firstIndex] = dataLogg.getAI1();
-					dataAI2[i - firstIndex] = dataLogg.getAI2();
-					dataAI3[i - firstIndex] = dataLogg.getAI3();
-					dataDO0[i - firstIndex] = (float) dataLogg.getDO0();
-					dataDO1[i - firstIndex] = (float) dataLogg.getDO1();
-					dataDO2[i - firstIndex] = (float) dataLogg.getDO2();
-					dataDO3[i - firstIndex] = (float) dataLogg.getDO3();
-			}
+			Float[] dataAI0 = new Float[selectedSamples];
+			Float[] dataAI1 = new Float[selectedSamples];
+			Float[] dataAI2 = new Float[selectedSamples];
+			Float[] dataAI3 = new Float[selectedSamples];
+			Float[] dataDO0 = new Float[selectedSamples];
+			Float[] dataDO1 = new Float[selectedSamples];
+			Float[] dataDO2 = new Float[selectedSamples];
+			Float[] dataDO3 = new Float[selectedSamples];
+			IntStream.range(0, selectedSamples).forEach(i -> {
+				DataLogg dataLogg = selectedLogger.get(i);
+				dataAI0[i] = dataLogg.getAI0();
+				dataAI1[i] = dataLogg.getAI1();
+				dataAI2[i] = dataLogg.getAI2();
+				dataAI3[i] = dataLogg.getAI3();
+				dataDO0[i] = (float) dataLogg.getDO0();
+				dataDO1[i] = (float) dataLogg.getDO1();
+				dataDO2[i] = (float) dataLogg.getDO2();
+				dataDO3[i] = (float) dataLogg.getDO3();
+			});
 			  
 			// Update
 			apexChart.updateSeries(
@@ -196,9 +201,9 @@ public class MySQLView extends AppLayout {
 				new Notification("You need to count samples or set the index", 3000).open();
 				return;
 			}
-			Integer firstIndex = indexFirst.getValue(); // Min 1
-			Integer lastIndex = indexLast.getValue(); // Min 1
-			Integer samples = countAmoutOfSamples.getValue();
+			int firstIndex = indexFirst.getValue(); // Min 1
+			int lastIndex = indexLast.getValue(); // Min 1
+			int samples = countAmoutOfSamples.getValue();
 			if(firstIndex > lastIndex) {
 				new Notification("First index cannot be greater than last index", 3000).open();
 				return;
@@ -223,9 +228,7 @@ public class MySQLView extends AppLayout {
 			
 			NativeButton delete = new NativeButton("Delete", event -> {
 				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
-				List<DataLogg> deleteThese = new ArrayList<DataLogg>();
-				for(int i = firstIndex-1; i < lastIndex; i++) 
-						deleteThese.add(selectedLogger.get(i));
+				List<DataLogg> deleteThese = IntStream.range(firstIndex - 1, lastIndex).mapToObj(i -> selectedLogger.get(i)).collect(Collectors.toList());
 				dataLoggRepository.deleteInBatch(deleteThese);
 				dialog.close();
 				
