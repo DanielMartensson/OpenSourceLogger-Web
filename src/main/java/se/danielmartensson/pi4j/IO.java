@@ -75,7 +75,7 @@ public class IO {
 					.build();
 
 	        // get a Digital Input I/O provider from the Pi4J context
-	        DigitalInputProvider digitalInputProvider = pi4j.digitalInput();
+	        DigitalInputProvider digitalInputProvider = pi4j.provider("pigpio-digital-input");
 	        return digitalInputProvider.create(config);
 		} catch (Exception e) {
 			e.printStackTrace();
