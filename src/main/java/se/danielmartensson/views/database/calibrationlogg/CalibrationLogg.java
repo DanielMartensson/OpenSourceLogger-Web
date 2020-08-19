@@ -22,13 +22,21 @@ public class CalibrationLogg {
 	private String comment;
 	
 	// y = S*AI + B
+	@NotNull
 	private float SAI0;
+	@NotNull
 	private float BAI0;
+	@NotNull
 	private float SAI1;
+	@NotNull
 	private float BAI1;
+	@NotNull
 	private float SAI2;
+	@NotNull
 	private float BAI2;
+	@NotNull
 	private float SAI3;
+	@NotNull
 	private float BAI3;
 	
 }

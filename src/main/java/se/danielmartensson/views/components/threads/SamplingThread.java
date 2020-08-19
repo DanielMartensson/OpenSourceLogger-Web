@@ -196,7 +196,7 @@ public class SamplingThread extends Thread{
 				}
 				
 				// If we exceeded the thresholds
-				if((AI0 > AI0Max && AI0 < AI0Min) || (AI1 > AI1Max && AI1 < AI1Min) || (AI2 > AI2Max && AI2 < AI2Min) || (AI3 > AI3Max && AI3 < AI3Min)) {
+				if(AI0 > AI0Max || AI0 < AI0Min || AI1 > AI1Max || AI1 < AI1Min || AI2 > AI2Max || AI2 < AI2Min || AI3 > AI3Max || AI3 < AI3Min) {
 					interuptMessage(email, "Mesurement exceeded the threshold", alarmActivated);
 					break;
 				}

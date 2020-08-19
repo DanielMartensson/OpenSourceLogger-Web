@@ -48,9 +48,9 @@ public class CalibrationView extends AppLayout {
 		calibrationLoggCrud.getGrid().setColumns("CID", "comment", "SAI0", "BAI0", "SAI1", "BAI1", "SAI2", "BAI2", "SAI3", "BAI3");
 		calibrationLoggCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setDisabledProperties(CrudOperation.ADD, "SID");
-		crudFormFactory.setDisabledProperties(CrudOperation.UPDATE, "SID");
-		crudFormFactory.setDisabledProperties(CrudOperation.DELETE, "SID");
+		crudFormFactory.setDisabledProperties(CrudOperation.ADD, "CID");
+		crudFormFactory.setDisabledProperties(CrudOperation.UPDATE, "CID");
+		crudFormFactory.setDisabledProperties(CrudOperation.DELETE, "CID");
 
 		// Listener
 		calibrationLoggCrud.setCrudListener(new CrudListener<CalibrationLogg>() {

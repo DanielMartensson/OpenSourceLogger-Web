@@ -1,7 +1,7 @@
 # OpenSourceLogger
 
 This software creates a web application with Pi4J and Vaadin and with this, you can control and measure analog inputs and outputs and 
-store them into a MySQL database. You need to have a Raspberry Pi for this.
+store them into a MySQL database. You need to have a Raspberry Pi 4 for this.
 
 # Features
 
@@ -34,7 +34,7 @@ store them into a MySQL database. You need to have a Raspberry Pi for this.
 
 # How to install - Ubuntu user
 
-1. Install Java 11, Maven, NodeJS
+1. Install Java 11 (Pi4J 2.0 and is compiled with Java 11), Maven, NodeJS
 
 Java 11
 ```
@@ -46,7 +46,7 @@ Maven
 sudo apt-get install maven
 ```
 
-NodeJS
+NodeJS - This is used if you want to work on this project. If you only want to run this project, you don't need NodeJS.
 ```
 curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -63,7 +63,7 @@ Don't install any server onto Raspberry Pi if you care about your data.
 
 3. Then create a user e.g `myUser` with the password e.g `myPassword`
 
-Login and enter your sudo password
+Login and enter your `sudo` password or mysql `root` password
 ```
 sudo mysql -u root -p
 ```
@@ -83,7 +83,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'myUser'@'%';
 
 Open this file
 ```
-/etc/mysql/mysql.conf.d
+/etc/mysql/mysql.conf.d/mysqld.conf
 ```
 
 And change this
@@ -164,6 +164,12 @@ Now a JAR file is created inside the `OpenSourceLogger/target` folder. Test it o
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
 ```
 
+You can also transfer `opensourcelogger-1.0-SNAPSHOT.jar` with `scp` if you have `SSH` enabled at your Raspberry Pi.
+
+```
+sudo scp opensourcelogger-1.0-SNAPSHOT.jar pi@your_raspberry_pi_ip_address:/where/you/want/to/place/that/file
+```
+
 8. Add the jar file to autostart
 
 Open `rc.local` in `/etc/rc.local`
@@ -181,8 +187,27 @@ sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 
 Important with &, else it will stop here
 
+9. Install PiGpio on your Raspberry Pi 4
 
-9. Access the web application
+You need to install PiGpio. The easiest way is to install pigpio for Raspberry Pi 4
+
+```
+sudo apt-get install pigpio
+```
+
+Or you can download it from here `http://abyz.me.uk/rpi/pigpio/download.html` if you want latest version of PiGpio
+
+10. Activate I2C in Raspberry
+
+First you need to activate I2C in your Raspberry Pi. It can be done by wiriting
+
+```
+sudo raspi-config
+```
+
+And then select `I2C -> Enable` and press finish. 
+
+11. Access the web application
 
 To enter the web application, you need to find out what IP address your Raspberry Pi as. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL link
 

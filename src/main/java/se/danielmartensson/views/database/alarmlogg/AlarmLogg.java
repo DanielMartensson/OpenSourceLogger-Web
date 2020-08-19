@@ -26,15 +26,24 @@ public class AlarmLogg {
 	// Alarm settings
 	private boolean alarm;
 	@Email
+	@NotNull
 	private String email;
 	
 	// Thresholds
+	@NotNull
 	private float AI0Min;
+	@NotNull
 	private float AI0Max;
+	@NotNull
 	private float AI1Min;
+	@NotNull
 	private float AI1Max;
+	@NotNull
 	private float AI2Min;
+	@NotNull
 	private float AI2Max;
+	@NotNull
 	private float AI3Min;
+	@NotNull
 	private float AI3Max;
 }
