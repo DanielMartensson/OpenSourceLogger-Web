@@ -159,18 +159,19 @@ First stand inside of the folder `OpenSourceLogger` and write inside your termin
 mvn package -Pproduction
 ```
 
-Now a JAR file is created inside the `OpenSourceLogger/target` folder. Test it on your Raspberry Pi by open your terminal and type
-```
-sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
-```
+8. Transfer the jar file to your Raspberry Pi
 
-You can also transfer `opensourcelogger-1.0-SNAPSHOT.jar` with `scp` if you have `SSH` enabled at your Raspberry Pi.
+Now a JAR file is created inside the `OpenSourceLogger/target` folder. 
+
+You can transfer `opensourcelogger-1.0-SNAPSHOT.jar` with `scp` if you have `SSH` enabled at your Raspberry Pi.
 
 ```
 sudo scp opensourcelogger-1.0-SNAPSHOT.jar pi@your_raspberry_pi_ip_address:/where/you/want/to/place/that/file
 ```
 
-8. Add the jar file to autostart
+Or you can use a regular USB pendrive to transfer `opensourcelogger-1.0-SNAPSHOT.jar` to your Raspberry Pi.
+
+9. Add the jar file to autostart
 
 Open `rc.local` in `/etc/rc.local`
 
@@ -187,7 +188,7 @@ sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 
 Important with &, else it will stop here
 
-9. Install PiGpio on your Raspberry Pi 4
+10. Install PiGpio on your Raspberry Pi 4
 
 You need to install PiGpio. The easiest way is to install pigpio for Raspberry Pi 4
 
@@ -197,7 +198,7 @@ sudo apt-get install pigpio
 
 Or you can download it from here `http://abyz.me.uk/rpi/pigpio/download.html` if you want latest version of PiGpio
 
-10. Activate I2C in Raspberry
+11. Activate I2C in Raspberry
 
 First you need to activate I2C in your Raspberry Pi. It can be done by wiriting
 
@@ -207,10 +208,23 @@ sudo raspi-config
 
 And then select `I2C -> Enable` and press finish. 
 
-11. Access the web application
+12. Access the web application
 
-To enter the web application, you need to find out what IP address your Raspberry Pi as. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL link
+Test start `opensourcelogger-1.0-SNAPSHOT.jar` at your Raspberry Pi by open your terminal and type
+
+```
+sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
+```
+
+Or if you are sure that you have made everything correct, you can restart your Raspberry Pi (if you have set up the autostart for `opensourcelogger-1.0-SNAPSHOT.jar`)
+
+```
+sudo shutdown -r now
+```
+
+Once the application is started. You can then enter the web application, you need to find out what IP address your Raspberry Pi has. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL `http` link.
 
 ```
 http://192.168.1.35:8080
 ```
+
