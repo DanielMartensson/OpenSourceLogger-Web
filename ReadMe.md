@@ -34,7 +34,7 @@ store them into a MySQL database. You need to have a Raspberry Pi 4 for this.
 
 # How to install - Ubuntu user
 
-1. Install Java 11 (Pi4J 2.0 and is compiled with Java 11), Maven, NodeJS
+1. Install Java 11 (Pi4J 2.0 and above is compiled with Java 11), Maven, NodeJS
 
 Java 11
 ```
