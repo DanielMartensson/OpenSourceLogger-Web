@@ -54,7 +54,7 @@ public class IO {
 			stopSignalOn = createDigitalInput(24, pi4j, "di1");
 			ads = new ADS1115_ADS1015(pi4j, 1, ADS1115_ADS1015.ADS_ADDR_GND); // I2C bus = 1
 			ads.useADS1115();
-			ads.ADSsetGain(ADS1115_ADS1015.GAIN_TWO); // Important to set GAIN_TWO when we have Vdd = 3.3 and 150 Ohm resistors between analog in and GND
+			ads.ADSsetGain(ADS1115_ADS1015.GAIN_ONE); // Important to set GAIN_ONE when we have Vdd = 3.3 and 150 Ohm resistors between analog in and GND
 			
 		} catch (Pi4JException e) {
 			// TODO Auto-generated catch block
