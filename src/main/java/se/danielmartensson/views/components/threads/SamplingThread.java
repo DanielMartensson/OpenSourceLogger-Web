@@ -144,6 +144,8 @@ public class SamplingThread extends Thread{
 			
 			// This store all data logs in a list, that we are going to save later
 			ArrayList<DataLogg> entities = new ArrayList<DataLogg>();
+			int entitiesCounter = 0;
+			final int maxEntitiesCounter = 50;
 			
 			// Sampling loop
 			while(ControlView.loggingNow.get() == true) {
@@ -171,6 +173,12 @@ public class SamplingThread extends Thread{
 				String time = dtf.format(LocalDateTime.now());
 				DataLogg dataLogg = new DataLogg(0, time, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, ControlView.selectedBreakPulseLimit, stopSignal, comment);
 				entities.add(dataLogg);
+				entitiesCounter++;
+				if(entitiesCounter >= maxEntitiesCounter) {
+					dataLoggRepository.saveAll(entities); // Save the entities now
+					entitiesCounter = 0;
+					entities.clear();
+				}
 				
 				// Show the values on the plot - First shift it back 1 step, set the last element and update the plot
 				if(ControlView.selectedShowPlot == true) {
@@ -217,8 +225,10 @@ public class SamplingThread extends Thread{
 				} catch (InterruptedException e) {}
 			}	
 			
-			// Save the entities now
-			dataLoggRepository.saveAll(entities);
+			// If we just break before counting entities to 50
+			if(entitiesCounter > 0) {
+				dataLoggRepository.saveAll(entities); // Save the entities now
+			}
 			
 			// This will cause so components will be enabled again - and also the control thread stops!
 			ControlView.loggingNow.set(false); // OFF
