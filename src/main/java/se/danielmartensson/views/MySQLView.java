@@ -229,7 +229,12 @@ public class MySQLView extends AppLayout {
 			NativeButton delete = new NativeButton("Delete", event -> {
 				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
 				List<DataLogg> deleteThese = IntStream.range(firstIndex - 1, lastIndex).mapToObj(i -> selectedLogger.get(i)).collect(Collectors.toList());
-				dataLoggRepository.deleteInBatch(deleteThese);
+				try {
+					dataLoggRepository.deleteInBatch(deleteThese);
+				}catch(StackOverflowError e1) {
+					new Notification("Cannot delete so much at once! Try to delete less.", 3000).open();
+				}
+				
 				dialog.close();
 				
 				// This will prevent us to plot values that don't exist - You need to press the counting button first
