@@ -110,6 +110,8 @@ public class MySQLView extends AppLayout {
 		loggerId.addValueChangeListener(e-> {
 			String fileName = String.valueOf(loggerId.getValue()) + ".csv";
 			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
+			download.removeAll();
+			download.removeHref();
 			download.setHref(getStreamResource(fileName, selectedLogger));
 			download.add(new Button("Download " + fileName, new Icon(VaadinIcon.DOWNLOAD_ALT)));
 		});
