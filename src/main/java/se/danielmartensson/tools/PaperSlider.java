@@ -1,4 +1,4 @@
-package se.danielmartensson.views.components;
+package se.danielmartensson.tools;
 
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.Tag;

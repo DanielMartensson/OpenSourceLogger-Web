@@ -1,4 +1,4 @@
-package se.danielmartensson.views.components;
+package se.danielmartensson.tools;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

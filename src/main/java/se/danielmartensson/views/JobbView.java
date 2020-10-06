@@ -15,9 +15,9 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
-import se.danielmartensson.views.database.userlogg.UserLogg;
-import se.danielmartensson.views.database.userlogg.UserLoggRepository;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.entities.UserLogg;
+import se.danielmartensson.repositories.UserLoggRepository;
+import se.danielmartensson.tools.Top;
 
 /**
  * A sample Vaadin view class.

@@ -1,4 +1,4 @@
-package se.danielmartensson.views.database.userlogg;
+package se.danielmartensson.entities;
 
 import java.time.LocalDate;
 

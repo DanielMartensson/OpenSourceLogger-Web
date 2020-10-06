@@ -1,7 +1,6 @@
-package se.danielmartensson.views.components.threads;
+package se.danielmartensson.threads;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,18 +12,18 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 
+import se.danielmartensson.entities.AlarmLogg;
+import se.danielmartensson.entities.CalibrationLogg;
+import se.danielmartensson.entities.DataLogg;
+import se.danielmartensson.entities.UserLogg;
+import se.danielmartensson.repositories.AlarmLoggRepository;
+import se.danielmartensson.repositories.CalibrationLoggRepository;
+import se.danielmartensson.repositories.DataLoggRepository;
+import se.danielmartensson.repositories.UserLoggRepository;
+import se.danielmartensson.tools.Mail;
+import se.danielmartensson.tools.PaperSlider;
 import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.MySQLView;
-import se.danielmartensson.views.components.Mail;
-import se.danielmartensson.views.components.PaperSlider;
-import se.danielmartensson.views.database.alarmlogg.AlarmLogg;
-import se.danielmartensson.views.database.alarmlogg.AlarmLoggRepository;
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLogg;
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLoggRepository;
-import se.danielmartensson.views.database.datalogg.DataLogg;
-import se.danielmartensson.views.database.datalogg.DataLoggRepository;
-import se.danielmartensson.views.database.userlogg.UserLogg;
-import se.danielmartensson.views.database.userlogg.UserLoggRepository;
 
 public class SamplingThread extends Thread{
 	// For the settings
@@ -44,7 +43,6 @@ public class SamplingThread extends Thread{
 	private Float[] dataDO1;
 	private Float[] dataDO2;
 	private Float[] dataDO3;
-	private DateTimeFormatter dtf;
 	private static boolean pastPulse;
 	static private int pulseNumber;
 	
@@ -84,9 +82,6 @@ public class SamplingThread extends Thread{
 		this.alarmLoggRepository = alarmLoggRepository;
 		this.userLoggRepository = userLoggRepository;
 		this.mail = mail;
-		
-		// Time format
-		dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS");  
 	}
 	
 	@Override
@@ -170,8 +165,7 @@ public class SamplingThread extends Thread{
 				boolean stopSignal = ControlThread.stopSignal;
 				
 				// Save them to the list
-				String time = dtf.format(LocalDateTime.now());
-				DataLogg dataLogg = new DataLogg(0, time, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, ControlView.selectedBreakPulseLimit, stopSignal, comment);
+				DataLogg dataLogg = new DataLogg(0, LocalDateTime.now(), DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, ControlView.selectedBreakPulseLimit, stopSignal, comment);
 				entities.add(dataLogg);
 				entitiesCounter++;
 				if(entitiesCounter >= maxEntitiesCounter) {

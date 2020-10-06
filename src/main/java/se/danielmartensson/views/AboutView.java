@@ -10,8 +10,8 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.router.Route;
 
-import se.danielmartensson.views.components.Explonation;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.tools.Explonation;
+import se.danielmartensson.tools.Top;
 
 @Route("about")
 @CssImport("./styles/shared-styles.css")

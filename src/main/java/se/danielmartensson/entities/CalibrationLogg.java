@@ -1,4 +1,4 @@
-package se.danielmartensson.views.database.calibrationlogg;
+package se.danielmartensson.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

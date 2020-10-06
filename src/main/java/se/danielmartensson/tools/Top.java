@@ -1,4 +1,4 @@
-package se.danielmartensson.views.templates;
+package se.danielmartensson.tools;
 
 
 import com.vaadin.flow.component.UI;
@@ -8,13 +8,13 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 
+import se.danielmartensson.security.SecurityConfig;
 import se.danielmartensson.views.AboutView;
 import se.danielmartensson.views.AlarmView;
-import se.danielmartensson.views.JobbView;
-import se.danielmartensson.views.MySQLView;
-import se.danielmartensson.views.security.SecurityConfig;
 import se.danielmartensson.views.CalibrationView;
 import se.danielmartensson.views.ControlView;
+import se.danielmartensson.views.JobbView;
+import se.danielmartensson.views.MySQLView;
 
 
 public class Top {

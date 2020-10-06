@@ -30,10 +30,10 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
-import se.danielmartensson.views.components.Graf;
-import se.danielmartensson.views.database.datalogg.DataLogg;
-import se.danielmartensson.views.database.datalogg.DataLoggRepository;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.entities.DataLogg;
+import se.danielmartensson.repositories.DataLoggRepository;
+import se.danielmartensson.tools.Graf;
+import se.danielmartensson.tools.Top;
 
 @Route("mysql")
 @CssImport("./styles/shared-styles.css")

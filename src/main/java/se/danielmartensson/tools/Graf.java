@@ -1,4 +1,4 @@
-package se.danielmartensson.views.components;
+package se.danielmartensson.tools;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;

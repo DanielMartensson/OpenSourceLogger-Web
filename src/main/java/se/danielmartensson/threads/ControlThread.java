@@ -1,4 +1,4 @@
-package se.danielmartensson.views.components.threads;
+package se.danielmartensson.threads;
 
 import com.pi4j.io.exception.IOException;
 import com.pi4j.io.gpio.digital.DigitalInput;

@@ -14,9 +14,9 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.router.Route;
 
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLogg;
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLoggRepository;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.entities.CalibrationLogg;
+import se.danielmartensson.repositories.CalibrationLoggRepository;
+import se.danielmartensson.tools.Top;
 
 @Route("calibration")
 @CssImport("./styles/shared-styles.css")

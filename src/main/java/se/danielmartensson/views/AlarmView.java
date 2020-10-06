@@ -14,9 +14,9 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.router.Route;
 
-import se.danielmartensson.views.database.alarmlogg.AlarmLogg;
-import se.danielmartensson.views.database.alarmlogg.AlarmLoggRepository;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.entities.AlarmLogg;
+import se.danielmartensson.repositories.AlarmLoggRepository;
+import se.danielmartensson.tools.Top;
 
 @Route("alarm")
 @CssImport("./styles/shared-styles.css")

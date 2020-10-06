@@ -27,20 +27,20 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.router.Route;
 
+import se.danielmartensson.entities.AlarmLogg;
+import se.danielmartensson.entities.CalibrationLogg;
+import se.danielmartensson.entities.UserLogg;
 import se.danielmartensson.pi4j.IO;
-import se.danielmartensson.views.components.Graf;
-import se.danielmartensson.views.components.Mail;
-import se.danielmartensson.views.components.PaperSlider;
-import se.danielmartensson.views.components.threads.ControlThread;
-import se.danielmartensson.views.components.threads.SamplingThread;
-import se.danielmartensson.views.database.alarmlogg.AlarmLogg;
-import se.danielmartensson.views.database.alarmlogg.AlarmLoggRepository;
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLogg;
-import se.danielmartensson.views.database.calibrationlogg.CalibrationLoggRepository;
-import se.danielmartensson.views.database.datalogg.DataLoggRepository;
-import se.danielmartensson.views.database.userlogg.UserLogg;
-import se.danielmartensson.views.database.userlogg.UserLoggRepository;
-import se.danielmartensson.views.templates.Top;
+import se.danielmartensson.repositories.AlarmLoggRepository;
+import se.danielmartensson.repositories.CalibrationLoggRepository;
+import se.danielmartensson.repositories.DataLoggRepository;
+import se.danielmartensson.repositories.UserLoggRepository;
+import se.danielmartensson.threads.ControlThread;
+import se.danielmartensson.threads.SamplingThread;
+import se.danielmartensson.tools.Graf;
+import se.danielmartensson.tools.Mail;
+import se.danielmartensson.tools.PaperSlider;
+import se.danielmartensson.tools.Top;
 
 @Route("control")
 @CssImport("./styles/shared-styles.css")
