@@ -1,5 +1,8 @@
-package se.danielmartensson.views.database.datalogg;
+package se.danielmartensson.entities;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +24,8 @@ public class DataLogg {
 	private long id;
 	
 	// X axis for the plot
-	private String dateTime;
+	@Column(columnDefinition = "DATETIME(5)") // We want milliseconds too
+	private LocalDateTime dateTime;
 	
 	// Y Axis for the plot
 	private int DO0;
