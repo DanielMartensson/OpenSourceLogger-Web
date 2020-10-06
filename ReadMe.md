@@ -142,10 +142,10 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 # Pi4J
 pi4j.IO.pwmFrequency=100
-views.ControlView.adcAt4mAforAnalog0=0
-views.ControlView.adcAt4mAforAnalog1=0
-views.ControlView.adcAt4mAforAnalog2=0
-views.ControlView.adcAt4mAforAnalog3=0
+views.ControlView.adcAt4mAforAnalog0=4832
+views.ControlView.adcAt4mAforAnalog1=4832
+views.ControlView.adcAt4mAforAnalog2=4832
+views.ControlView.adcAt4mAforAnalog3=4832
 
 # Login
 spring.security.user.name=myUserLogin
