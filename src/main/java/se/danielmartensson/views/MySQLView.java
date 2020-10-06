@@ -110,7 +110,7 @@ public class MySQLView extends AppLayout {
 		Anchor download = new Anchor();
 		loggerId.addValueChangeListener(e-> {
 			String fileName = String.valueOf(loggerId.getValue()) + ".csv";
-			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdByOrderByDateTime(loggerId.getValue());
+			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
 			download.removeAll();
 			download.removeHref();
 			download.setHref(getStreamResource(fileName, selectedLogger));
@@ -163,7 +163,7 @@ public class MySQLView extends AppLayout {
 			int selectedSamples = lastIndex - firstIndex;
 			
 			// Get the selected rows in the database depending on choice of loggerId
-			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdByOrderByDateTime(loggerId.getValue());
+			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
 			Float[] dataAI0 = new Float[selectedSamples];
 			Float[] dataAI1 = new Float[selectedSamples];
 			Float[] dataAI2 = new Float[selectedSamples];
@@ -230,14 +230,12 @@ public class MySQLView extends AppLayout {
 			dialog.setCloseOnOutsideClick(false);
 			
 			NativeButton delete = new NativeButton("Delete", event -> {
-				// Deleting parts of selectedLogger
-				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdByOrderByDateTime(loggerId.getValue());
-				List<DataLogg> deleteThese = selectedLogger.subList(firstIndex - 1, lastIndex - 1);
+				// Deleting parts of selectedLogger. We split into maximum 2000 
+				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
+				List<DataLogg> deleteThese = selectedLogger.subList(firstIndex - 1, lastIndex);
 				for(List<DataLogg> deleteTheseLists : Lists.partition(deleteThese, 2000)) {
 					dataLoggRepository.deleteInBatch(deleteTheseLists);
 				}
-				//List<DataLogg> deleteThese = IntStream.range(firstIndex - 1, lastIndex).mapToObj(i -> selectedLogger.get(i)).collect(Collectors.toList());
-
 				dialog.close();
 				
 				// This will prevent us to plot values that don't exist - You need to press the counting button first
