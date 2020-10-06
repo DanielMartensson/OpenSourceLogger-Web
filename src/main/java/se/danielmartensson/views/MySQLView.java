@@ -109,12 +109,7 @@ public class MySQLView extends AppLayout {
 		// Download all data
 		Anchor download = new Anchor();
 		loggerId.addValueChangeListener(e-> {
-			String fileName = String.valueOf(loggerId.getValue()) + ".csv";
-			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
-			download.removeAll();
-			download.removeHref();
-			download.setHref(getStreamResource(fileName, selectedLogger));
-			download.add(new Button("Download " + fileName, new Icon(VaadinIcon.DOWNLOAD_ALT)));
+			updateDownloadButton(loggerId, download);
 		});
 		download.getElement().setAttribute("download",true);
         
@@ -240,7 +235,7 @@ public class MySQLView extends AppLayout {
 				
 				// This will prevent us to plot values that don't exist - You need to press the counting button first
 				countAmoutOfSamples.setValue(countAmoutOfSamples.getValue() - (lastIndex - firstIndex + 1));
-				
+				updateDownloadButton(loggerId, download);
 			});
 			NativeButton cancelButton = new NativeButton("Cancel", event -> {
 				dialog.close();
@@ -258,6 +253,15 @@ public class MySQLView extends AppLayout {
 		setContent(layout);
 	}
 	
+	private void updateDownloadButton(Select<Long> loggerId, Anchor download) {
+		String fileName = String.valueOf(loggerId.getValue()) + ".csv";
+		List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
+		download.removeAll();
+		download.removeHref();
+		download.setHref(getStreamResource(fileName, selectedLogger));
+		download.add(new Button("Download " + fileName, new Icon(VaadinIcon.DOWNLOAD_ALT)));
+	}
+
 	static public Series<Float> createSerie(Float[] data, String legend) {
 		Series<Float> serie = new Series<Float>();
 		serie.setData(data);
