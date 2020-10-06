@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.helper.Series;
+import com.google.common.collect.Lists;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -162,7 +163,7 @@ public class MySQLView extends AppLayout {
 			int selectedSamples = lastIndex - firstIndex;
 			
 			// Get the selected rows in the database depending on choice of loggerId
-			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
+			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdByOrderByDateTime(loggerId.getValue());
 			Float[] dataAI0 = new Float[selectedSamples];
 			Float[] dataAI1 = new Float[selectedSamples];
 			Float[] dataAI2 = new Float[selectedSamples];
@@ -229,14 +230,14 @@ public class MySQLView extends AppLayout {
 			dialog.setCloseOnOutsideClick(false);
 			
 			NativeButton delete = new NativeButton("Delete", event -> {
-				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerId(loggerId.getValue());
-				List<DataLogg> deleteThese = IntStream.range(firstIndex - 1, lastIndex).mapToObj(i -> selectedLogger.get(i)).collect(Collectors.toList());
-				try {
-					dataLoggRepository.deleteInBatch(deleteThese);
-				}catch(StackOverflowError e1) {
-					new Notification("Cannot delete so much at once! Try to delete less.", 3000).open();
+				// Deleting parts of selectedLogger
+				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdByOrderByDateTime(loggerId.getValue());
+				List<DataLogg> deleteThese = selectedLogger.subList(firstIndex - 1, lastIndex - 1);
+				for(List<DataLogg> deleteTheseLists : Lists.partition(deleteThese, 2000)) {
+					dataLoggRepository.deleteInBatch(deleteTheseLists);
 				}
-				
+				//List<DataLogg> deleteThese = IntStream.range(firstIndex - 1, lastIndex).mapToObj(i -> selectedLogger.get(i)).collect(Collectors.toList());
+
 				dialog.close();
 				
 				// This will prevent us to plot values that don't exist - You need to press the counting button first
