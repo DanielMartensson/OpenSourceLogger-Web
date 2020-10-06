@@ -24,7 +24,7 @@ public class DataLogg {
 	private long id;
 	
 	// X axis for the plot
-	@Column(columnDefinition = "DATETIME(5)") // We want milliseconds too
+	@Column(columnDefinition = "DATETIME(3)") // We want milliseconds too
 	private LocalDateTime dateTime;
 	
 	// Y Axis for the plot
