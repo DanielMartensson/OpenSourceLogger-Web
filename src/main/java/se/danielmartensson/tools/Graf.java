@@ -24,6 +24,11 @@ import lombok.Data;
 import se.danielmartensson.views.MySQLView;
 
 @Data
+/**
+ * This class is made for creating the charts. It's just a basic template.
+ * @author dell
+ *
+ */
 public class Graf {
 
 	private ApexCharts apexChart;

@@ -8,6 +8,11 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 @Tag("paper-slider")
 @NpmPackage(value = "@polymer/paper-slider", version = "3.0.1")
 @JsModule("@polymer/paper-slider/paper-slider.js")
+/**
+ * This class is made for the PWM sliders
+ * @author dell
+ *
+ */
 public class PaperSlider extends AbstractSinglePropertyField<PaperSlider, Integer> {
     /**
 	 * 

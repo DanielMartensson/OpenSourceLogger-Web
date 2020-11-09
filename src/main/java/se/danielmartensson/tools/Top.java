@@ -16,7 +16,11 @@ import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.JobbView;
 import se.danielmartensson.views.MySQLView;
 
-
+/**
+ * This class is made for the top of the screen, bar, drawer and image
+ * @author dell
+ *
+ */
 public class Top {
 	
 	private Tabs tabs;

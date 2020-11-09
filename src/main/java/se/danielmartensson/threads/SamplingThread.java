@@ -24,6 +24,11 @@ import se.danielmartensson.tools.PaperSlider;
 import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.MySQLView;
 
+/**
+ * This class plot the values from the ControlTread.java class and also check their thresholds 
+ * @author dell
+ *
+ */
 public class SamplingThread extends Thread{
 	// For the settings
 	private UI ui;

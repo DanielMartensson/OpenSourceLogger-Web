@@ -21,7 +21,11 @@ import se.danielmartensson.tools.Top;
 @Route("alarm")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-
+/**
+ * This class modifies the user interface for alarm handling
+ * @author dell
+ *
+ */
 public class AlarmView extends AppLayout {
 
 	/**

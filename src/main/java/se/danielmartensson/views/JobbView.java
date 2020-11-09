@@ -38,6 +38,11 @@ import se.danielmartensson.tools.Top;
         enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
+/**
+ * This class modifies the user interface for job creation handling
+ * @author dell
+ *
+ */
 public class JobbView extends AppLayout {
 
 	/**

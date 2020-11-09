@@ -8,6 +8,11 @@ import se.danielmartensson.pi4j.IO;
 import se.danielmartensson.views.ControlView;
 
 
+/**
+ * This class read raw and write raw values to the GPIO pins and store them into the static public fields
+ * @author dell
+ *
+ */
 public class ControlThread extends Thread {
 
 	// Digital signals out 

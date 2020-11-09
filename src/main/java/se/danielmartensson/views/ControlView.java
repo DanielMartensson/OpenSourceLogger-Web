@@ -46,6 +46,11 @@ import se.danielmartensson.tools.Top;
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @Push
+/**
+ * This class handles the control view.
+ * @author dell
+ *
+ */
 public class ControlView extends AppLayout {
 
 	/**
@@ -92,7 +97,6 @@ public class ControlView extends AppLayout {
 	
 	
 	/* Layout components */
-
 	private ApexCharts apexChart;
 
 	private PaperSlider do0Slider;
@@ -150,12 +154,13 @@ public class ControlView extends AppLayout {
 	private IntegerField breakAtPulse;
 	
 	/* Layout for program */
-	
 	private HorizontalLayout thirdRow;
 
 
-	/* Static holders */
-	
+	/* 
+	 * Static holders - They MUST be static because if you close web browser
+	 * and open up again these components should remains
+	 */
 	static public int do0SliderSelected = 0;
 	
 	static public int do1SliderSelected = 0;

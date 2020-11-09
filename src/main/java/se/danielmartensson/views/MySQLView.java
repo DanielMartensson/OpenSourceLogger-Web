@@ -38,6 +38,11 @@ import se.danielmartensson.tools.Top;
 @Route("mysql")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
+/**
+ * This is the datbase viewer class
+ * @author dell
+ *
+ */
 public class MySQLView extends AppLayout {
 
 	/**
@@ -252,6 +257,7 @@ public class MySQLView extends AppLayout {
 		setContent(layout);
 	}
 	
+	// We need to update the download button if we changed the logger ID, else we got two buttons or more
 	private void updateDownloadButton(Select<Long> loggerId, Anchor download) {
 		String fileName = String.valueOf(loggerId.getValue()) + ".csv";
 		List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
@@ -268,8 +274,8 @@ public class MySQLView extends AppLayout {
 		return serie;
 	}
 	
+	// Create a large CSV file in a form of StringBuilder and then convert it all to bytes
 	public StreamResource getStreamResource(String filename, List<DataLogg> selectedLogger) {
-		// Create a large CSV file in a form of StringBuilder and then convert it all to bytes
 		StringWriter stringWriter = new StringWriter();
 		stringWriter.write("id, dateTime, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerId, samplingTime, pulseNumber, breakPulseLimit, stopSignal, comment\n");
 		for (int i = 0; i < selectedLogger.size(); ++ i) {

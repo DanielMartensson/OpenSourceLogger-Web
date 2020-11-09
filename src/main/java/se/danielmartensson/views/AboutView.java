@@ -16,7 +16,11 @@ import se.danielmartensson.tools.Top;
 @Route("about")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-
+/**
+ * This class only explains what words stands for. It's just a basic grid
+ * @author dell
+ *
+ */
 public class AboutView extends AppLayout {
 
 	/**

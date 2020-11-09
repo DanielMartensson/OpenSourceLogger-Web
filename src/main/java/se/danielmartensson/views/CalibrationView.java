@@ -21,7 +21,11 @@ import se.danielmartensson.tools.Top;
 @Route("calibration")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-
+/**
+ * This class modifies the user interface for calibration handling
+ * @author dell
+ *
+ */
 public class CalibrationView extends AppLayout {
 
 	/**

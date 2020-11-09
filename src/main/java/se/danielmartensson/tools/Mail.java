@@ -6,6 +6,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
+/**
+ * This class is for sending mail to the user
+ * @author dell
+ *
+ */
 public class Mail {
 	
 	@Autowired
