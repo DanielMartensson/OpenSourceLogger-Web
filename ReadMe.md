@@ -39,13 +39,12 @@ This board contains:
 - 4 ADC at 12-bit for 4-20 mA (Protected from high voltage)
 - 6 digital inputs (Protected from high voltage)
 - 2 ADC at 16-bit (Protected from high voltage)
-- 4 Differential ADC at 16-bit (Protected from high voltage)
+- 3 Differential ADC at 16-bit (Protected from high voltage)
 
 The board will communicate with the Raspberry Pi TX & RX UART pins. 
 All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
 
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Markering_060.png)
-
 
 
 # How to install - Ubuntu user
