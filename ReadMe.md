@@ -35,9 +35,9 @@ store them into a MySQL database. You need to have a Raspberry Pi 4 for this.
 I'm going to refresh this project so it will use an external IO board, made by my self. 
 This board contains:
 
-- 9 PWM outputs (Can also be used as 9 digital outputs as well)
+- 9 PWM outputs for 45W (Can also be used as 9 digital outputs as well)
 - 4 Analog inputs at 12-bit for 4-20mA (Protected from high voltage)
-- 6 Digital inputs (Protected from high voltage)
+- 6 Digital inputs for 0/50v (Protected from high voltage)
 - 2 Analog inputs at 16-bit for 4-20mA (Protected from high voltage)
 - 3 Analog differential inputs at 16-bit for 4-20mA (Protected from high voltage)
 - 3 Analog outputs at 12-bit for 0-3.3v (Protected from high voltage)
