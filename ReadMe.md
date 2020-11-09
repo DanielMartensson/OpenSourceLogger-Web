@@ -47,6 +47,7 @@ All information about such as schematic and component list the board can be foun
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Markering_060.png)
 
 
+
 # How to install - Ubuntu user
 
 1. Install Java 11 (Pi4J 2.0 and above is compiled with Java 11), Maven, NodeJS
