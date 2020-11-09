@@ -36,11 +36,11 @@ I'm going to refresh this project so it will use an external IO board, made by m
 This board contains:
 
 - 9 PWM outputs (Can also be used as 9 digital outputs as well)
-- 4 Analog inputs at 12-bit for 4-20 mA (Protected from high voltage)
+- 4 Analog inputs at 12-bit for 4-20mA (Protected from high voltage)
 - 6 Digital inputs (Protected from high voltage)
 - 2 Analog inputs at 16-bit for 4-20mA (Protected from high voltage)
 - 3 Analog differential inputs at 16-bit for 4-20mA (Protected from high voltage)
-- 3 Analog outputs at 12-bit (Protected from high voltage)
+- 3 Analog outputs at 12-bit for 0-3.3v (Protected from high voltage)
 
 The board will communicate with the Raspberry Pi TX & RX UART pins. 
 All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
