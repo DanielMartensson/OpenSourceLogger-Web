@@ -1,56 +1,36 @@
 # OpenSourceLogger
 
-This software creates a web application with Pi4J and Vaadin and with this, you can control and measure analog inputs and outputs and 
-store them into a MySQL database. You need to have a Raspberry Pi 4 for this.
+This software creates a web application with Vaadin and with this web application you can control and measure analog inputs and outputs and 
+store them into a MySQL database.
 
 # Features
 
 * Vaadin 14 Long Time Support
-* 4 Measuring 4-20 mA inputs
-* 4 PWM control outputs
-* 1 Pulse counter input
-* 1 Break signal input
+* 4 Analog inputs of 12-bit
+* 2 Analog inputs of 16-bit
+* 3 Analog inputs of 16-bit differential
+* 9 PWM control outputs
+* 6 Digital inputs
+* 3 Analog outputs of 12-bit
+* Circuit protection for high voltage
 * Spring Security Login
-* MySQL database direct write, read and delete
+* MySQL database
 * Plotting functionality
 * Gmail alarm functionality
-* Pulse sequence and slider PWM program
 * CSV generation of measurements
-* User friendly interface
-* 16 Bit ADC
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/S%C3%A9lection_044.png)
 
-* 3.3v Zener diodes: They are protecting the digital inputs
-* 10 kOhm resistors: They are scaling down high voltage e.g 24 volt, to about 3.3 volt 
-* 150 Ohm: They are there because measuring of 4-20 mA. At 20 mA, the voltage drop will be 3.0 volt
-* Loads: They are valves, motors, lamps etc
-* 1 kOhm: They are protecting the digital PWM outputs
-* ADS1115: Used for measure 4-20 mA sensors
-* FQP30N06L: They are the "relays" to control e.g motors, lamps, cylinders, valves
-
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/fritzing/Schematic_bb.png)
-
-# Update 
-I'm going to refresh this project so it will use an external IO board, made by my self. 
-This board contains:
-
-- 9 PWM outputs for 45W (Can also be used as 9 digital outputs as well)
-- 4 Analog inputs at 12-bit for 4-20mA (Protected from high voltage)
-- 6 Digital inputs for 0/50v (Protected from high voltage)
-- 2 Analog inputs at 16-bit for 4-20mA (Protected from high voltage)
-- 3 Analog differential inputs at 16-bit for 4-20mA (Protected from high voltage)
-- 3 Analog outputs at 12-bit for 0-3.3v (Protected from high voltage)
-
-The board will communicate with the Raspberry Pi TX & RX UART pins. 
+The board will communicate with the TX & RX UART pins. 
 All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Markering_060.png)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/3D%20Schematic.png)
+
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Produced.jpg)
 
 
 # How to install - Ubuntu user
 
-1. Install Java 11 (Pi4J 2.0 and above is compiled with Java 11), Maven, NodeJS
+1. Install Java 11, Maven, NodeJS
 
 Java 11
 ```
@@ -73,8 +53,6 @@ sudo apt-get install -y nodejs
 ```
 sudo apt-get install mysql-server
 ```
-
-Don't install any server onto Raspberry Pi if you care about your data. 
 
 
 3. Then create a user e.g `myUser` with the password e.g `myPassword`
@@ -141,31 +119,24 @@ logging.level.org.atmosphere = warn
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
-spring.datasource.url=jdbc:mysql://YOUR_MYSQL_SERVER_ADDRESS:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
-spring.datasource.username=myUserSQL
-spring.datasource.password=myPasswordSQL
+spring.datasource.url=jdbc:mysql://ServerIPAddress:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
+spring.datasource.username=myUser
+spring.datasource.password=myPassword
 
-# Email
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=YOUR_GMAIL_ADDRESS@gmail.com
-spring.mail.password=YOUR_GMAIL_PASSWORD
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.connectiontimeout=5000
-spring.mail.properties.mail.smtp.timeout=5000
-spring.mail.properties.mail.smtp.writetimeout=5000
-spring.mail.properties.mail.smtp.starttls.enable=true
+# Mail - Transmitter
+configuration.MailConfiguration.host=smtp.gmail.com
+configuration.MailConfiguration.port=587
+configuration.MailConfiguration.username=yourGMailAddress@gmail.com
+configuration.MailConfiguration.password=yourGMailPassword
+configuration.MailConfiguration.properties.mail.smtp.auth=true
+configuration.MailConfiguration.properties.mail.smtp.starttls.enable=true
 
-# Pi4J
-pi4j.IO.pwmFrequency=100
-views.ControlView.adcAt4mAforAnalog0=4832
-views.ControlView.adcAt4mAforAnalog1=4832
-views.ControlView.adcAt4mAforAnalog2=4832
-views.ControlView.adcAt4mAforAnalog3=4832
+# Mail - Reciever
+service.MailService.subject=The subject message title
 
 # Login
-spring.security.user.name=myUserLogin
-spring.security.user.password=myPasswordLogin
+spring.security.user.name=myUser
+spring.security.user.password=myPassword
 ```
 
 7. Pack this project and run
@@ -175,72 +146,19 @@ First stand inside of the folder `OpenSourceLogger` and write inside your termin
 mvn package -Pproduction
 ```
 
-8. Transfer the jar file to your Raspberry Pi
+8. Starting the application
 
 Now a JAR file is created inside the `OpenSourceLogger/target` folder. 
 
-You can transfer `opensourcelogger-1.0-SNAPSHOT.jar` with `scp` if you have `SSH` enabled at your Raspberry Pi.
-
-```
-sudo scp opensourcelogger-1.0-SNAPSHOT.jar pi@your_raspberry_pi_ip_address:/where/you/want/to/place/that/file
-```
-
-Or you can use a regular USB pendrive to transfer `opensourcelogger-1.0-SNAPSHOT.jar` to your Raspberry Pi.
-
-9. Add the jar file to autostart
-
-Open `rc.local` in `/etc/rc.local`
-
-```
-sudo nano /etc/rc.local
-```
-
-Paste this above `exit 0`
-
-```
-cd /home/pi/your/folder/where/the/jar/file/is
-sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar & 
-```
-
-Important with &, else it will stop here
-
-10. Install PiGpio on your Raspberry Pi 4
-
-You need to install PiGpio. The easiest way is to install pigpio for Raspberry Pi 4
-
-```
-sudo apt-get install pigpio
-```
-
-Or you can download it from here `http://abyz.me.uk/rpi/pigpio/download.html` if you want latest version of PiGpio
-
-11. Activate I2C in Raspberry
-
-First you need to activate I2C in your Raspberry Pi. It can be done by wiriting
-
-```
-sudo raspi-config
-```
-
-And then select `I2C -> Enable` and press finish. 
-
-12. Access the web application
-
-Test start `opensourcelogger-1.0-SNAPSHOT.jar` at your Raspberry Pi by open your terminal and type
+You can start `opensourcelogger-1.0-SNAPSHOT.jar`. First plugin your Serial UART into your USB port first, then write. 
 
 ```
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar
 ```
 
-Or if you are sure that you have made everything correct, you can restart your Raspberry Pi (if you have set up the autostart for `opensourcelogger-1.0-SNAPSHOT.jar`)
-
-```
-sudo shutdown -r now
-```
-
-Once the application is started. You can then enter the web application, you need to find out what IP address your Raspberry Pi has. Assume that the LAN address of the server is `192.168.1.34`. It's a regular computer. Your Raspberry Pi have the address `192.168.1.35`. Then you will access the web application with this URL `http` link.
+Once the application is started. You can then enter the web application e.g.
 
 ```
 http://192.168.1.35:8080
 ```
-
+Notice that there is no `https`, only `http`.
