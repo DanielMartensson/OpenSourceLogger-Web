@@ -46,6 +46,7 @@ public class Serial {
 	
 	private void openPort() {
 		selectedSerialPort.openPort();
+		System.out.println("Is port open? " + isPortOpen());
 	}
 	
 	public void closePort() {
