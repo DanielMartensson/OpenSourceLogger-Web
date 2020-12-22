@@ -2,20 +2,17 @@ package se.danielmartensson.views;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.crudui.crud.CrudListener;
-import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.CrudFormFactory;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
 
-import se.danielmartensson.entities.CalibrationLogg;
-import se.danielmartensson.repositories.CalibrationLoggRepository;
+import se.danielmartensson.entities.Calibration;
+import se.danielmartensson.service.CalibrationService;
 import se.danielmartensson.tools.Top;
 
 @Route("calibration")
@@ -23,6 +20,7 @@ import se.danielmartensson.tools.Top;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 /**
  * This class modifies the user interface for calibration handling
+ * 
  * @author dell
  *
  */
@@ -32,32 +30,22 @@ public class CalibrationView extends AppLayout {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Autowired
-	private CalibrationLoggRepository calibrationLoggRepository;
 
-	@PostConstruct
-	public void init() {
+	public CalibrationView(CalibrationService calibrationService) {
 		Top top = new Top();
 		top.setTopAppLayout(this);
 
-		createCalibrationLoggCrud();
-	}
-
-	private void createCalibrationLoggCrud() {
 		// Grid layout
-		GridCrud<CalibrationLogg> calibrationLoggCrud = new GridCrud<>(CalibrationLogg.class);
-		CrudFormFactory<CalibrationLogg> crudFormFactory = new DefaultCrudFormFactory<CalibrationLogg>(CalibrationLogg.class);
-		calibrationLoggCrud.setCrudFormFactory(crudFormFactory);
-		calibrationLoggCrud.getGrid().setColumns("CID", "comment", "SAI0", "BAI0", "SAI1", "BAI1", "SAI2", "BAI2", "SAI3", "BAI3");
-		calibrationLoggCrud.getGrid().setColumnReorderingAllowed(true);
+		GridCrud<Calibration> calibrationCrud = new GridCrud<>(Calibration.class);
+		CrudFormFactory<Calibration> crudFormFactory = new DefaultCrudFormFactory<Calibration>(Calibration.class);
+		calibrationCrud.setCrudFormFactory(crudFormFactory);
+		calibrationCrud.getGrid().setColumns("name", "sa0Slope", "sa0Bias", "sa1Slope", "sa1Bias", "sa1dSlope", "sa1dBias", "sa2dSlope", "sa2dBias", "sa3dSlope", "sa3dBias", "a0Slope", "a0Bias", "a1Slope", "a1Bias", "a2Slope", "a2Bias", "a3Slope", "a3Bias");
+		calibrationCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setDisabledProperties(CrudOperation.ADD, "CID");
-		crudFormFactory.setDisabledProperties(CrudOperation.UPDATE, "CID");
-		crudFormFactory.setDisabledProperties(CrudOperation.DELETE, "CID");
+		crudFormFactory.setVisibleProperties(new String[] { "name", "sa0Slope", "sa0Bias", "sa1Slope", "sa1Bias", "sa1dSlope", "sa1dBias", "sa2dSlope", "sa2dBias", "sa3dSlope", "sa3dBias", "a0Slope", "a0Bias", "a1Slope", "a1Bias", "a2Slope", "a2Bias", "a3Slope", "a3Bias" });
 
 		// Listener
-		calibrationLoggCrud.setCrudListener(new CrudListener<CalibrationLogg>() {
+		calibrationCrud.setCrudListener(new CrudListener<Calibration>() {
 
 			/**
 			 * 
@@ -65,27 +53,42 @@ public class CalibrationView extends AppLayout {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Collection<CalibrationLogg> findAll() {
-				return calibrationLoggRepository.findAll();
+			public Collection<Calibration> findAll() {
+				return calibrationService.findAll();
 			}
 
 			@Override
-			public CalibrationLogg add(CalibrationLogg domainObjectToAdd) {
-				return calibrationLoggRepository.save(domainObjectToAdd);
+			public Calibration add(Calibration calibration) {
+				boolean nameExist = calibrationService.existsByName(calibration.getName());
+				if (nameExist) {
+					new Notification("Cannot add this with a name that already exist.", 3000).open();
+					return calibration;
+				}
+				return calibrationService.save(calibration);
 			}
 
 			@Override
-			public CalibrationLogg update(CalibrationLogg domainObjectToUpdate) {
-				return calibrationLoggRepository.save(domainObjectToUpdate);
+			public Calibration update(Calibration calibration) {
+				boolean nameExist = calibrationService.existsByName(calibration.getName());
+				if (nameExist) {
+					new Notification("Cannot update this with a name that already exist.", 3000).open();
+					return calibration;
+				}
+				return calibrationService.save(calibration);
 			}
 
 			@Override
-			public void delete(CalibrationLogg domainObjectToDelete) {
-				calibrationLoggRepository.delete(domainObjectToDelete);
+			public void delete(Calibration calibration) {
+				boolean parentExist = calibrationService.delete(calibration);
+				if (parentExist) {
+					new Notification("Cannot delete this calibration because a job that have this calibration exist.", 3000).open();
+				}
+
 			}
 
 		});
-		setContent(calibrationLoggCrud);
+
+		setContent(calibrationCrud);
 
 	}
 

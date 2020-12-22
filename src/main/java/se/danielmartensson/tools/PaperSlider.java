@@ -10,20 +10,20 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 @JsModule("@polymer/paper-slider/paper-slider.js")
 /**
  * This class is made for the PWM sliders
+ * 
  * @author dell
  *
  */
 public class PaperSlider extends AbstractSinglePropertyField<PaperSlider, Integer> {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	public PaperSlider(int max) {
-        super("value", 0, false);
-        this.getElement().setProperty("max", max);
-        this.getElement().setProperty("pin", true);
-    }
+		super("value", 0, false);
+		this.getElement().setProperty("max", max);
+		this.getElement().setProperty("pin", true);
+	}
 
 }
-

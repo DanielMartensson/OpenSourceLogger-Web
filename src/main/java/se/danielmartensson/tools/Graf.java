@@ -26,6 +26,7 @@ import se.danielmartensson.views.MySQLView;
 @Data
 /**
  * This class is made for creating the charts. It's just a basic template.
+ * 
  * @author dell
  *
  */
@@ -83,16 +84,9 @@ public class Graf {
 						.withCategories("")
 						.build())
 				.withSeries(
-						MySQLView.createSerie(new Float[] {0f}, "AI0"),
-						MySQLView.createSerie(new Float[] {0f}, "AI1"),
-						MySQLView.createSerie(new Float[] {0f}, "AI2"),
-						MySQLView.createSerie(new Float[] {0f}, "AI3"),
-						MySQLView.createSerie(new Float[] {0f}, "DO0"),
-						MySQLView.createSerie(new Float[] {0f}, "DO1"),
-						MySQLView.createSerie(new Float[] {0f}, "DO2"),
-						MySQLView.createSerie(new Float[] {0f}, "DO3"))
+						MySQLView.createSerie(new Float[] { 0f }, "analog"))
 				.build();
-			apexChart.setWidthFull();
-			
+		apexChart.setWidthFull();
+
 	}
 }

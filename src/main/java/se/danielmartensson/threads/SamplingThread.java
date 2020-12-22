@@ -3,346 +3,332 @@ package se.danielmartensson.threads;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 
-import se.danielmartensson.entities.AlarmLogg;
-import se.danielmartensson.entities.CalibrationLogg;
-import se.danielmartensson.entities.DataLogg;
-import se.danielmartensson.entities.UserLogg;
-import se.danielmartensson.repositories.AlarmLoggRepository;
-import se.danielmartensson.repositories.CalibrationLoggRepository;
-import se.danielmartensson.repositories.DataLoggRepository;
-import se.danielmartensson.repositories.UserLoggRepository;
-import se.danielmartensson.tools.Mail;
-import se.danielmartensson.tools.PaperSlider;
+import se.danielmartensson.entities.Alarm;
+import se.danielmartensson.entities.Calibration;
+import se.danielmartensson.entities.Data;
+import se.danielmartensson.entities.Job;
+import se.danielmartensson.entities.MailCheckBox;
+import se.danielmartensson.service.DataService;
+import se.danielmartensson.service.MailService;
 import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.MySQLView;
 
 /**
- * This class plot the values from the ControlTread.java class and also check their thresholds 
+ * This class plot the values from the ControlTread.java class and also check
+ * their thresholds
+ * 
  * @author dell
  *
  */
-public class SamplingThread extends Thread{
-	// For the settings
-	private UI ui;
-	private DataLoggRepository dataLoggRepository;
-	private CalibrationLoggRepository calibrationLoggRepository;
-	private AlarmLoggRepository alarmLoggRepository;
-	private UserLoggRepository userLoggRepository;
-	private Mail mail;
+public class SamplingThread extends Thread {
 
-	// For logging values
-	private Float[] dataAI0;
-	private Float[] dataAI1;
-	private Float[] dataAI2;
-	private Float[] dataAI3;
-	private Float[] dataDO0;
-	private Float[] dataDO1;
-	private Float[] dataDO2;
-	private Float[] dataDO3;
+	// Services
+	private MailService mailService;
+	private DataService dataService;
+
+	// For displaying in the plot
+	private Float[] A0;
+	private Float[] A1;
+	private Float[] A2;
+	private Float[] A3;
+	private Float[] SA0;
+	private Float[] SA1;
+	private Float[] SA1D;
+	private Float[] SA2D;
+	private Float[] SA3D;
+
+	// Counter
 	private static boolean pastPulse;
-	static private int pulseNumber;
-	
-	// Connection to the view
+	private static int pulseNumber;
+
+	// UI components
+	private UI ui;
 	private ApexCharts apexChart;
-	private IntegerField countedPulses;
+	private HorizontalLayout firstRow;
 	private Button loggingActivate;
-	private Select<Long> calibration;
-	private Select<Long> alarm;
-	private Select<Long> loggerId;
-	private PaperSlider do0Slider;
-	private PaperSlider do1Slider;
-	private PaperSlider do2Slider;
-	private PaperSlider do3Slider;
-	private IntegerField do0HighPulse;
-	private IntegerField do1HighPulse;
-	private IntegerField do2HighPulse;
-	private IntegerField do3HighPulse;
-	private IntegerField do0LowPulse;
-	private IntegerField do1LowPulse;
-	private IntegerField do2LowPulse;
-	private IntegerField do3LowPulse;
-	private Select<Integer> samplingTime;
-	private Select<Integer> showSamples;
-	private Checkbox showPlot;
-	private RadioButtonGroup<String> radioGroup;
-	private Checkbox lowFirstDo0;
-	private Checkbox lowFirstDo1;
-	private Checkbox lowFirstDo2;
-	private Checkbox lowFirstDo3;
-	private Checkbox countOnHighSignal;
+	private List<IntegerField> counters;
+	private List<Checkbox> checkBoxes;
 
-
-	public SamplingThread(DataLoggRepository dataLoggRepository, CalibrationLoggRepository calibrationLoggRepository, AlarmLoggRepository alarmLoggRepository, UserLoggRepository userLoggRepository, Mail mail) {
-		this.dataLoggRepository = dataLoggRepository;
-		this.calibrationLoggRepository = calibrationLoggRepository;
-		this.alarmLoggRepository = alarmLoggRepository;
-		this.userLoggRepository = userLoggRepository;
-		this.mail = mail;
+	public SamplingThread(MailService mailService, DataService dataService) {
+		this.mailService = mailService;
+		this.dataService = dataService;
 	}
-	
+
 	@Override
 	public void run() {
-		while(true) {			
+		while (true) {
 			// Wait loop
-			while(ControlView.loggingNow.get() == false) {
+			while (ControlView.loggingNow.get() == false) {
 				try {
-					Thread.sleep(1000); 
-				} catch (InterruptedException e) {}
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
 			}
-			
+
 			// Series for the plot and restore the plot and counting
 			int showSamplesValue = ControlView.selectedShowSamples;
-			long loggerIdValue = ControlView.selectedLoggerId;
 			int samplingTimeValue = ControlView.selectedSamplingTime;
-			boolean countPulseOnHighSignal = ControlView.countPulseOnHighSignal;
-			dataAI0 = new Float[showSamplesValue];
-			dataAI1 = new Float[showSamplesValue];
-			dataAI2 = new Float[showSamplesValue];
-			dataAI3 = new Float[showSamplesValue];
-			dataDO0 = new Float[showSamplesValue];
-			dataDO1 = new Float[showSamplesValue];
-			dataDO2 = new Float[showSamplesValue];
-			dataDO3 = new Float[showSamplesValue];
-			
-			// Reset
-			pulseNumber = 0; 
-			pastPulse = false; 
-			updatePlotAndPulse();
-			
-			// Get the calibration and alarm and comment from userlogg
-			CalibrationLogg calibrationLogg = calibrationLoggRepository.findByCID(ControlView.selectedCID);			
-			float BAI0 = calibrationLogg.getBAI0();
-			float SAI0 = calibrationLogg.getSAI0();
-			float BAI1 = calibrationLogg.getBAI1();
-			float SAI1 = calibrationLogg.getSAI0();
-			float BAI2 = calibrationLogg.getBAI2();
-			float SAI2 = calibrationLogg.getSAI0();
-			float BAI3 = calibrationLogg.getBAI3();
-			float SAI3 = calibrationLogg.getSAI0();
-			AlarmLogg alarmLogg = alarmLoggRepository.findByAID(ControlView.selectedAID);
-			float AI0Max = alarmLogg.getAI0Max();
-			float AI0Min = alarmLogg.getAI0Min();
-			float AI1Max = alarmLogg.getAI1Max();
-			float AI1Min = alarmLogg.getAI1Min();
-			float AI2Max = alarmLogg.getAI2Max();
-			float AI2Min = alarmLogg.getAI2Min();
-			float AI3Max = alarmLogg.getAI3Max();
-			float AI3Min = alarmLogg.getAI3Min();
-			String email = alarmLogg.getEmail();
-			boolean alarmActivated = alarmLogg.isAlarm();
-			UserLogg userLogg = userLoggRepository.findByLoggerId(ControlView.selectedLoggerId);
-			String comment = userLogg.getComment();
-			
+			int selectedBreakPulseLimit = ControlView.selectedBreakPulseLimit;
+			A0 = new Float[showSamplesValue];
+			A1 = new Float[showSamplesValue];
+			A2 = new Float[showSamplesValue];
+			A3 = new Float[showSamplesValue];
+			SA0 = new Float[showSamplesValue];
+			SA1 = new Float[showSamplesValue];
+			SA1D = new Float[showSamplesValue];
+			SA2D = new Float[showSamplesValue];
+			SA3D = new Float[showSamplesValue];
+
+			// Pulses
+			pulseNumber = counters.get(0).getValue(); // This is countedPulses
+			pastPulse = false;
+			updatePlotAndPulseAndInputs();
+
+			// Get job
+			Job job = ControlView.selectedJob;
+			String jobName = job.getName();
+
+			// Get calibration
+			Calibration calibration = job.getCalibration();
+			float sa0Slope = calibration.getSa0Slope();
+			float sa0Bias = calibration.getSa0Bias();
+			float sa1Slope = calibration.getSa1Slope();
+			float sa1Bias = calibration.getSa1Bias();
+			float sa1dSlope = calibration.getSa1dSlope();
+			float sa1dBias = calibration.getSa1dBias();
+			float sa2dSlope = calibration.getSa2dSlope();
+			float sa2dBias = calibration.getSa2dBias();
+			float sa3dSlope = calibration.getSa3dSlope();
+			float sa3dBias = calibration.getSa3dBias();
+			float a0Slope = calibration.getA0Slope();
+			float a0Bias = calibration.getA0Bias();
+			float a1Slope = calibration.getA1Slope();
+			float a1Bias = calibration.getA1Bias();
+			float a2Slope = calibration.getA2Slope();
+			float a2Bias = calibration.getA2Bias();
+			float a3Slope = calibration.getA3Slope();
+			float a3Bias = calibration.getA3Bias();
+			String calibrationName = calibration.getName();
+
+			// Get alarm
+			Alarm alarm = job.getAlarm();
+			float sa0Min = alarm.getSa0Min();
+			float sa0Max = alarm.getSa0Max();
+			float sa1Min = alarm.getSa1Min();
+			float sa1Max = alarm.getSa1Max();
+			float sa1dMin = alarm.getSa1dMin();
+			float sa1dMax = alarm.getSa1dMax();
+			float sa2dMin = alarm.getSa2dMin();
+			float sa2dMax = alarm.getSa2dMax();
+			float sa3dMin = alarm.getSa3dMin();
+			float sa3dMax = alarm.getSa3dMax();
+			float a0Min = alarm.getA0Min();
+			float a0Max = alarm.getA0Max();
+			float a1Min = alarm.getA1Min();
+			float a1Max = alarm.getA1Max();
+			float a2Min = alarm.getA2Min();
+			float a2Max = alarm.getA2Max();
+			float a3Min = alarm.getA3Min();
+			float a3Max = alarm.getA3Max();
+			String message = alarm.getMessage();
+			String email = alarm.getEmail();
+
+			// Check if the alarm is active or not.
+			Set<MailCheckBox> mailCheckBoxes = alarm.getChecked();
+			boolean alarmActive = false;
+			for (MailCheckBox mailCheckBox : mailCheckBoxes) {
+				int boxIndex = (int) mailCheckBox.getId();
+				switch (boxIndex) {
+				case 1:
+					alarmActive = mailCheckBox.isEnabled();
+					break;
+				}
+			}
+
 			// Sampling loop
-			while(ControlView.loggingNow.get() == true) {
-				// Command signals to the device
-				int DO0 = ControlThread.do0;
-				int DO1 = ControlThread.do1;
-				int DO2 = ControlThread.do2;
-				int DO3 = ControlThread.do3;
-				
-				// Read the AI signals and pulse signal
-				float AI0 = SAI0*ControlThread.ai0 + BAI0;
-				float AI1 = SAI1*ControlThread.ai1 + BAI1;
-				float AI2 = SAI2*ControlThread.ai2 + BAI2;
-				float AI3 = SAI3*ControlThread.ai3 + BAI3;
-				
+			while (ControlView.loggingNow.get()) {
+
+				// Outputs and inputs
+				int p0 = ControlThread.PWM[0];
+				int p1 = ControlThread.PWM[1];
+				int p2 = ControlThread.PWM[2];
+				int p3 = ControlThread.PWM[3];
+				int p4 = ControlThread.PWM[4];
+				int p5 = ControlThread.PWM[5];
+				int p6 = ControlThread.PWM[6];
+				int p7 = ControlThread.PWM[7];
+				int p8 = ControlThread.PWM[8];
+				int d0 = ControlThread.DAC[0];
+				int d1 = ControlThread.DAC[1];
+				int d2 = ControlThread.DAC[2];
+
+				// Inputs
+				float a0 = a0Slope * ControlThread.ADC[3] + a0Bias;
+				float a1 = a1Slope * ControlThread.ADC[2] + a1Bias;
+				float a2 = a2Slope * ControlThread.ADC[0] + a2Bias;
+				float a3 = a3Slope * ControlThread.ADC[1] + a3Bias;
+				float sa0 = sa0Slope * ControlThread.SDADC[0] + sa0Bias;
+				float sa1 = sa1Slope * ControlThread.SDADC[1] + sa1Bias;
+				float sa1d = sa1dSlope * ControlThread.DSDADC[0] + sa1dBias;
+				float sa2d = sa2dSlope * ControlThread.DSDADC[1] + sa2dBias;
+				float sa3d = sa3dSlope * ControlThread.DSDADC[2] + sa3dBias;
+				boolean di0 = ControlThread.DI[0]; // Counter
+				boolean di1 = ControlThread.DI[1]; // Stop signal
+				boolean di2 = ControlThread.DI[2];
+				boolean di3 = ControlThread.DI[3];
+				boolean di4 = ControlThread.DI[4];
+				boolean di5 = ControlThread.DI[5];
+
 				// Read the pulse signal and count it if...
-				if((ControlThread.pulse != pastPulse) && ControlThread.pulse == countPulseOnHighSignal)
+				if (di0 != pastPulse && di0 == true)
 					pulseNumber++;
-				pastPulse = ControlThread.pulse;
-				
+				pastPulse = di0;
+
 				// Read the alarm signal
-				boolean stopSignal = ControlThread.stopSignal;
-				
+				boolean stopSignal = di1;
+
 				// Save them to the database
-				DataLogg dataLogg = new DataLogg(0, LocalDateTime.now(), DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerIdValue, samplingTimeValue, pulseNumber, ControlView.selectedBreakPulseLimit, stopSignal, comment);
-				dataLoggRepository.save(dataLogg);
-				
-				// Show the values on the plot - First shift it back 1 step, set the last element and update the plot
-				if(ControlView.selectedShowPlot == true) {
-					Collections.rotate(Arrays.asList(dataAI0), -1);
-					Collections.rotate(Arrays.asList(dataAI1), -1);
-					Collections.rotate(Arrays.asList(dataAI2), -1);
-					Collections.rotate(Arrays.asList(dataAI3), -1);
-					Collections.rotate(Arrays.asList(dataDO0), -1);
-					Collections.rotate(Arrays.asList(dataDO1), -1);
-					Collections.rotate(Arrays.asList(dataDO2), -1);
-					Collections.rotate(Arrays.asList(dataDO3), -1);
-					dataAI0[showSamplesValue-1] = AI0;
-					dataAI1[showSamplesValue-1] = AI1;
-					dataAI2[showSamplesValue-1] = AI2;
-					dataAI3[showSamplesValue-1] = AI3;
-					dataDO0[showSamplesValue-1] = (float) DO0;
-					dataDO1[showSamplesValue-1] = (float) DO1;
-					dataDO2[showSamplesValue-1] = (float) DO2;
-					dataDO3[showSamplesValue-1] = (float) DO3;
-					updatePlotAndPulse();
+				Data dataLogg = new Data(0, jobName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
+				dataService.save(dataLogg);
+
+				// Show the values on the plot - First shift it back 1 step, set the last
+				// element and update the plot
+				if (ControlView.selectedShowPlot) {
+					Collections.rotate(Arrays.asList(A0), -1);
+					Collections.rotate(Arrays.asList(A1), -1);
+					Collections.rotate(Arrays.asList(A2), -1);
+					Collections.rotate(Arrays.asList(A3), -1);
+					Collections.rotate(Arrays.asList(SA0), -1);
+					Collections.rotate(Arrays.asList(SA1), -1);
+					Collections.rotate(Arrays.asList(SA1D), -1);
+					Collections.rotate(Arrays.asList(SA2D), -1);
+					Collections.rotate(Arrays.asList(SA3D), -1);
+					A0[showSamplesValue - 1] = a0;
+					A1[showSamplesValue - 1] = a1;
+					A2[showSamplesValue - 1] = a2;
+					A3[showSamplesValue - 1] = a3;
+					SA0[showSamplesValue - 1] = sa0;
+					SA1[showSamplesValue - 1] = sa1;
+					SA1D[showSamplesValue - 1] = sa1d;
+					SA2D[showSamplesValue - 1] = sa2d;
+					SA3D[showSamplesValue - 1] = sa3d;
+					updatePlotAndPulseAndInputs();
 				}
-				
-				// If we exceeded number of pulse limit
-				if(pulseNumber >= ControlView.selectedBreakPulseLimit) {
-					interuptMessage(email, "Number of pulse limits exceeded", alarmActivated);
-					break; // Jump out from the while loop and update the ControlView
-				}
-				
+
 				// If we exceeded the thresholds
-				if(AI0 > AI0Max || AI0 < AI0Min || AI1 > AI1Max || AI1 < AI1Min || AI2 > AI2Max || AI2 < AI2Min || AI3 > AI3Max || AI3 < AI3Min) {
-					interuptMessage(email, "Mesurement exceeded the threshold", alarmActivated);
-					break;
-				}
+				boolean breakThreshHold0 = (a0 > a0Max) || (a1 < a0Min);
+				boolean breakThreshHold1 = (a1 > a1Max) || (a1 < a1Min);
+				boolean breakThreshHold2 = (a2 > a2Max) || (a2 < a2Min);
+				boolean breakThreshHold3 = (a3 > a3Max) || (a3 < a3Min);
+				boolean breakThreshHold4 = (sa0 > sa0Max) || (sa0 < sa0Min);
+				boolean breakThreshHold5 = (sa1 > sa1Max) || (sa1 < sa1Min);
+				boolean breakThreshHold6 = (sa1d > sa1dMax) || (sa1d < sa1dMin);
+				boolean breakThreshHold7 = (sa2d > sa2dMax) || (sa2d < sa2dMin);
+				boolean breakThreshHold8 = (sa3d > sa3dMax) || (sa3d < sa3dMin);
 				
-				// If we read true on stop signal
-				if(stopSignal == true) {
-					interuptMessage(email, "Stop signal activated - System halted", alarmActivated);
-					break;
+				if(alarmActive) {
+					if (breakThreshHold0) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at analog input 0.", message);
+						break;
+					} else if (breakThreshHold1) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at analog input 1.", message);
+						break;
+					} else if (breakThreshHold2) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at analog input 2.", message);
+						break;
+					} else if (breakThreshHold3) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at analog input 3.", message);
+						break;
+					} else if (breakThreshHold4) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at sigma delta analog input 0.", message);
+						break;
+					} else if (breakThreshHold5) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at sigma delta analog input 1.", message);
+						break;
+					} else if (breakThreshHold6) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at differential sigma delta analog input 1.", message);
+						break;
+					} else if (breakThreshHold7) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at differential sigma delta analog input 2.", message);
+						break;
+					} else if (breakThreshHold8) {
+						mailService.sendMessage(alarm, email, "Mesurement exceeded the threshold at differential sigma delta analog input 3.", message);
+						break;
+					} else if (stopSignal) {
+						mailService.sendMessage(alarm, email, "Stop signal activated.", message);
+						break;
+					} else if (pulseNumber >= selectedBreakPulseLimit) {
+						mailService.sendMessage(alarm, email, "Number of pulse limits exceeded", message);
+						break;
+					}
 				}
-				
+
 				// Wait
 				try {
-					Thread.sleep(samplingTimeValue); 
-				} catch (InterruptedException e) {}
-			}	
-			
-			// This will cause so components will be enabled again - and also the control thread stops!
+					Thread.sleep(samplingTimeValue);
+				} catch (InterruptedException e) {
+				}
+			}
+
+			// This will cause so components will be enabled again - and also the control
+			// thread stops!
 			ControlView.loggingNow.set(false); // OFF
-			updatePlotAndPulse(); 
-		}
-	}
-	
-	private void interuptMessage(String email, String message, boolean alarmActivated) {
-		if(alarmActivated == true) {
-			mail.sendEmail(email, "Open Source Logger Message", message);
+			updatePlotAndPulseAndInputs();
 		}
 	}
 
-	private void updatePlotAndPulse() {
+	private void updatePlotAndPulseAndInputs() {
 		ui.access(() -> {
 			apexChart.updateSeries(
-					MySQLView.createSerie(dataAI0, "AI0"),
-					MySQLView.createSerie(dataAI1, "AI1"),
-					MySQLView.createSerie(dataAI2, "AI2"),
-					MySQLView.createSerie(dataAI3, "AI3"),
-					MySQLView.createSerie(dataDO0, "DO0"),
-					MySQLView.createSerie(dataDO1, "DO1"),
-					MySQLView.createSerie(dataDO2, "DO2"),
-					MySQLView.createSerie(dataDO3, "DO3"));
-			countedPulses.setValue(pulseNumber);
-			disableOrEnableComponents();
+					MySQLView.createSerie(A0, "A0"),
+					MySQLView.createSerie(A1, "A1"),
+					MySQLView.createSerie(A2, "A2"),
+					MySQLView.createSerie(A3, "A3"),
+					MySQLView.createSerie(SA0, "SA0"),
+					MySQLView.createSerie(SA1, "SA1"),
+					MySQLView.createSerie(SA1D, "SA1D"),
+					MySQLView.createSerie(SA2D, "SA2D"),
+					MySQLView.createSerie(SA3D, "SA3D"));
+			counters.get(0).setValue(pulseNumber); // This is countedPulses
 			
+			// This is the digital inputs
+			for (int i = 0; i < checkBoxes.size(); i++)
+				checkBoxes.get(i).setValue(ControlThread.DI[i]);
+			disableOrEnableComponents();
 		});
 
 	}
 
-	public void setComponentsToThread(UI ui, ApexCharts apexChart, IntegerField countedPulses, Button loggingActivate, Select<Long> calibration, Select<Long> alarm, Select<Long> loggerId, PaperSlider do0Slider, PaperSlider do1Slider, PaperSlider do2Slider, PaperSlider do3Slider, IntegerField do0HighPulse, IntegerField do1HighPulse, IntegerField do2HighPulse, IntegerField do3HighPulse, IntegerField do0LowPulse, IntegerField do1LowPulse, IntegerField do2LowPulse, IntegerField do3LowPulse, Select<Integer> samplingTime, Select<Integer> showSamples, Checkbox showPlot, RadioButtonGroup<String> radioGroup, Checkbox lowFirstDo0, Checkbox lowFirstDo1, Checkbox lowFirstDo2, Checkbox lowFirstDo3, Checkbox countOnHighSignal) {
-		this.ui = ui;
-		this.apexChart = apexChart;
-		this.countedPulses = countedPulses;
-		this.loggingActivate = loggingActivate;
-		this.calibration = calibration;
-		this.alarm = alarm;
-		this.loggerId = loggerId;
-		this.do0Slider = do0Slider;
-		this.do1Slider = do1Slider;
-		this.do2Slider = do2Slider;
-		this.do3Slider = do3Slider;
-		this.do0HighPulse = do0HighPulse;
-		this.do1HighPulse = do1HighPulse;
-		this.do2HighPulse = do2HighPulse;
-		this.do3HighPulse = do3HighPulse;
-		this.do0LowPulse = do0LowPulse;
-		this.do1LowPulse = do1LowPulse;
-		this.do2LowPulse = do2LowPulse;
-		this.do3LowPulse = do3LowPulse;
-		this.samplingTime = samplingTime;
-		this.showSamples = showSamples;
-		this.showPlot = showPlot;
-		this.radioGroup = radioGroup;
-		this.lowFirstDo0 = lowFirstDo0;
-		this.lowFirstDo1 = lowFirstDo1;
-		this.lowFirstDo2 = lowFirstDo2;
-		this.lowFirstDo3 = lowFirstDo3;
-		this.countOnHighSignal = countOnHighSignal;
-		disableOrEnableComponents(); // Once we have set our components, disable them or not.
-	}
-	
 	private void disableOrEnableComponents() {
-		if(ControlView.loggingNow.get() == true) {
+		if (ControlView.loggingNow.get()) {
 			// This runs when we don't run the logging
 			loggingActivate.setText(ControlView.STOP_LOGGING);
-			calibration.setEnabled(false);
-			alarm.setEnabled(false);
-			loggerId.setEnabled(false);
-			do0Slider.setEnabled(true);
-			do1Slider.setEnabled(true);
-			do2Slider.setEnabled(true);
-			do3Slider.setEnabled(true);
-			do0HighPulse.setEnabled(true);
-			do1HighPulse.setEnabled(true);
-			do2HighPulse.setEnabled(true);
-			do3HighPulse.setEnabled(true);
-			do0LowPulse.setEnabled(true);
-			do1LowPulse.setEnabled(true);
-			do2LowPulse.setEnabled(true);
-			do3LowPulse.setEnabled(true);
-			samplingTime.setEnabled(false);
-			showSamples.setEnabled(false);
-			showPlot.setEnabled(false);
-			radioGroup.setEnabled(false);
-			lowFirstDo0.setEnabled(false);
-			lowFirstDo1.setEnabled(false);
-			lowFirstDo2.setEnabled(false);
-			lowFirstDo3.setEnabled(false);
-			countOnHighSignal.setEnabled(false);
-			
-		}else{
+			firstRow.setEnabled(false);
+
+		} else {
 			loggingActivate.setText(ControlView.START_LOGGING);
-			calibration.setEnabled(true);
-			alarm.setEnabled(true);
-			loggerId.setEnabled(true);
-			do0Slider.setEnabled(false);
-			do1Slider.setEnabled(false);
-			do2Slider.setEnabled(false);
-			do3Slider.setEnabled(false);
-			do0HighPulse.setEnabled(false);
-			do1HighPulse.setEnabled(false);
-			do2HighPulse.setEnabled(false);
-			do3HighPulse.setEnabled(false);
-			do0LowPulse.setEnabled(false);
-			do1LowPulse.setEnabled(false);
-			do2LowPulse.setEnabled(false);
-			do3LowPulse.setEnabled(false);
-			samplingTime.setEnabled(true);
-			showSamples.setEnabled(true);
-			showPlot.setEnabled(true);
-			radioGroup.setEnabled(true);
-			lowFirstDo0.setEnabled(true);
-			lowFirstDo1.setEnabled(true);
-			lowFirstDo2.setEnabled(true);
-			lowFirstDo3.setEnabled(true);
-			countOnHighSignal.setEnabled(true);
-			
-			// Set zero values
-			do0Slider.setValue(0);
-			do1Slider.setValue(0);
-			do2Slider.setValue(0);
-			do3Slider.setValue(0);
-			do0HighPulse.setValue(0);
-			do1HighPulse.setValue(0);
-			do2HighPulse.setValue(0);
-			do3HighPulse.setValue(0);
-			do0LowPulse.setValue(0);
-			do1LowPulse.setValue(0);
-			do2LowPulse.setValue(0);
-			do3LowPulse.setValue(0);
+			firstRow.setEnabled(true);
+
 		}
+	}
+
+	public void setComponentsToThread(UI ui, HorizontalLayout firstRow, Button loggingActivate, ApexCharts apexChart, List<IntegerField> counters, List<Checkbox> checkBoxes) {
+		this.ui = ui;
+		this.firstRow = firstRow;
+		this.apexChart = apexChart;
+		this.loggingActivate = loggingActivate;
+		this.counters = counters;
+		this.checkBoxes = checkBoxes;
+		disableOrEnableComponents(); // Once we have set our components, disable them or not.
 	}
 }

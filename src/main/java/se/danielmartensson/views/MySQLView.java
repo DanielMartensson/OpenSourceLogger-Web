@@ -3,12 +3,8 @@ package se.danielmartensson.views;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.helper.Series;
@@ -30,8 +26,8 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
-import se.danielmartensson.entities.DataLogg;
-import se.danielmartensson.repositories.DataLoggRepository;
+import se.danielmartensson.entities.Data;
+import se.danielmartensson.service.DataService;
 import se.danielmartensson.tools.Graf;
 import se.danielmartensson.tools.Top;
 
@@ -40,6 +36,7 @@ import se.danielmartensson.tools.Top;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 /**
  * This is the datbase viewer class
+ * 
  * @author dell
  *
  */
@@ -49,74 +46,55 @@ public class MySQLView extends AppLayout {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Autowired
-	private DataLoggRepository dataLoggRepository;
 
-	private ApexCharts apexChart;
-
-	@PostConstruct
-	public void init() {
+	public MySQLView(DataService dataService) {
 		Top top = new Top();
 		top.setTopAppLayout(this);
 
 		// Begin to create the graf
-		apexChart = new Graf("Viewing from MySQL").getApexChart();
+		ApexCharts apexChart = new Graf("Viewing from MySQL").getApexChart();
 
-		// Then create the control panel
-		createSearchPanel();
-	}
+		// Create show data log drop down button
+		Select<Data> selectJob = new Select<>();
+		selectJob.setItems(dataService.findAllNames());
+		selectJob.setPlaceholder("No job selected");
+		selectJob.setLabel("Job name");
 
-	private void createSearchPanel() {
-		// Set the logger ids
-		List<DataLogg> dataLoggers = dataLoggRepository.findAll();
-		Select<Long> loggerId = new Select<>();
-		List<Long> loggerIds = new ArrayList<Long>();
-		for(int i = 0; i < dataLoggers.size(); i++) {
-			long value = dataLoggers.get(i).getLoggerId();
-			if(loggerIds.contains(value) == false)
-				loggerIds.add(value);
-		}
-		loggerId.setItems(loggerIds);
-		loggerId.setPlaceholder("No id");
-		loggerId.setLabel("Logger Id");
-		
+		// Downloader when we select a new job
+		Anchor download = new Anchor();
+		selectJob.addValueChangeListener(e -> updateDownloadButton(selectJob, download, dataService));
+		download.getElement().setAttribute("download", true);
+
 		// Count field
 		IntegerField countAmoutOfSamples = new IntegerField();
 		countAmoutOfSamples.setMin(0);
 		countAmoutOfSamples.setEnabled(false);
 		countAmoutOfSamples.setPlaceholder("No samples");
 		countAmoutOfSamples.setLabel("Amout of samples");
-		
+
 		// Pulse fields
 		IntegerField pulseField = new IntegerField();
 		pulseField.setMin(0);
 		pulseField.setEnabled(false);
 		pulseField.setPlaceholder("No pulses");
 		pulseField.setLabel("Amout of pulses");
-		
+
 		// Listener for counting how many samples of selected logger id
 		Button countSamples = new Button("Count samples and pulses");
 		countSamples.addClickListener(e -> {
-			if(loggerId.getValue() == null)
-				return;
-			long selectedLoggerId = loggerId.getValue();
-			List<DataLogg> dataLogg = dataLoggRepository.findByLoggerId(selectedLoggerId);
-			int amountOfSamples = dataLogg.size();
+			if (selectJob.getValue() == null)
+				return; // Not selected
+			List<Data> dataOfJobName = dataService.findByJobName(selectJob.getValue().getJobName());
+			if (dataOfJobName == null)
+				return; // No samples
+			int amountOfSamples = dataOfJobName.size();
 			int pulses = 0;
-			if(amountOfSamples > 0)
-				dataLogg.get(amountOfSamples-1).getPulseNumber();
+			if (amountOfSamples > 0)
+				pulses = dataOfJobName.get(amountOfSamples - 1).getPulseNumber();
 			countAmoutOfSamples.setValue(amountOfSamples);
 			pulseField.setValue(pulses);
 		});
-		
-		// Download all data
-		Anchor download = new Anchor();
-		loggerId.addValueChangeListener(e-> {
-			updateDownloadButton(loggerId, download);
-		});
-		download.getElement().setAttribute("download",true);
-        
+
 		// Range settings
 		IntegerField indexFirst = new IntegerField();
 		indexFirst.setMin(1);
@@ -126,141 +104,183 @@ public class MySQLView extends AppLayout {
 		indexLast.setMin(1);
 		indexLast.setPlaceholder("No index");
 		indexLast.setLabel("Last index");
-		
-		// Create plot
+
+		// Create plot button
 		Button createPlot = new Button("Plot");
 		createPlot.addClickListener(e -> {
 			// Quick check if we have selected values
-			if(indexFirst.getValue() == null || indexLast.getValue() == null || countAmoutOfSamples.getValue() == null) {
+			if (indexFirst.getValue() == null || indexLast.getValue() == null || countAmoutOfSamples.getValue() == null) {
 				new Notification("You need to count samples or set the index", 3000).open();
 				return;
 			}
 			int firstIndex = indexFirst.getValue(); // Min 1
 			int lastIndex = indexLast.getValue(); // Min 1
 			int samples = countAmoutOfSamples.getValue();
-			if(firstIndex > lastIndex) {
+			if (firstIndex > lastIndex) {
 				new Notification("First index cannot be greater than last index", 3000).open();
 				return;
 			}
-			if(lastIndex > samples) {
+			if (lastIndex > samples) {
 				new Notification("Not enough of samples", 3000).open();
 				return;
 			}
-			if(lastIndex <= 0) {
+			if (lastIndex <= 0) {
 				new Notification("Last index cannot be under 1", 3000).open();
 				return;
 			}
-			if(firstIndex <= 0) {
+			if (firstIndex <= 0) {
 				new Notification("First index cannot be under 1", 3000).open();
 				return;
 			}
-			
+
 			// Change to zero-indexing by removing one value from firstIndex
 			firstIndex--;
-			
+
 			// Get the amount of samples we want to show
 			int selectedSamples = lastIndex - firstIndex;
-			
+
 			// Get the selected rows in the database depending on choice of loggerId
-			List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
-			Float[] dataAI0 = new Float[selectedSamples];
-			Float[] dataAI1 = new Float[selectedSamples];
-			Float[] dataAI2 = new Float[selectedSamples];
-			Float[] dataAI3 = new Float[selectedSamples];
-			Float[] dataDO0 = new Float[selectedSamples];
-			Float[] dataDO1 = new Float[selectedSamples];
-			Float[] dataDO2 = new Float[selectedSamples];
-			Float[] dataDO3 = new Float[selectedSamples];
+			List<Data> selectedData = dataService.findByJobNameOrderByDateTime(selectJob.getValue().getJobName());
+			Float[] A0 = new Float[selectedSamples];
+			Float[] A1 = new Float[selectedSamples];
+			Float[] A2 = new Float[selectedSamples];
+			Float[] A3 = new Float[selectedSamples];
+			Float[] SA0 = new Float[selectedSamples];
+			Float[] SA1 = new Float[selectedSamples];
+			Float[] SA1D = new Float[selectedSamples];
+			Float[] SA2D = new Float[selectedSamples];
+			Float[] SA3D = new Float[selectedSamples];
+			Float[] PWM0 = new Float[selectedSamples];
+			Float[] PWM1 = new Float[selectedSamples];
+			Float[] PWM2 = new Float[selectedSamples];
+			Float[] PWM3 = new Float[selectedSamples];
+			Float[] PWM4 = new Float[selectedSamples];
+			Float[] PWM5 = new Float[selectedSamples];
+			Float[] PWM6 = new Float[selectedSamples];
+			Float[] PWM7 = new Float[selectedSamples];
+			Float[] PWM8 = new Float[selectedSamples];
+			Float[] DAC0 = new Float[selectedSamples];
+			Float[] DAC1 = new Float[selectedSamples];
+			Float[] DAC2 = new Float[selectedSamples];
 			IntStream.range(0, selectedSamples).forEach(i -> {
-				DataLogg dataLogg = selectedLogger.get(i);
-				dataAI0[i] = dataLogg.getAI0();
-				dataAI1[i] = dataLogg.getAI1();
-				dataAI2[i] = dataLogg.getAI2();
-				dataAI3[i] = dataLogg.getAI3();
-				dataDO0[i] = (float) dataLogg.getDO0();
-				dataDO1[i] = (float) dataLogg.getDO1();
-				dataDO2[i] = (float) dataLogg.getDO2();
-				dataDO3[i] = (float) dataLogg.getDO3();
+				Data data = selectedData.get(i);
+				A0[i] = data.getA0();
+				A1[i] = data.getA1();
+				A2[i] = data.getA2();
+				A3[i] = data.getA3();
+				SA0[i] = data.getSa0();
+				SA1[i] = data.getSa1();
+				SA1D[i] = data.getSa1d();
+				SA2D[i] = data.getSa2d();
+				SA3D[i] = data.getSa3d();
+				PWM0[i] = (float) data.getP0();
+				PWM1[i] = (float) data.getP1();
+				PWM2[i] = (float) data.getP2();
+				PWM3[i] = (float) data.getP3();
+				PWM4[i] = (float) data.getP4();
+				PWM5[i] = (float) data.getP5();
+				PWM6[i] = (float) data.getP6();
+				PWM7[i] = (float) data.getP7();
+				PWM8[i] = (float) data.getP8();
+				DAC0[i] = (float) data.getD0();
+				DAC1[i] = (float) data.getD1();
+				DAC2[i] = (float) data.getD2();
 			});
-			  
+
 			// Update
 			apexChart.updateSeries(
-					createSerie(dataAI0, "AI0"),
-					createSerie(dataAI1, "AI1"),
-					createSerie(dataAI2, "AI2"),
-					createSerie(dataAI3, "AI3"),
-					createSerie(dataDO0, "DO0"),
-					createSerie(dataDO1, "DO1"),
-					createSerie(dataDO2, "DO2"),
-					createSerie(dataDO3, "DO3"));
+					createSerie(A0, "A0"),
+					createSerie(A1, "A1"),
+					createSerie(A2, "A2"),
+					createSerie(A3, "A3"),
+					createSerie(SA0, "SA0"),
+					createSerie(SA1, "SA1"),
+					createSerie(SA1D, "SA1D"),
+					createSerie(SA2D, "SA2D"),
+					createSerie(SA3D, "SA3D"),
+					createSerie(PWM0, "P0"),
+					createSerie(PWM1, "P1"),
+					createSerie(PWM2, "P2"),
+					createSerie(PWM3, "P3"),
+					createSerie(PWM4, "P4"),
+					createSerie(PWM5, "P5"),
+					createSerie(PWM6, "P6"),
+					createSerie(PWM7, "P7"),
+					createSerie(PWM8, "P8"),
+					createSerie(DAC0, "D0"),
+					createSerie(DAC1, "D1"),
+					createSerie(DAC2, "D2"));
 		});
-		
-		// Delete
+
+		// Delete button
 		Button deletePlot = new Button("Delete");
 		deletePlot.addClickListener(e -> {
 			// Quick check if we have selected values
-			if(indexFirst.getValue() == null || indexLast.getValue() == null || countAmoutOfSamples.getValue() == null) {
+			if (indexFirst.getValue() == null || indexLast.getValue() == null || countAmoutOfSamples.getValue() == null) {
 				new Notification("You need to count samples or set the index", 3000).open();
 				return;
 			}
 			int firstIndex = indexFirst.getValue(); // Min 1
 			int lastIndex = indexLast.getValue(); // Min 1
 			int samples = countAmoutOfSamples.getValue();
-			if(firstIndex > lastIndex) {
+			if (firstIndex > lastIndex) {
 				new Notification("First index cannot be greater than last index", 3000).open();
 				return;
 			}
-			if(lastIndex > samples) {
+			if (lastIndex > samples) {
 				new Notification("Not enough of samples", 3000).open();
 				return;
 			}
-			if(lastIndex <= 0) {
+			if (lastIndex <= 0) {
 				new Notification("Last index cannot be under 1", 3000).open();
 				return;
 			}
-			if(firstIndex <= 0) {
+			if (firstIndex <= 0) {
 				new Notification("First index cannot be under 1", 3000).open();
 				return;
 			}
-			
+
 			// Show dialog and ask
 			Dialog dialog = new Dialog(new Label("Do you want to delete samples between " + firstIndex + " and " + lastIndex));
 			dialog.setCloseOnEsc(false);
 			dialog.setCloseOnOutsideClick(false);
-			
+
 			NativeButton delete = new NativeButton("Delete", event -> {
-				// Deleting parts of selectedLogger. We split into maximum 2000 
-				List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
-				List<DataLogg> deleteThese = selectedLogger.subList(firstIndex - 1, lastIndex);
-				for(List<DataLogg> deleteTheseLists : Lists.partition(deleteThese, 2000)) {
-					dataLoggRepository.deleteInBatch(deleteTheseLists);
+				// Deleting parts of selectedLogger. We split into maximum 2000
+				List<Data> slectedData = dataService.findByJobNameOrderByDateTime(selectJob.getValue().getJobName());
+				List<Data> deleteThese = slectedData.subList(firstIndex - 1, lastIndex);
+				for (List<Data> deleteTheseLists : Lists.partition(deleteThese, 2000)) {
+					dataService.deleteInBatch(deleteTheseLists);
 				}
 				dialog.close();
-				
-				// This will prevent us to plot values that don't exist - You need to press the counting button first
+
+				// This will prevent us to plot values that don't exist - You need to press the
+				// counting button first
 				countAmoutOfSamples.setValue(countAmoutOfSamples.getValue() - (lastIndex - firstIndex + 1));
-				updateDownloadButton(loggerId, download);
+				updateDownloadButton(selectJob, download, dataService);
 			});
 			NativeButton cancelButton = new NativeButton("Cancel", event -> {
 				dialog.close();
 			});
-			
+
 			dialog.add(delete, cancelButton);
 			dialog.open();
-			
+
 		});
-		
+
 		// Layout
-		HorizontalLayout firstRow = new HorizontalLayout(loggerId, indexFirst, indexLast, countAmoutOfSamples, pulseField);
+		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexLast, countAmoutOfSamples, pulseField);
 		HorizontalLayout secondRow = new HorizontalLayout(countSamples, createPlot, download, deletePlot);
 		VerticalLayout layout = new VerticalLayout(firstRow, secondRow, apexChart);
 		setContent(layout);
+
 	}
-	
-	// We need to update the download button if we changed the logger ID, else we got two buttons or more
-	private void updateDownloadButton(Select<Long> loggerId, Anchor download) {
-		String fileName = String.valueOf(loggerId.getValue()) + ".csv";
-		List<DataLogg> selectedLogger = dataLoggRepository.findByLoggerIdOrderByDateTime(loggerId.getValue());
+
+	// We need to update the download button if we changed the logger ID, else we
+	// got two buttons or more
+	private void updateDownloadButton(Select<Data> selectJob, Anchor download, DataService dataService) {
+		String fileName = String.valueOf(selectJob.getValue()) + ".csv";
+		List<Data> selectedLogger = dataService.findByJobNameOrderByDateTime(selectJob.getValue().getJobName());
 		download.removeAll();
 		download.removeHref();
 		download.setHref(getStreamResource(fileName, selectedLogger));
@@ -273,39 +293,58 @@ public class MySQLView extends AppLayout {
 		serie.setName(legend);
 		return serie;
 	}
-	
-	// Create a large CSV file in a form of StringBuilder and then convert it all to bytes
-	public StreamResource getStreamResource(String filename, List<DataLogg> selectedLogger) {
+
+	// Create a large CSV file in a form of StringBuilder and then convert it all to
+	// bytes
+	public StreamResource getStreamResource(String filename, List<Data> selectedData) {
 		StringWriter stringWriter = new StringWriter();
-		stringWriter.write("id, dateTime, DO0, DO1, DO2, DO3, AI0, AI1, AI2, AI3, loggerId, samplingTime, pulseNumber, breakPulseLimit, stopSignal, comment\n");
-		for (int i = 0; i < selectedLogger.size(); ++ i) {
-			DataLogg dataLogg = selectedLogger.get(i);
-			String row = dataLogg.getId() + "," +
-			dataLogg.getDateTime() + "," +
-			dataLogg.getDO0() + "," +
-			dataLogg.getDO1() + "," +
-			dataLogg.getDO2() + "," +
-			dataLogg.getDO3() + "," +
-			dataLogg.getAI0() + "," +
-			dataLogg.getAI1() + "," +
-			dataLogg.getAI2() + "," +
-			dataLogg.getAI3() + "," +
-			dataLogg.getLoggerId() + "," +
-			dataLogg.getSamplingTime() + "," +
-			dataLogg.getPulseNumber() + "," +
-			dataLogg.getBreakPulseLimit() + "," +
-			dataLogg.isStopSignal() + "," +
-			dataLogg.getComment() + "\n";
+		stringWriter.write("id,jobName,calibrationName,dateTime,sa0,sa1,sa1d,sa2d,sa3d,a0,a1,a2,a3,i0,i1,i2,i3,i4,i5,p0,p1,p2,p3,p4,p5,p6,p7,p8,d0,d1,d2,pulseNumber,breakPulseLimit,stopSignal\n");
+		for (int i = 0; i < selectedData.size(); ++i) {
+			Data data = selectedData.get(i);
+			String row = data.getId() + "," +
+					data.getJobName() + "," +
+					data.getCalibrationName() + "," +
+					data.getDateTime() + "," +
+					data.getSa0() + "," +
+					data.getSa1() + "," +
+					data.getSa1d() + "," +
+					data.getSa2d() + "," +
+					data.getSa3d() + "," +
+					data.getA0() + "," +
+					data.getA1() + "," +
+					data.getA2() + "," +
+					data.getA3() + "," +
+					data.isI0() + "," +
+					data.isI1() + "," +
+					data.isI2() + "," +
+					data.isI3() + "," +
+					data.isI4() + "," +
+					data.isI5() + "," +
+					data.getP0() + "," +
+					data.getP1() + "," +
+					data.getP2() + "," +
+					data.getP3() + "," +
+					data.getP4() + "," +
+					data.getP5() + "," +
+					data.getP6() + "," +
+					data.getP7() + "," +
+					data.getP8() + "," +
+					data.getD0() + "," +
+					data.getD1() + "," +
+					data.getD2() + "," +
+					data.getPulseNumber() + "," +
+					data.getBreakPulseLimit() + "," +
+					data.isStopSignal() + "\n";
 			stringWriter.write(row);
 		}
-		
+
 		// Try to download
 		try {
 			byte[] buffer = stringWriter.toString().getBytes("UTF-8");
 			return new StreamResource(filename, () -> new ByteArrayInputStream(buffer));
 		} catch (UnsupportedEncodingException e) {
-			byte[] buffer = new byte[] {0};
+			byte[] buffer = new byte[] { 0 };
 			return new StreamResource(filename, () -> new ByteArrayInputStream(buffer));
 		}
-    }
+	}
 }

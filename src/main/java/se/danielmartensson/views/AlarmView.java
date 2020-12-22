@@ -2,20 +2,20 @@ package se.danielmartensson.views;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.crudui.crud.CrudListener;
-import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.CrudFormFactory;
+import org.vaadin.crudui.form.impl.field.provider.CheckBoxGroupProvider;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
 
-import se.danielmartensson.entities.AlarmLogg;
-import se.danielmartensson.repositories.AlarmLoggRepository;
+import se.danielmartensson.entities.Alarm;
+import se.danielmartensson.entities.MailCheckBox;
+import se.danielmartensson.service.AlarmService;
+import se.danielmartensson.service.MailCheckBoxService;
 import se.danielmartensson.tools.Top;
 
 @Route("alarm")
@@ -23,6 +23,7 @@ import se.danielmartensson.tools.Top;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 /**
  * This class modifies the user interface for alarm handling
+ * 
  * @author dell
  *
  */
@@ -32,32 +33,23 @@ public class AlarmView extends AppLayout {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Autowired
-	private AlarmLoggRepository alarmLoggRepository;
 
-	@PostConstruct
-	public void init() {
+	public AlarmView(AlarmService alarmService, MailCheckBoxService mailCheckBoxService) {
 		Top top = new Top();
 		top.setTopAppLayout(this);
 
-		createAlarmLoggCrud();
-	}
-
-	private void createAlarmLoggCrud() {
 		// Grid layout
-		GridCrud<AlarmLogg> alarmLoggCrud = new GridCrud<>(AlarmLogg.class);
-		CrudFormFactory<AlarmLogg> crudFormFactory = new DefaultCrudFormFactory<AlarmLogg>(AlarmLogg.class);
-		alarmLoggCrud.setCrudFormFactory(crudFormFactory);
-		alarmLoggCrud.getGrid().setColumns("AID", "comment", "alarm", "email", "AI0Max", "AI0Min", "AI1Min", "AI1Max", "AI2Min", "AI2Max", "AI3Min", "AI3Max");
-		alarmLoggCrud.getGrid().setColumnReorderingAllowed(true);
+		GridCrud<Alarm> alarmCrud = new GridCrud<>(Alarm.class);
+		CrudFormFactory<Alarm> crudFormFactory = new DefaultCrudFormFactory<Alarm>(Alarm.class);
+		alarmCrud.setCrudFormFactory(crudFormFactory);
+		alarmCrud.getGrid().setColumns("name", "email", "message", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max");
+		alarmCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setDisabledProperties(CrudOperation.ADD, "AID");
-		crudFormFactory.setDisabledProperties(CrudOperation.UPDATE, "AID");
-		crudFormFactory.setDisabledProperties(CrudOperation.DELETE, "AID");
+		crudFormFactory.setVisibleProperties(new String[] { "name", "email", "message", "checked", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max" });
+		crudFormFactory.setFieldProvider("checked", new CheckBoxGroupProvider<>("Checked", mailCheckBoxService.findAll(), MailCheckBox::getName));
 
 		// Listener
-		alarmLoggCrud.setCrudListener(new CrudListener<AlarmLogg>() {
+		alarmCrud.setCrudListener(new CrudListener<Alarm>() {
 
 			/**
 			 * 
@@ -65,28 +57,38 @@ public class AlarmView extends AppLayout {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Collection<AlarmLogg> findAll() {
-				return alarmLoggRepository.findAll();
+			public Collection<Alarm> findAll() {
+				return alarmService.findAll();
 			}
 
 			@Override
-			public AlarmLogg add(AlarmLogg domainObjectToAdd) {
-				return alarmLoggRepository.save(domainObjectToAdd);
+			public Alarm add(Alarm alarm) {
+				boolean nameExist = alarmService.existsByName(alarm.getName());
+				if (nameExist) {
+					new Notification("Cannot add this with a name that already exist.", 3000).open();
+					return alarm;
+				}
+				return alarmService.save(alarm);
 			}
 
 			@Override
-			public AlarmLogg update(AlarmLogg domainObjectToUpdate) {
-				return alarmLoggRepository.save(domainObjectToUpdate);
-			}
-			
-			@Override
-			public void delete(AlarmLogg domainObjectToDelete) {
-				alarmLoggRepository.delete(domainObjectToDelete);
+			public Alarm update(Alarm alarm) {
+				boolean nameExist = alarmService.existsByName(alarm.getName());
+				if (nameExist) {
+					new Notification("Cannot update this with a name that already exist.", 3000).open();
+					return alarm;
+				}
+				return alarmService.save(alarm);
 			}
 
+			@Override
+			public void delete(Alarm alarm) {
+				boolean parentExist = alarmService.delete(alarm);
+				if (parentExist) {
+					new Notification("Cannot delete this alarm because a job that have this alarm exist.", 3000).open();
+				}
+			}
 		});
-		setContent(alarmLoggCrud);
-
+		setContent(alarmCrud);
 	}
-
 }
