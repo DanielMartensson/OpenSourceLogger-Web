@@ -196,15 +196,19 @@ And place these line above `exit 0`
 cd /The/Path/To/Where/The/Jar/File/Is/Placeds
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 ```
-
 Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal.
-Restart your Raspberry Pi.
 
+Then you need to enable `Serial` in Raspberry Pi.
 ```
-sudo shutdown -r now
+sudo raspi-config
 ```
+Then enable `Serial`. It's at the same page where you enable `SSH`, `VNC`, `I2C` etc.
+Answer `NO` to the question about login shell.
+Answer `YES` to the question about serial hardware port.
+Then when you exit the `raspi-config`, it will ask you if you want to reboot, press `YES`
 
-Done! Now your `OpenSourceLogger` will starts automatically.
+Now your `OpenSourceLogger` will starts automatically. Select the port `ttyS0` in `Device settings` at `OpenSourceLogger` and save the configuration
+inside the database. Done!
 
 # Build an own board
 
