@@ -37,7 +37,7 @@ import se.danielmartensson.tools.Top;
  * @author dell
  *
  */
-public class PWMFrequencyView extends AppLayout {
+public class DeviceSettingsView extends AppLayout {
 
 	/**
 	 * 
@@ -205,7 +205,7 @@ public class PWMFrequencyView extends AppLayout {
 		integerField.setValue(value);
 	}
 
-	public PWMFrequencyView() {
+	public DeviceSettingsView() {
 
 	}
 }

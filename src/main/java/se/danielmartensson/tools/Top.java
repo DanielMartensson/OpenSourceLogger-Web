@@ -15,7 +15,7 @@ import se.danielmartensson.views.CameraView;
 import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.JobView;
 import se.danielmartensson.views.MySQLView;
-import se.danielmartensson.views.PWMFrequencyView;
+import se.danielmartensson.views.DeviceSettingsView;
 
 /**
  * This class is made for the top of the screen, bar, drawer and image
@@ -60,9 +60,9 @@ public class Top {
 		cameraTab.getElement().addEventListener("click", e -> {
 			UI.getCurrent().navigate(CameraView.class);
 		});
-		Tab pwmFrequencyTab = new Tab("PWM Frequency");
-		pwmFrequencyTab.getElement().addEventListener("click", e -> {
-			UI.getCurrent().navigate(PWMFrequencyView.class);
+		Tab deviceSettingsTab = new Tab("Device settings");
+		deviceSettingsTab.getElement().addEventListener("click", e -> {
+			UI.getCurrent().navigate(DeviceSettingsView.class);
 		});
 		Tab aboutTab = new Tab("About");
 		aboutTab.getElement().addEventListener("click", e -> {
@@ -73,7 +73,7 @@ public class Top {
 			UI.getCurrent().getPage().setLocation(SecurityConfig.LOGOUT);
 		});
 
-		tabs = new Tabs(jobbTab, controlTab, mySQLTab, calibrationTab, alarmTab, cameraTab, aboutTab, pwmFrequencyTab, logoutTab);
+		tabs = new Tabs(jobbTab, controlTab, mySQLTab, calibrationTab, alarmTab, cameraTab, aboutTab, deviceSettingsTab, logoutTab);
 		tabs.setOrientation(Tabs.Orientation.VERTICAL);
 
 	}
