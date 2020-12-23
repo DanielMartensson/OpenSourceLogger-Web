@@ -10,7 +10,6 @@ import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.CrudFormFactory;
-import org.vaadin.crudui.form.impl.field.provider.CheckBoxGroupProvider;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -19,8 +18,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -28,10 +25,7 @@ import com.vaadin.flow.router.Route;
 
 import se.danielmartensson.entities.PWM;
 import se.danielmartensson.hardware.Serial;
-import se.danielmartensson.entities.Calibration;
-import se.danielmartensson.entities.MailCheckBox;
 import se.danielmartensson.service.PWMService;
-import se.danielmartensson.service.MailCheckBoxService;
 import se.danielmartensson.tools.Top;
 
 @Route("pwm")

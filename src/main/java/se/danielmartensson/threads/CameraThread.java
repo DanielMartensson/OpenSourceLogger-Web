@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.imageio.ImageIO;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.ds.v4l4j.V4l4jDriver;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
@@ -32,7 +31,7 @@ public class CameraThread extends Thread {
 	private Select<String> pictureSize;
 
 	public CameraThread() {
-	    //Webcam.setDriver(new V4l4jDriver()); // This is important for Raspberry Pi boards
+
 	}
 
 	@Override

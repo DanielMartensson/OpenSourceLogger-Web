@@ -44,7 +44,7 @@ sudo apt-get install maven
 
 NodeJS - This is used if you want to work on this project. If you only want to run this project, you don't need NodeJS.
 ```
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
@@ -53,7 +53,6 @@ sudo apt-get install -y nodejs
 ```
 sudo apt-get install mysql-server
 ```
-
 
 3. Then create a user e.g `myUser` with the password e.g `myPassword`
 
@@ -71,7 +70,6 @@ Set the privileges to that user
 ```
 GRANT ALL PRIVILEGES ON *.* TO 'myUser'@'%';
 ```
-
 
 4. Change your MySQL server so you listening to your LAN address
 
@@ -119,7 +117,7 @@ logging.level.org.atmosphere = warn
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
-spring.datasource.url=jdbc:mysql://ServerIPAddress:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
+spring.datasource.url=jdbc:mysql://ServerAddress:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
 spring.datasource.username=myUser
 spring.datasource.password=myPassword
 
@@ -132,7 +130,7 @@ configuration.MailConfiguration.properties.mail.smtp.auth=true
 configuration.MailConfiguration.properties.mail.smtp.starttls.enable=true
 
 # Mail - Reciever
-service.MailService.subject=The subject message title
+service.MailService.subject=Alarm Message Subject Title
 
 # Login
 spring.security.user.name=myUser

@@ -4,16 +4,12 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-import lombok.Getter;
 import lombok.Setter;
 import se.danielmartensson.entities.PWM;
 import se.danielmartensson.service.PWMService;
