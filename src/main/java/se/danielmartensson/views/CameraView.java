@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.ds.v4l4j.V4l4jDriver;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
