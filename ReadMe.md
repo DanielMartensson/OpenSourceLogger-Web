@@ -193,7 +193,7 @@ sudo nano /etc/rc.local
 And place these line above `exit 0`
 
 ```
-cd /The/Path/To/Where/The/Jar/File/Is/Placeds
+cd /The/Path/To/Where/The/Jar/File/Is/Placed
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 ```
 Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal.
