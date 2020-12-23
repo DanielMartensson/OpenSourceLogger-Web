@@ -21,6 +21,7 @@ store them into a MySQL database.
 * CSV generation of measurements
 * Connect with RX and TX from Raspberry Pi pins
 
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/UiView.png)
 
 The board will communicate with the TX & RX UART pins. 
 All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
@@ -29,6 +30,11 @@ All information about such as schematic and component list the board can be foun
 
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Produced.jpg)
 
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Produced.jpg)
+
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/HandSolder.jpg)
+
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Box.jpg)
 
 # How to install - Ubuntu user
 
@@ -44,7 +50,7 @@ Maven
 sudo apt-get install maven
 ```
 
-NodeJS - This is used if you want to work on this project. If you only want to run this project, you don't need NodeJS.
+NodeJS
 ```
 curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -106,8 +112,8 @@ night and something happens, then it will stop everything and send a message bac
 6. Download `OpenSourceLogger`
 
 Download the `OpenSourceLogger` and change the `application.properties` in the `/src/main/resources` folder.
-Here you can set the configuration for your database LAN address, user and password. You can also set a gmail address and its
-password. Don't forget that you can change the PWM frequency here as well.
+Here you can set the configuration for your database IP address, user and password. You can also set a gmail address and its
+password.
 
 ```
 server.port=8080
@@ -162,6 +168,45 @@ Once the application is started. You can then enter the web application e.g.
 http://192.168.1.35:8080
 ```
 Notice that there is no `https`, only `http`.
+
+# Deploy onto Raspberry Pi
+
+Notice that camera won't work on Raspberry Pi due to the latest library from [Sarox](https://github.com/sarxos/webcam-capture) cannot support Raspberry Pi 4B. But you can 
+do everything else. If you want to work with this camera stuff inside `OpenSourceLogger`, please go to `CameraThread.java` class and begin to explore how to solve that problem.
+
+Anyway! Once you got `opensourcelogger-1.0-SNAPSHOT.jar` ready, you can send it to your Raspberry Pi.
+
+```
+sudo scp opensourcelogger-1.0-SNAPSHOT.jar pi@RaspberryPiIPAddress:/The/Place/You/Want/The/Jar/File/To/Be/Saved
+```
+
+Example:
+
+```
+sudo scp opensourcelogger-1.0-SNAPSHOT.jar pi@192.168.1.35:/home/pi
+```
+
+Then open `rc.local`
+
+```
+sudo nano /etc/rc.local
+```
+
+And place these line above `exit 0`
+
+```
+cd /The/Path/To/Where/The/Jar/File/Is/Placeds
+sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
+```
+
+Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal.
+Restart your Raspberry Pi.
+
+```
+sudo shutdown -r now
+```
+
+Done! Now your `OpenSourceLogger` will starts automatically.
 
 # Build an own board
 
