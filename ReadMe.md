@@ -15,9 +15,11 @@ store them into a MySQL database.
 * Circuit protection for high voltage
 * Spring Security Login
 * MySQL database
+* USB Camera view (Does not work with Raspberry Pi)
 * Plotting functionality
 * Gmail alarm functionality
 * CSV generation of measurements
+* Connect with RX and TX from Raspberry Pi pins
 
 
 The board will communicate with the TX & RX UART pins. 
