@@ -212,8 +212,8 @@ inside the database. Done!
 
 # Build an own board
 
-Download `DAC ADC PWM IO - Board Schematic.zip` and `DAC ADC PWM IO - STM32 Code.zip`
-Extract them. Inside the `DAC ADC PWM IO - Board Schematic.zip` file, there is a `.csv` Bill Of Materials list with article numbers from Mouser Electronics. 
+Download `DAC ADC PWM IO - Board Schematic` and `DAC ADC PWM IO - STM32 Code` folder.
+Inside the `DAC ADC PWM IO - Board Schematic` folder, there is a `.csv` Bill Of Materials list with article numbers from Mouser Electronics. 
 I have been using `KiCad` to create these files and I used `https://jlcpcb.com` to give them the `gerber` files from the `DAC ADC PWM IO - Board Schematic` folder.
 
 To program the board, use a `ST-LINK-V2` programmer to program the board with `STM32CubeIDE 1.5.0`.
