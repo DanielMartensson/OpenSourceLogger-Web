@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 public class Job {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private long id;
 
 	@NotNull

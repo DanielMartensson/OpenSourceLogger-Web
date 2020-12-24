@@ -22,7 +22,7 @@ public class Data {
 
 	// ID
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private long id;
 
 	// Made by

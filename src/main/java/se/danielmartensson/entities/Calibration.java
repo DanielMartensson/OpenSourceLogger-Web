@@ -16,7 +16,7 @@ public class Calibration {
 
 	// ID
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private long id;
 	@NotNull
 	private String name;

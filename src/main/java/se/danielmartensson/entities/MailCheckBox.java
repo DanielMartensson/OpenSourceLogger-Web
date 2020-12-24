@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MailCheckBox {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private long id;
 
 	private String name;

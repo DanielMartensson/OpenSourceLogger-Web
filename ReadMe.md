@@ -17,7 +17,7 @@ store them into a MySQL database.
 * MySQL database
 * USB Camera view (Does not work with Raspberry Pi)
 * Plotting functionality
-* Gmail alarm functionality
+* SMTP alarm functionality
 * CSV generation of measurements
 * Connect with RX and TX from Raspberry Pi pins
 
@@ -101,10 +101,10 @@ sudo /etc/init.d/mysql restart
 
 If you don't know your LAN address, you can type in this command in linux `ifconfig` in the terminal
 
-5. Create a Gmail account
+5. Create a Outlook account
 
-Create a Gmail account and go to `https://myaccount.google.com/security` and enable so you can login from `less secure apps`.
-Because `OpenSourceLogger` uses `Java Mail` to logg into Gmail. This feature exist because if `OpenSourceLogger` is on the fly over a
+Create a Outlook account and make sure you have enabled so you can login from third parts software, e.g Java Mail.
+Because `OpenSourceLogger` uses `Java Mail` to login into Outlook. This feature exist because if `OpenSourceLogger` is on the fly over a
 night and something happens, then it will stop everything and send a message back to you.
 
 6. Download `OpenSourceLogger`
@@ -128,10 +128,10 @@ spring.datasource.username=myUser
 spring.datasource.password=myPassword
 
 # Mail - Transmitter
-configuration.MailConfiguration.host=smtp.gmail.com
+configuration.MailConfiguration.host=smtp.live.com
 configuration.MailConfiguration.port=587
-configuration.MailConfiguration.username=yourGMailAddress@gmail.com
-configuration.MailConfiguration.password=yourGMailPassword
+configuration.MailConfiguration.username=yourEmail@outlook.com
+configuration.MailConfiguration.password=yourPassword
 configuration.MailConfiguration.properties.mail.smtp.auth=true
 configuration.MailConfiguration.properties.mail.smtp.starttls.enable=true
 
