@@ -40,4 +40,8 @@ public class AlarmService {
 	public boolean existsByName(String name) {
 		return alarmRepository.existsByName(name);
 	}
+	
+	public Alarm findByName(String name) {
+		return alarmRepository.findByName(name);
+	}
 }
