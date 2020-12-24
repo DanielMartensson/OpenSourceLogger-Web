@@ -73,8 +73,10 @@ public class AlarmView extends AppLayout {
 
 			@Override
 			public Alarm update(Alarm alarm) {
+				// Check if we updating the same row
 				boolean nameExist = alarmService.existsByName(alarm.getName());
-				if (nameExist) {
+				Alarm anotherAlarmWithSameName = alarmService.findByName(alarm.getName());
+				if (nameExist && anotherAlarmWithSameName.getId() != alarm.getId()) {
 					new Notification("Cannot update this with a name that already exist.", 3000).open();
 					return alarm;
 				}
