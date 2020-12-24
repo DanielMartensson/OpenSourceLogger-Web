@@ -1,6 +1,7 @@
 package se.danielmartensson.views;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
@@ -79,6 +80,19 @@ public class AlarmView extends AppLayout {
 				if (nameExist && anotherAlarmWithSameName.getId() != alarm.getId()) {
 					new Notification("Cannot update this with a name that already exist.", 3000).open();
 					return alarm;
+				}
+				
+				Set<MailCheckBox> mailCheckBoxes = alarm.getChecked();
+				for (MailCheckBox mailCheckBox : mailCheckBoxes) {
+					int boxIndex = (int) mailCheckBox.getId();
+					switch (boxIndex) {
+					case 1:
+						System.out.println("Is active: " + mailCheckBox.isEnabled());
+						break;
+					case 2:
+						System.out.println("Has been sent:" + mailCheckBox.isEnabled());
+						break;
+					}
 				}
 				return alarmService.save(alarm);
 			}

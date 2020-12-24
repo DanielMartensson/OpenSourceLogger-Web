@@ -9,7 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PWMRelays {
 	private String variable;
-	private String frequency;
 	private String resolution;
 	private String loadConnection;
 	private String maxVoltage;

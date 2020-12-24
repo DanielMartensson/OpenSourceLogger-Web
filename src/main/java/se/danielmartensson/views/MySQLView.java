@@ -162,30 +162,30 @@ public class MySQLView extends AppLayout {
 			Float[] DAC0 = new Float[selectedSamples];
 			Float[] DAC1 = new Float[selectedSamples];
 			Float[] DAC2 = new Float[selectedSamples];
-			IntStream.range(0, selectedSamples).forEach(i -> {
+			for(int i = firstIndex; i < lastIndex; i++){
 				Data data = selectedData.get(i);
-				A0[i] = data.getA0();
-				A1[i] = data.getA1();
-				A2[i] = data.getA2();
-				A3[i] = data.getA3();
-				SA0[i] = data.getSa0();
-				SA1[i] = data.getSa1();
-				SA1D[i] = data.getSa1d();
-				SA2D[i] = data.getSa2d();
-				SA3D[i] = data.getSa3d();
-				PWM0[i] = (float) data.getP0();
-				PWM1[i] = (float) data.getP1();
-				PWM2[i] = (float) data.getP2();
-				PWM3[i] = (float) data.getP3();
-				PWM4[i] = (float) data.getP4();
-				PWM5[i] = (float) data.getP5();
-				PWM6[i] = (float) data.getP6();
-				PWM7[i] = (float) data.getP7();
-				PWM8[i] = (float) data.getP8();
-				DAC0[i] = (float) data.getD0();
-				DAC1[i] = (float) data.getD1();
-				DAC2[i] = (float) data.getD2();
-			});
+				A0[i-firstIndex] = data.getA0();
+				A1[i-firstIndex] = data.getA1();
+				A2[i-firstIndex] = data.getA2();
+				A3[i-firstIndex] = data.getA3();
+				SA0[i-firstIndex] = data.getSa0();
+				SA1[i-firstIndex] = data.getSa1();
+				SA1D[i-firstIndex] = data.getSa1d();
+				SA2D[i-firstIndex] = data.getSa2d();
+				SA3D[i-firstIndex] = data.getSa3d();
+				PWM0[i-firstIndex] = (float) data.getP0();
+				PWM1[i-firstIndex] = (float) data.getP1();
+				PWM2[i-firstIndex] = (float) data.getP2();
+				PWM3[i-firstIndex] = (float) data.getP3();
+				PWM4[i-firstIndex] = (float) data.getP4();
+				PWM5[i-firstIndex] = (float) data.getP5();
+				PWM6[i-firstIndex] = (float) data.getP6();
+				PWM7[i-firstIndex] = (float) data.getP7();
+				PWM8[i-firstIndex] = (float) data.getP8();
+				DAC0[i-firstIndex] = (float) data.getD0();
+				DAC1[i-firstIndex] = (float) data.getD1();
+				DAC2[i-firstIndex] = (float) data.getD2();
+			}
 
 			// Update
 			apexChart.updateSeries(

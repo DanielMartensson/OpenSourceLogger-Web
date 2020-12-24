@@ -82,15 +82,15 @@ public class AboutView extends AppLayout {
 	private Grid<PWMRelays> createGridPWMRelay() {
 		Grid<PWMRelays> grid = new Grid<>(PWMRelays.class);
 		List<PWMRelays> list = new ArrayList<>();
-		list.add(new PWMRelays("P0", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P1", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P2", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P3", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P4", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P5", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P6", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P7", "100Hz", "4096", "NPN", "60V", "45W"));
-		list.add(new PWMRelays("P8", "100Hz", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P0", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P1", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P2", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P3", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P4", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P5", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P6", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P7", "4096", "NPN", "60V", "45W"));
+		list.add(new PWMRelays("P8", "4096", "NPN", "60V", "45W"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "frequency", "resolution", "loadConnection", "maxVoltage", "maxLoad");
