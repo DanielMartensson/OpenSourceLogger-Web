@@ -1,18 +1,11 @@
 package se.danielmartensson.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,15 +24,14 @@ public class Alarm {
 
 	// Alarm settings
 	@Email
-	@NotNull
+	@NotEmpty
 	private String email;
-	@NotNull
+	@NotEmpty
 	private String message;
-
-	@ManyToMany
-	@Fetch(FetchMode.JOIN)
-	@NotNull
-	private Set<MailCheckBox> checked = new HashSet<>();
+	
+	// Status
+	private boolean alarmActive;
+	private boolean messageHasBeenSent;
 
 	// Thresholds
 	@NotNull

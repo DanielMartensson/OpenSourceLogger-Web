@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.stream.IntStream;
-
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.google.common.collect.Lists;

@@ -1,12 +1,9 @@
 package se.danielmartensson.views;
 
 import java.util.Collection;
-import java.util.Set;
-
 import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.CrudFormFactory;
-import org.vaadin.crudui.form.impl.field.provider.CheckBoxGroupProvider;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -14,9 +11,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
 
 import se.danielmartensson.entities.Alarm;
-import se.danielmartensson.entities.MailCheckBox;
 import se.danielmartensson.service.AlarmService;
-import se.danielmartensson.service.MailCheckBoxService;
 import se.danielmartensson.tools.Top;
 
 @Route("alarm")
@@ -35,7 +30,7 @@ public class AlarmView extends AppLayout {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AlarmView(AlarmService alarmService, MailCheckBoxService mailCheckBoxService) {
+	public AlarmView(AlarmService alarmService) {
 		Top top = new Top();
 		top.setTopAppLayout(this);
 
@@ -43,12 +38,11 @@ public class AlarmView extends AppLayout {
 		GridCrud<Alarm> alarmCrud = new GridCrud<>(Alarm.class);
 		CrudFormFactory<Alarm> crudFormFactory = new DefaultCrudFormFactory<Alarm>(Alarm.class);
 		alarmCrud.setCrudFormFactory(crudFormFactory);
-		alarmCrud.getGrid().setColumns("name", "email", "message", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max");
+		alarmCrud.getGrid().setColumns("name", "email", "message", "alarmActive", "messageHasBeenSent", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max");
 		alarmCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setVisibleProperties(new String[] { "name", "email", "message", "checked", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max" });
-		crudFormFactory.setFieldProvider("checked", new CheckBoxGroupProvider<>("Checked", mailCheckBoxService.findAll(), MailCheckBox::getName));
-
+		crudFormFactory.setVisibleProperties(new String[] { "name", "email", "message", "alarmActive", "messageHasBeenSent", "sa0Min", "sa0Max", "sa1Min", "sa1Max", "sa1dMin", "sa1dMax", "sa2dMin", "sa2dMax", "sa3dMin", "sa3dMax", "a0Min", "a0Max", "a1Min", "a1Max", "a2Min", "a2Max", "a3Min", "a3Max" });
+		
 		// Listener
 		alarmCrud.setCrudListener(new CrudListener<Alarm>() {
 
@@ -82,18 +76,6 @@ public class AlarmView extends AppLayout {
 					return alarm;
 				}
 				
-				Set<MailCheckBox> mailCheckBoxes = alarm.getChecked();
-				for (MailCheckBox mailCheckBox : mailCheckBoxes) {
-					int boxIndex = (int) mailCheckBox.getId();
-					switch (boxIndex) {
-					case 1:
-						System.out.println("Is active: " + mailCheckBox.isEnabled());
-						break;
-					case 2:
-						System.out.println("Has been sent:" + mailCheckBox.isEnabled());
-						break;
-					}
-				}
 				return alarmService.save(alarm);
 			}
 

@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -17,7 +15,6 @@ import se.danielmartensson.entities.Alarm;
 import se.danielmartensson.entities.Calibration;
 import se.danielmartensson.entities.Data;
 import se.danielmartensson.entities.Job;
-import se.danielmartensson.entities.MailCheckBox;
 import se.danielmartensson.service.DataService;
 import se.danielmartensson.service.MailService;
 import se.danielmartensson.views.ControlView;
@@ -142,18 +139,7 @@ public class SamplingThread extends Thread {
 			float a3Max = alarm.getA3Max();
 			String message = alarm.getMessage();
 			String email = alarm.getEmail();
-
-			// Check if the alarm is active or not.
-			Set<MailCheckBox> mailCheckBoxes = alarm.getChecked();
-			boolean alarmActive = false;
-			for (MailCheckBox mailCheckBox : mailCheckBoxes) {
-				int boxIndex = (int) mailCheckBox.getId();
-				switch (boxIndex) {
-				case 1:
-					alarmActive = mailCheckBox.isEnabled();
-					break;
-				}
-			}
+			boolean alarmActive = alarm.isAlarmActive();
 
 			// Sampling loop
 			while (ControlView.loggingNow.get()) {

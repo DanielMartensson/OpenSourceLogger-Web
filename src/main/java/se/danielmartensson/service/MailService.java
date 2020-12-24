@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import se.danielmartensson.entities.Alarm;
-import se.danielmartensson.entities.MailCheckBox;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -29,21 +28,11 @@ public class MailService {
 	}
 
 	public void sendMessage(Alarm alarm, String email, String cause, String message) {
-		// Check if the message has been sent, turn it to true
-		boolean messageHasBeenSent = false;
-		for (MailCheckBox mailCheckBox : alarm.getChecked()) {
-			int boxIndex = (int) mailCheckBox.getId();
-			switch (boxIndex) {
-			case 2:
-				messageHasBeenSent = mailCheckBox.isEnabled(); // This will be false first time, then true
-				mailCheckBox.setEnabled(true); // messageHasBeenSent == true
-				break;
-			}
-		}
-		if (messageHasBeenSent)
+		if (alarm.isMessageHasBeenSent())
 			return;
 		
 		// Save the mark inside the database
+		alarm.setMessageHasBeenSent(true);
 		alarmService.save(alarm);
 		
 		// Send message
