@@ -91,9 +91,11 @@ public class JobView extends AppLayout {
 
 			@Override
 			public Job update(Job job) {
+				// Check if we updating the same row
 				boolean nameExist = jobService.existsByName(job.getName());
-				if (nameExist) {
-					new Notification("Cannot add this with a name that already exist.", 3000).open();
+				Job anotherJobWithSameName = jobService.findByName(job.getName());
+				if (nameExist && anotherJobWithSameName.getId() != job.getId()) {
+					new Notification("Cannot update this with a name that already exist.", 3000).open();
 					return job;
 				}
 				return jobService.save(job);
