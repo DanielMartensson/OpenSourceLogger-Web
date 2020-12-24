@@ -9,5 +9,6 @@ import se.danielmartensson.entities.Alarm;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
 	boolean existsByName(String name);
+	Alarm findByName(String name);
 
 }
