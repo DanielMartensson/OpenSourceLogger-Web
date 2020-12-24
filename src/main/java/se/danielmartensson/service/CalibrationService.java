@@ -40,4 +40,8 @@ public class CalibrationService {
 	public boolean existsByName(String name) {
 		return calibrationRepository.existsByName(name);
 	}
+	
+	public Calibration findByName(String name) {
+		return calibrationRepository.findByName(name);
+	}
 }
