@@ -26,13 +26,23 @@ store them into a MySQL database.
 The board will communicate with the TX & RX UART pins. 
 All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
 
+Made in KiCad.
+
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/3D%20Schematic.png)
+
+I have solder all components by my self.
 
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Produced.jpg)
 
+I have solder this microcontroller by hand. 
+
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/HandSolder.jpg)
 
+Applied inside a metallic box. Here I'm using Raspberry Pi to communicate with the board.
+You can use a regular computer as well, as long you have a USB to serial converter, e.g `USB/UART converter FTDI FT232` where you connect `RXD -> TX` and `TXD -> RX` on the board.
+
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Box.jpg)
+
 
 # How to install - Ubuntu user
 
