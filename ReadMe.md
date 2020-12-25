@@ -12,7 +12,7 @@ store them into a MySQL database.
 * 9 PWM control outputs
 * 6 Digital inputs
 * 3 Analog outputs of 12-bit
-* Circuit protection for high voltage
+* Circuit protection from high voltage
 * Spring Security Login
 * MySQL database
 * USB Camera view (Does not work with Raspberry Pi)
