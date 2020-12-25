@@ -19,6 +19,9 @@ public class MailService {
     @Value("${service.MailService.subject}")
     private String subject;
     
+    @Value("${service.MailService.from}")
+    private String from;
+    
     @Autowired
     private AlarmService alarmService;
     
@@ -38,6 +41,7 @@ public class MailService {
 		// Send message
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);
+		msg.setFrom(from);
 		msg.setSubject(subject);
 		msg.setText("Message: " + message +"\nCause: " + cause);
 		try {

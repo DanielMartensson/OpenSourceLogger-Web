@@ -137,12 +137,19 @@ public class DeviceSettingsView extends AppLayout {
 			// OK! Write to database and send to the device about new settings
 			pwmService.deleteAll(); // Only one setting allowed
 			pwmService.save(new PWM(0, portDescription, P0_P1_P2_Value, P3_P7_P8_Value, P6_P5_Value, P4_Value));
-			int[] frequency = new int[4];
-			frequency[0] = 2000000 / P4_Value; //TIM2
-			frequency[1] = 2000000 / P6_P5_Value; //TIM3
-			frequency[2] = 2000000 / P3_P7_P8_Value; //TIM4
-			frequency[3] = 2000000 / P0_P1_P2_Value; //TIM5
-			serial.trancieve(frequency);
+			
+			/*
+			 *  The TIM clock is on 2 Mhz. 
+			 *  We take -1 because prescaling the clock we divide e.g New clock frequency = (Original Clock Frequency In Mhz)/(Our prescaler value - 1)
+			 *  If prescalerValues == MAX_VALUE_INTEGER_FIELD, then prescalerValues[0] == 0 and then TIM2 will have MAX_VALUE_INTEGER_FIELD Hz PWM.
+			 *  If prescalerValues == MIN_VALUE_INTEGER_FIELD, then prescalerValues[0] == 64515 and then TIM2 WILL have MIN_VALUE_INTEGER_FIELD Hz PWM.
+			 */
+			int[] prescalerValues = new int[4];
+			prescalerValues[0] = MAX_VALUE_INTEGER_FIELD / P4_Value -1; //TIM2
+			prescalerValues[1] = MAX_VALUE_INTEGER_FIELD / P6_P5_Value -1; //TIM3
+			prescalerValues[2] = MAX_VALUE_INTEGER_FIELD / P3_P7_P8_Value -1; //TIM4
+			prescalerValues[3] = MAX_VALUE_INTEGER_FIELD / P0_P1_P2_Value -1; //TIM5
+			serial.trancieve(prescalerValues);
 			pwmCrud.refreshGrid();
 			new Notification("Success!", 3000).open();
 		});

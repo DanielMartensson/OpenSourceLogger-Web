@@ -67,12 +67,12 @@ public class Serial {
 		}
 	}
 	
-	public void trancieve(int frequency[]) {
+	public void trancieve(int prescalerValues[]) {
 		if (selectedSerialPort == null)
 			return;
 		byte[] buffer = new byte[MESSAGE_LENGTH]; // Settings for the PWM timers
 		buffer[0] = WRITE_PWM_FREQUENCIES;
-		fillBuffer(buffer, frequency, 1);
+		fillBuffer(buffer, prescalerValues, 1);
 		selectedSerialPort.writeBytes(buffer, buffer.length);
 	}
 

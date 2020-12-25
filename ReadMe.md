@@ -101,17 +101,11 @@ sudo /etc/init.d/mysql restart
 
 If you don't know your LAN address, you can type in this command in linux `ifconfig` in the terminal
 
-5. Create a Outlook account
-
-Create a Outlook account and make sure you have enabled so you can login from third parts software, e.g Java Mail.
-Because `OpenSourceLogger` uses `Java Mail` to login into Outlook. This feature exist because if `OpenSourceLogger` is on the fly over a
-night and something happens, then it will stop everything and send a message back to you.
-
-6. Download `OpenSourceLogger`
+5. Download `OpenSourceLogger`
 
 Download the `OpenSourceLogger` and change the `application.properties` in the `/src/main/resources` folder.
-Here you can set the configuration for your database IP address, user and password. You can also set a gmail address and its
-password.
+Here you can set the configuration for your database IP address, user and password. Here set the address of your `Outlook` account.
+The `service.MailService.from` must be the same as `configuration.MailConfiguration.username`.
 
 ```
 server.port=8080
@@ -123,34 +117,33 @@ logging.level.org.atmosphere = warn
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
-spring.datasource.url=jdbc:mysql://ServerAddress:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
+spring.datasource.url=jdbc:mysql://yourIPAddressOfTheServerWhereMySQLIsInstalled:3306/OpenSourceLogger?createDatabaseIfNotExist=true&serverTimezone=CET
 spring.datasource.username=myUser
 spring.datasource.password=myPassword
 
 # Mail - Transmitter
-configuration.MailConfiguration.host=smtp.live.com
+configuration.MailConfiguration.host=smtp.office365.com
 configuration.MailConfiguration.port=587
-configuration.MailConfiguration.username=yourEmail@outlook.com
-configuration.MailConfiguration.password=yourPassword
-configuration.MailConfiguration.properties.mail.smtp.auth=true
-configuration.MailConfiguration.properties.mail.smtp.starttls.enable=true
+configuration.MailConfiguration.username=yourOutlookAccount@outlook.com
+configuration.MailConfiguration.password=yourOutlookPassword
 
-# Mail - Reciever
+# Mail - Receiver
 service.MailService.subject=Alarm Message Subject Title
+service.MailService.from=yourOutlookAccount@outlook.com
 
 # Login
 spring.security.user.name=myUser
 spring.security.user.password=myPassword
 ```
 
-7. Pack this project and run
+6. Pack this project and run
 
 First stand inside of the folder `OpenSourceLogger` and write inside your terminal
 ```
 mvn package -Pproduction
 ```
 
-8. Starting the application
+7. Starting the application
 
 Now a JAR file is created inside the `OpenSourceLogger/target` folder. 
 
@@ -196,19 +189,19 @@ And place these line above `exit 0`
 cd /The/Path/To/Where/The/Jar/File/Is/Placed
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 ```
-Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal.
+Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal at the startup.
 
 Then you need to enable `Serial` in Raspberry Pi.
 ```
 sudo raspi-config
 ```
-Then enable `Serial`. It's at the same page where you enable `SSH`, `VNC`, `I2C` etc.
-Answer `NO` to the question about login shell.
-Answer `YES` to the question about serial hardware port.
+Then enable `Serial`. It's at the same page where you enable `SSH`, `VNC`, `I2C` etc. 
+Once you found `Serial` option, answer `NO` to the question about login shell.
+Then answer `YES` to the question about serial hardware port.
 Then when you exit the `raspi-config`, it will ask you if you want to reboot, press `YES`
 
 Now your `OpenSourceLogger` will starts automatically. Select the port `ttyS0` in `Device settings` at `OpenSourceLogger` and save the configuration
-inside the database. Done!
+inside the database. `ttyS0` is the `RX` and `TX` pins of the Raspberry Pi. Done!
 
 # Build an own board
 
