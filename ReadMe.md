@@ -21,12 +21,14 @@ store them into a MySQL database.
 * CSV generation of measurements
 * Connect with RX and TX from Raspberry Pi pins
 
+With this user view, you can control PWM, DAC, read ADC and logging digital inputs online over the web.
+Set an alarm and calibration of a special sensor you want to use. Store all data inside the database. 
+Then later you can bring the measurement back to a plot. Notice that you can close down the web browser while you logging.
+It will continue to sample in a separate thread. 
+
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/UiView.png)
 
-The board will communicate with the TX & RX UART pins. 
-All information about such as schematic and component list the board can be found in the folder KiCad & STM32.
-
-Made in KiCad.
+This is made in KiCad. I have drag all the tracks on the board by my self. No auto-routing here.
 
 ![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/3D%20Schematic.png)
 
