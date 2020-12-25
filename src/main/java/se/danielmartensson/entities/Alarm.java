@@ -24,9 +24,9 @@ public class Alarm {
 
 	// Alarm settings
 	@Email
-	@NotEmpty
+	@NotNull
 	private String email;
-	@NotEmpty
+	@NotNull
 	private String message;
 	
 	// Status

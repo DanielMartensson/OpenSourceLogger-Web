@@ -40,6 +40,10 @@ public class MailService {
 		msg.setTo(email);
 		msg.setSubject(subject);
 		msg.setText("Message: " + message +"\nCause: " + cause);
-		javaMailSender.send(msg);
+		try {
+			javaMailSender.send(msg);
+		}catch(Exception e) {
+			// Something went wrong
+		}
 	}
 }
