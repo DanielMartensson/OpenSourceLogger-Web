@@ -25,7 +25,6 @@ public class MailService {
     @Autowired
     private AlarmService alarmService;
     
-   
 	public MailService() {
 		
 	}
