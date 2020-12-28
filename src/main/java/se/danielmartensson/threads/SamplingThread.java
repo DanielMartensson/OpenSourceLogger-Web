@@ -65,11 +65,10 @@ public class SamplingThread extends Thread {
 	public void run() {
 		while (true) {
 			// Wait loop
-			while (ControlView.loggingNow.get() == false) {
+			while (!ControlView.loggingNow.get()) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
+				} catch (InterruptedException e) {}
 			}
 
 			// Series for the plot and restore the plot and counting
@@ -87,7 +86,7 @@ public class SamplingThread extends Thread {
 			SA3D = new Float[showSamplesValue];
 
 			// Pulses
-			pulseNumber = counters.get(0).getValue(); // This is countedPulses
+			pulseNumber = counters.get(0).getValue(); // This is countedPulses object
 			pastPulse = false;
 			updatePlotAndPulseAndInputs();
 
@@ -144,7 +143,7 @@ public class SamplingThread extends Thread {
 			// Sampling loop
 			while (ControlView.loggingNow.get()) {
 
-				// Outputs and inputs
+				// Outputs - PWM and DAC
 				int p0 = ControlThread.PWM[0];
 				int p1 = ControlThread.PWM[1];
 				int p2 = ControlThread.PWM[2];
@@ -158,7 +157,7 @@ public class SamplingThread extends Thread {
 				int d1 = ControlThread.DAC[1];
 				int d2 = ControlThread.DAC[2];
 
-				// Inputs
+				// Inputs - ADC and SDADC and DSDADC and DI
 				float a0 = a0Slope * ControlThread.ADC[3] + a0Bias;
 				float a1 = a1Slope * ControlThread.ADC[2] + a1Bias;
 				float a2 = a2Slope * ControlThread.ADC[0] + a2Bias;
@@ -259,15 +258,17 @@ public class SamplingThread extends Thread {
 					}
 				}
 
-				// Wait
-				try {
-					Thread.sleep(samplingTimeValue);
-				} catch (InterruptedException e) {
+				// Wait or we could break the while loop by pushing the stop button
+				int sampleTimeCounter = 0;
+				while(sampleTimeCounter < samplingTimeValue && ControlView.loggingNow.get()) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {}
+					sampleTimeCounter++;
 				}
 			}
 
-			// This will cause so components will be enabled again - and also the control
-			// thread stops!
+			// This will cause so components will be enabled again - and also the control thread stops!
 			ControlView.loggingNow.set(false); // OFF
 			updatePlotAndPulseAndInputs();
 		}
@@ -300,11 +301,9 @@ public class SamplingThread extends Thread {
 			// This runs when we don't run the logging
 			loggingActivate.setText(ControlView.STOP_LOGGING);
 			firstRow.setEnabled(false);
-
 		} else {
 			loggingActivate.setText(ControlView.START_LOGGING);
 			firstRow.setEnabled(true);
-
 		}
 	}
 

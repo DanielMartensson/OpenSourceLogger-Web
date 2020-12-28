@@ -41,7 +41,7 @@ public class ControlThread extends Thread {
 	public void run() {
 		while (true) {
 			// Wait loop
-			while (ControlView.loggingNow.get() == false) {
+			while (!ControlView.loggingNow.get()) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -49,7 +49,7 @@ public class ControlThread extends Thread {
 			}
 
 			// Control loop - When sampling thread are done, then this will quit too
-			while (ControlView.loggingNow.get() == true) {
+			while (ControlView.loggingNow.get()) {
 
 				// Send PWM and DAC
 				PWM[0] = ControlView.sliderSelectedP0;
@@ -68,7 +68,7 @@ public class ControlThread extends Thread {
 
 				// Wait
 				try {
-					Thread.sleep(100); // Some delay does not hurt at all
+					Thread.sleep(50); // Some delay does not hurt at all
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
