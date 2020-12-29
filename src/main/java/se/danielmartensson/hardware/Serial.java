@@ -96,6 +96,8 @@ public class Serial {
 	public void receive(int[] ADC, int[] SDADC, int[] DSDADC, boolean[] DI) {
 		// Clear all
 		clearArray(ADC);
+		clearArray(SDADC);
+		clearArray(DSDADC);
 		clearArray(DI);
 		
 		if (selectedSerialPort == null)
