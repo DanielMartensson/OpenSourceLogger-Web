@@ -93,7 +93,7 @@ public class AboutView extends AppLayout {
 		list.add(new PWMRelays("P8", "4096", "NPN", "60V", "45W"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
-		grid.setColumns("variable", "frequency", "resolution", "loadConnection", "maxVoltage", "maxLoad");
+		grid.setColumns("variable", "resolution", "loadConnection", "maxVoltage", "maxLoad");
 		return grid;
 	}
 
@@ -127,15 +127,15 @@ public class AboutView extends AppLayout {
 	private Grid<AnalogInputs> createGridAnalogInputs() {
 		Grid<AnalogInputs> grid = new Grid<>(AnalogInputs.class);
 		List<AnalogInputs> list = new ArrayList<>();
-		list.add(new AnalogInputs("A0", "0-20mA", "0-3.3V", "4096", "Single", "30V", "A0 Slope", "A0 Bias"));
-		list.add(new AnalogInputs("A1", "0-20mA", "0-3.3V", "4096", "Single", "30V", "A1 Slope", "A1 Bias"));
-		list.add(new AnalogInputs("A2", "0-20mA", "0-3.3V", "4096", "Single", "30V", "A2 Slope", "A2 Bias"));
-		list.add(new AnalogInputs("A3", "0-20mA", "0-3.3V", "4096", "Single", "30V", "A3 Slope", "A3 Bias"));
-		list.add(new AnalogInputs("SA0", "0-20mA", "0-3.3V", "65536", "Single", "30V", "Sa0 Slope", "Sa0 Bias"));
-		list.add(new AnalogInputs("SA1", "0-20mA", "0-3.3V", "65536", "Single", "30V", "Sa1 Slope", "Sa1 Bias"));
-		list.add(new AnalogInputs("SA1D", "0-20mA", "0-3.3V", "65536", "Differential", "30V", "Sa1D Slope", "Sa1D Bias"));
-		list.add(new AnalogInputs("SA2D", "0-20mA", "0-3.3V", "65536", "Differential", "30V", "Sa2D Slope", "Sa2D Bias"));
-		list.add(new AnalogInputs("SA3D", "0-20mA", "0-3.3V", "65536", "Differential", "30V", "Sa3D Slope", "Sa3D Bias"));
+		list.add(new AnalogInputs("A0", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A0 Slope", "A0 Bias"));
+		list.add(new AnalogInputs("A1", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A1 Slope", "A1 Bias"));
+		list.add(new AnalogInputs("A2", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A2 Slope", "A2 Bias"));
+		list.add(new AnalogInputs("A3", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A3 Slope", "A3 Bias"));
+		list.add(new AnalogInputs("SA0", "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa0 Slope", "Sa0 Bias"));
+		list.add(new AnalogInputs("SA1", "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa1 Slope", "Sa1 Bias"));
+		list.add(new AnalogInputs("SA1D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa1D Slope", "Sa1D Bias"));
+		list.add(new AnalogInputs("SA2D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa2D Slope", "Sa2D Bias"));
+		list.add(new AnalogInputs("SA3D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa3D Slope", "Sa3D Bias"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "signalAmpere", "signalVoltage", "resolution", "mode", "maxInput", "calibrationSlopeVariable", "calibrationBiasVariable");
