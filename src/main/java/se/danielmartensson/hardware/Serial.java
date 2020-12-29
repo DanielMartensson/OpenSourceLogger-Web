@@ -42,7 +42,6 @@ public class Serial {
 	
 	private void openPort() {
 		selectedSerialPort.openPort();
-		System.out.println("Is port open? " + isPortOpen());
 	}
 	
 	public void closePort() {
@@ -94,12 +93,6 @@ public class Serial {
 	}
 
 	public void receive(int[] ADC, int[] SDADC, int[] DSDADC, boolean[] DI) {
-		// Clear all
-		clearArray(ADC);
-		clearArray(SDADC);
-		clearArray(DSDADC);
-		clearArray(DI);
-		
 		if (selectedSerialPort == null)
 			return;
 		int size = selectedSerialPort.bytesAvailable();
@@ -114,20 +107,6 @@ public class Serial {
 		fillArray(buffer, SDADC, ADC.length * 2);
 		fillArray(buffer, DSDADC, (ADC.length + SDADC.length) * 2);
 		fillArray(buffer, DI, (ADC.length + SDADC.length + DSDADC.length) * 2);
-		
-		// Fix -32768 to 0 for SDADC because SDADC is Sigma Delta ADC zero reference, which goes from -2^15 to +2^15, e.g 16-bit total
-		for(int i = 0; i < SDADC.length; i++)
-			SDADC[i] = SDADC[i] + 32768;
-	}
-
-	private void clearArray(boolean[] array) {
-		for(int i = 0; i < array.length; i++)
-			array[i] = false;
-	}
-
-	private void clearArray(int[] array) {
-		for(int i = 0; i < array.length; i++)
-			array[i] = 0;
 	}
 
 	private void fillArray(byte[] buffer, boolean[] booleanArray, int elementsThatHasBeenWritten) {
