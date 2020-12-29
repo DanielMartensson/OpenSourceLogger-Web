@@ -72,7 +72,7 @@ public class ControlView extends AppLayout {
 
 	// Static for the UI - Also initial values
 	public static Job selectedJob;
-	public static int selectedSamplingTime = 50;
+	public static int selectedSamplingTime = 10;
 	public static int selectedShowSamples = 10;
 	public static boolean selectedShowPlot;
 	public static int sliderSelectedP0 = 0;
@@ -294,7 +294,7 @@ public class ControlView extends AppLayout {
 		selectJob.addValueChangeListener(e -> selectedJob = e.getValue());
 
 		// Sampling time for the thread
-		Select<Integer> samplingTime = new Select<Integer>(new Integer[] {50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 10000, 20000, 30000, 40000, 50000, 60000 });
+		Select<Integer> samplingTime = new Select<Integer>(new Integer[] {10, 25, 50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 10000, 20000, 30000, 40000, 50000, 60000 });
 		samplingTime.setLabel("Sampling time");
 		samplingTime.setValue(selectedSamplingTime);
 		samplingTime.addValueChangeListener(e -> selectedSamplingTime = e.getValue());

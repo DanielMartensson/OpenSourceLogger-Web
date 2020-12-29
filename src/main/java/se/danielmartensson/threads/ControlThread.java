@@ -68,7 +68,7 @@ public class ControlThread extends Thread {
 
 				// Wait
 				try {
-					Thread.sleep(50); // Some delay does not hurt at all
+					Thread.sleep(10); // Some delay does not hurt at all
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
