@@ -76,6 +76,9 @@ public class ControlThread extends Thread {
 
 				// Receive ADC, SDADC, DSDADC and DI
 				serial.receive(ADC, SDADC, DSDADC, DI);
+				// Fix -32768 to 0 for SDADC because SDADC is Sigma Delta ADC zero reference, which goes from -2^15 to +2^15, e.g 16-bit total
+				for(int i = 0; i < SDADC.length; i++)
+					SDADC[i] = SDADC[i] + 32768;
 			}
 		}
 	}
