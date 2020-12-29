@@ -82,7 +82,7 @@ public class MySQLView extends AppLayout {
 		countSamples.addClickListener(e -> {
 			if (selectJob.getValue() == null)
 				return; // Not selected
-			List<Data> dataOfJobName = dataService.findByJobName(selectJob.getValue().getJobName());
+			List<Data> dataOfJobName = dataService.findByJobNameOrderByDateTime(selectJob.getValue().getJobName());
 			if (dataOfJobName == null)
 				return; // No samples
 			int amountOfSamples = dataOfJobName.size();
