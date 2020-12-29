@@ -1,15 +1,23 @@
 package se.danielmartensson.service;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
 
 import se.danielmartensson.entities.Alarm;
 import se.danielmartensson.entities.Calibration;
+import se.danielmartensson.entities.Data;
 import se.danielmartensson.entities.Job;
 import se.danielmartensson.repositories.JobRepository;
 
 @Service
 public class JobService {
+	
+	@Autowired
+	private DataService dataService;
 
 	private final JobRepository jobRepository;
 
@@ -38,6 +46,10 @@ public class JobService {
 	}
 
 	public void delete(Job job) {
+		List<Data> jobData = dataService.findByJobName(job.getName());
+		for (List<Data> deleteTheseLists : Lists.partition(jobData, 2000)) {
+			dataService.deleteInBatch(deleteTheseLists);
+		}
 		jobRepository.delete(job);
 	}
 
