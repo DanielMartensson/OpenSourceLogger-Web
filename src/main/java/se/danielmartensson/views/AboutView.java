@@ -47,6 +47,7 @@ public class AboutView extends AppLayout {
 
 		// Upload picture
 		Image board = new Image("img/board.png", "Board");
+		board.setHeight("800px");
 
 		// Analog inputs
 		Label analogInputTitle = new Label("Analog inputs");
@@ -72,6 +73,7 @@ public class AboutView extends AppLayout {
 		Label calibrationManualTitle = new Label("How to calibrate with MATLAB/GNU Octave");
 		calibrationManualTitle.setClassName("headingH1");
 		Image calibrationManual = new Image("img/calibrationmanual.png", "Calibration");
+		calibrationManual.setHeight("300px");
 
 		// Layout
 		VerticalLayout layout = new VerticalLayout(title, board, analogInputTitle, analogInputGrid, digitalInputTitle, digitalInputGrid, analogOutputTitle, analogOutputGrid, pwmRelayTitle, pwmRelayGrid, pwmRelayGrid, calibrationManualTitle, calibrationManual);
