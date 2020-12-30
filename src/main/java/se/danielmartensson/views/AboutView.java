@@ -69,7 +69,7 @@ public class AboutView extends AppLayout {
 		Grid<PWMRelays> pwmRelayGrid = createGridPWMRelay();
 
 		// How to calibrate
-		Label calibrationManualTitle = new Label("Calibration manual");
+		Label calibrationManualTitle = new Label("How to calibrate with MATLAB/GNU Octave");
 		calibrationManualTitle.setClassName("headingH1");
 		Image calibrationManual = new Image("img/calibrationmanual.png", "Calibration");
 
