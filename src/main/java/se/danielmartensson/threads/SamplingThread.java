@@ -164,8 +164,8 @@ public class SamplingThread extends Thread {
 				float a1 = a1Slope * ControlThread.ADC[2] + a1Bias;
 				float a2 = a2Slope * ControlThread.ADC[0] + a2Bias;
 				float a3 = a3Slope * ControlThread.ADC[1] + a3Bias;
-				float sa0 = sa0Slope * ControlThread.SDADC[0] + sa0Bias + BIT_15; // This will turn -32768 to 0
-				float sa1 = sa1Slope * ControlThread.SDADC[1] + sa1Bias + BIT_15;
+				float sa0 = sa0Slope * (ControlThread.SDADC[0] + BIT_15) + sa0Bias; // This will turn -32768 to 0 if slope is 1 and bias is 0
+				float sa1 = sa1Slope * (ControlThread.SDADC[1] + BIT_15) + sa1Bias;
 				float sa1d = sa1dSlope * ControlThread.DSDADC[0] + sa1dBias;
 				float sa2d = sa2dSlope * ControlThread.DSDADC[1] + sa2dBias;
 				float sa3d = sa3dSlope * ControlThread.DSDADC[2] + sa3dBias;
