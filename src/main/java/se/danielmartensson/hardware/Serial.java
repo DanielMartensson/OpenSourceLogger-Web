@@ -58,7 +58,7 @@ public class Serial {
 	public void selectNewPort(String portDescription) {
 		for (SerialPort serialPort : serialPorts) {
 			if (serialPort.getPortDescription().contains(portDescription)) {
-				serialPort.setComPortParameters(115200, 8, 1, SerialPort.NO_PARITY);
+				serialPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
 				selectedSerialPort = serialPort;
 				openPort();
 				break;
