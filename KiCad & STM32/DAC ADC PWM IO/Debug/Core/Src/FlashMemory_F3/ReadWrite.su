@@ -1,4 +1,0 @@
-ReadWrite.c:14:13:erase	24	static
-ReadWrite.c:26:6:FlashSetAddrs	16	static
-ReadWrite.c:31:6:FlashWriteN	64	static
-ReadWrite.c:81:6:FlashReadN	64	static

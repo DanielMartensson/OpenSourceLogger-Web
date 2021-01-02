@@ -969,7 +969,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -1104,8 +1104,7 @@ void read_PWM_DAC_periods_send_measurement_back() {
 void fill_uint16_array(uint8_t array8[], uint16_t array16[],
 		uint8_t elements_that_has_been_written, uint8_t size) {
 	for (uint8_t i = 0; i < size; i++) {
-		array16[i] = (array8[i + i + elements_that_has_been_written] << 8)
-				| (array8[i + i + 1 + elements_that_has_been_written] & 0xFF);
+		array16[i] = (array8[i + i + elements_that_has_been_written] << 8) | (array8[i + i + 1 + elements_that_has_been_written] & 0xFF);
 	}
 }
 

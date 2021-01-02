@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_macro  0001cbf4  00000000  00000000  00038368  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00010a4d  00000000  00000000  00054f5c  2**0
+ 17 .debug_line   00010a3a  00000000  00000000  00054f5c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    000aad51  00000000  00000000  000659a9  2**0
+ 18 .debug_str    000aad51  00000000  00000000  00065996  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  001106fa  2**0
+ 19 .comment      0000007b  00000000  00000000  001106e7  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000053b4  00000000  00000000  00110778  2**2
+ 20 .debug_frame  000053b4  00000000  00000000  00110764  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2660,9 +2660,9 @@ static void MX_USART1_UART_Init(void)
  80010d0:	4b14      	ldr	r3, [pc, #80]	; (8001124 <MX_USART1_UART_Init+0x58>)
  80010d2:	4a15      	ldr	r2, [pc, #84]	; (8001128 <MX_USART1_UART_Init+0x5c>)
  80010d4:	601a      	str	r2, [r3, #0]
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
  80010d6:	4b13      	ldr	r3, [pc, #76]	; (8001124 <MX_USART1_UART_Init+0x58>)
- 80010d8:	f44f 32e1 	mov.w	r2, #115200	; 0x1c200
+ 80010d8:	f44f 5216 	mov.w	r2, #9600	; 0x2580
  80010dc:	605a      	str	r2, [r3, #4]
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
  80010de:	4b11      	ldr	r3, [pc, #68]	; (8001124 <MX_USART1_UART_Init+0x58>)
@@ -3166,7 +3166,7 @@ void fill_uint16_array(uint8_t array8[], uint16_t array16[],
  800141a:	2300      	movs	r3, #0
  800141c:	75fb      	strb	r3, [r7, #23]
  800141e:	e01e      	b.n	800145e <fill_uint16_array+0x5a>
-		array16[i] = (array8[i + i + elements_that_has_been_written] << 8)
+		array16[i] = (array8[i + i + elements_that_has_been_written] << 8) | (array8[i + i + 1 + elements_that_has_been_written] & 0xFF);
  8001420:	7dfb      	ldrb	r3, [r7, #23]
  8001422:	005a      	lsls	r2, r3, #1
  8001424:	79fb      	ldrb	r3, [r7, #7]
@@ -3176,7 +3176,6 @@ void fill_uint16_array(uint8_t array8[], uint16_t array16[],
  800142c:	4413      	add	r3, r2
  800142e:	781b      	ldrb	r3, [r3, #0]
  8001430:	021b      	lsls	r3, r3, #8
-				| (array8[i + i + 1 + elements_that_has_been_written] & 0xFF);
  8001432:	b21a      	sxth	r2, r3
  8001434:	7dfb      	ldrb	r3, [r7, #23]
  8001436:	005b      	lsls	r3, r3, #1
@@ -3190,14 +3189,11 @@ void fill_uint16_array(uint8_t array8[], uint16_t array16[],
  8001446:	b21b      	sxth	r3, r3
  8001448:	4313      	orrs	r3, r2
  800144a:	b219      	sxth	r1, r3
-		array16[i] = (array8[i + i + elements_that_has_been_written] << 8)
  800144c:	7dfb      	ldrb	r3, [r7, #23]
  800144e:	005b      	lsls	r3, r3, #1
  8001450:	68ba      	ldr	r2, [r7, #8]
  8001452:	4413      	add	r3, r2
-				| (array8[i + i + 1 + elements_that_has_been_written] & 0xFF);
  8001454:	b28a      	uxth	r2, r1
-		array16[i] = (array8[i + i + elements_that_has_been_written] << 8)
  8001456:	801a      	strh	r2, [r3, #0]
 	for (uint8_t i = 0; i < size; i++) {
  8001458:	7dfb      	ldrb	r3, [r7, #23]

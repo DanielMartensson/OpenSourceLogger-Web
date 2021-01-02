@@ -18,8 +18,8 @@ main.c:1049:6:HAL_UART_RxCpltCallback	24	static
 main.c:1070:6:HAL_SDADC_InjectedConvCpltCallback	16	static
 main.c:1080:6:read_PWM_DAC_periods_send_measurement_back	32	static
 main.c:1104:6:fill_uint16_array	32	static
-main.c:1112:6:fill_TX_DATA_16	32	static
-main.c:1120:6:fill_TX_DATA_8	32	static
-main.c:1127:6:read_PWM_TIM_prescalers_from_memory	16	static
-main.c:1136:6:write_PWM_TIM_prescalers_to_memory	40	dynamic
-main.c:1150:6:Error_Handler	4	static,ignoring_inline_asm
+main.c:1111:6:fill_TX_DATA_16	32	static
+main.c:1119:6:fill_TX_DATA_8	32	static
+main.c:1126:6:read_PWM_TIM_prescalers_from_memory	16	static
+main.c:1135:6:write_PWM_TIM_prescalers_to_memory	40	dynamic
+main.c:1149:6:Error_Handler	4	static,ignoring_inline_asm
