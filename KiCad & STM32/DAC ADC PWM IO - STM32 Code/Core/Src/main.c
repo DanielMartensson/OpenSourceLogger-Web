@@ -94,6 +94,8 @@ void fill_TX_DATA_8(uint8_t array8[], uint16_t array16[], uint8_t elements_that_
 void read_PWM_TIM_prescalers_from_memory();
 void write_PWM_TIM_prescalers_to_memory();
 void read_PWM_DAC_periods_send_measurement_back();
+void is_ready();
+void is_not_ready();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -1056,15 +1058,20 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	uint8_t choice = RX_DATA[0];
 	switch (choice) {
-	case 49: // "1"
+	case 48: // Ask if is ready
+		is_ready();
+		break;
+	case 49: // Set PWM and DAC periods and also send measurements back
 		read_PWM_DAC_periods_send_measurement_back();
 		break;
-	case 50: // "2"
+	case 50: // Set Timers prescalers to memory and send status OK back
 		write_PWM_TIM_prescalers_to_memory();
+		break;
+	default: // Answer back that this uC is not ready
+		is_not_ready();
 		break;
 	}
 }
-
 
 // When we got a measurement
 void HAL_SDADC_InjectedConvCpltCallback(SDADC_HandleTypeDef *hsdadc){
@@ -1075,6 +1082,20 @@ void HAL_SDADC_InjectedConvCpltCallback(SDADC_HandleTypeDef *hsdadc){
 	}else if(hsdadc->Instance == SDADC3){
 		SD_ADC[CHANNEL - 4 + 1] = HAL_SDADC_InjectedGetValue(hsdadc, &CHANNEL);
 	}
+}
+
+// Send back that it's true at first element
+void is_ready(){
+	uint8_t TX_DATA_element_size = sizeof(TX_DATA) / sizeof(TX_DATA[0]);
+	TX_DATA[0] = 1;
+	HAL_UART_Transmit(&huart1, TX_DATA, TX_DATA_element_size, 10);
+}
+
+// Send back that it's false at first element
+void is_not_ready(){
+	uint8_t TX_DATA_element_size = sizeof(TX_DATA) / sizeof(TX_DATA[0]);
+	TX_DATA[0] = 0;
+	HAL_UART_Transmit(&huart1, TX_DATA, TX_DATA_element_size, 10);
 }
 
 void read_PWM_DAC_periods_send_measurement_back() {
@@ -1126,10 +1147,10 @@ void fill_TX_DATA_8(uint8_t array8[], uint16_t array16[],
 void read_PWM_TIM_prescalers_from_memory() {
 	uint32_t Nsize = sizeof(TIM_PRESCALES) / sizeof(TIM_PRESCALES[0]);
 	FlashReadN(0, TIM_PRESCALES, Nsize, DATA_TYPE_U16);
-	htim2.Init.Prescaler = TIM_PRESCALES[0];
-	htim3.Init.Prescaler = TIM_PRESCALES[1];
-	htim4.Init.Prescaler = TIM_PRESCALES[2];
-	htim5.Init.Prescaler = TIM_PRESCALES[3];
+	htim2.Instance->PSC = TIM_PRESCALES[0];
+	htim3.Instance->PSC = TIM_PRESCALES[1];
+	htim4.Instance->PSC = TIM_PRESCALES[2];
+	htim5.Instance->PSC = TIM_PRESCALES[3];
 }
 
 void write_PWM_TIM_prescalers_to_memory() {
@@ -1138,6 +1159,7 @@ void write_PWM_TIM_prescalers_to_memory() {
 	fill_uint16_array(RX_DATA, wrBuf, 1, Nsize); // 1 because choice is first element
 	FlashWriteN(0, wrBuf, Nsize, DATA_TYPE_U16);
 	read_PWM_TIM_prescalers_from_memory();
+	is_ready();
 }
 
 /* USER CODE END 4 */

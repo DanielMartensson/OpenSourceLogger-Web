@@ -133,10 +133,6 @@ public class DeviceSettingsView extends AppLayout {
 				new Notification("Too large number!", 3000).open();
 				return;
 			}
-
-			// OK! Write to database and send to the device about new settings
-			pwmService.deleteAll(); // Only one setting allowed
-			pwmService.save(new PWM(0, portDescription, P0_P1_P2_Value, P3_P7_P8_Value, P6_P5_Value, P4_Value));
 			
 			/*
 			 *  The TIM clock is on 2 Mhz. 
@@ -149,9 +145,22 @@ public class DeviceSettingsView extends AppLayout {
 			prescalerValues[1] = MAX_VALUE_INTEGER_FIELD / P6_P5_Value -1; //TIM3
 			prescalerValues[2] = MAX_VALUE_INTEGER_FIELD / P3_P7_P8_Value -1; //TIM4
 			prescalerValues[3] = MAX_VALUE_INTEGER_FIELD / P0_P1_P2_Value -1; //TIM5
-			serial.trancieve(prescalerValues);
-			pwmCrud.refreshGrid();
+			serial.askIfReady();
+			if(!serial.isOK()) {
+				new Notification("Is not ready. Please try again.", 3000).open();
+				return;
+			}
+			serial.trancieve_PWM_Prescalers(prescalerValues);
+			if(!serial.isOK()){
+				new Notification("Could not write settings!", 3000).open();
+				return;
+			}
 			new Notification("Success!", 3000).open();
+
+			// OK! Write to database and send to the device about new settings
+			pwmService.deleteAll(); // Only one setting allowed
+			pwmService.save(new PWM(0, portDescription, P0_P1_P2_Value, P3_P7_P8_Value, P6_P5_Value, P4_Value));
+			pwmCrud.refreshGrid();
 		});
 
 		// Connect button

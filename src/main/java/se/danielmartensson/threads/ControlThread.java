@@ -50,6 +50,11 @@ public class ControlThread extends Thread {
 
 			// Control loop - When sampling thread are done, then this will quit too
 			while (ControlView.loggingNow.get()) {
+				
+				// Ask if ready and then check
+				serial.askIfReady();
+				if(!serial.isOK())
+					continue;
 
 				// Send PWM and DAC
 				PWM[0] = ControlView.sliderSelectedP0;
@@ -64,18 +69,10 @@ public class ControlThread extends Thread {
 				DAC[0] = ControlView.sliderSelectedD0;
 				DAC[1] = ControlView.sliderSelectedD1;
 				DAC[2] = ControlView.sliderSelectedD2;
-				serial.transceive(PWM, DAC);
-
-				// Wait
-				try {
-					Thread.sleep(10); // Some delay does not hurt at all
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				serial.transceive_PWM_DAC(PWM, DAC);
 
 				// Receive ADC, SDADC, DSDADC and DI
-				serial.receive(ADC, SDADC, DSDADC, DI);
+				serial.receive_ADC_SDADC_DSDADC_DI(ADC, SDADC, DSDADC, DI);
 			}
 		}
 	}

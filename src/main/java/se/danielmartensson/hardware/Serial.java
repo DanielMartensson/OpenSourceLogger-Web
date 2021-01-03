@@ -19,6 +19,7 @@ import se.danielmartensson.service.PWMService;
 @Setter
 public class Serial {
 
+	private static final byte ASK_IF_READY = 48;
 	private static final byte WRITE_PWM_DAC_PERIODS = 49;
 	private static final byte WRITE_PWM_FREQUENCIES = 50;
 	private static final int MESSAGE_LENGTH = 25;
@@ -59,6 +60,7 @@ public class Serial {
 		for (SerialPort serialPort : serialPorts) {
 			if (serialPort.getPortDescription().contains(portDescription)) {
 				serialPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+				serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 10, 0);
 				selectedSerialPort = serialPort;
 				openPort();
 				break;
@@ -66,16 +68,16 @@ public class Serial {
 		}
 	}
 	
-	public void trancieve(int prescalerValues[]) {
+	public void trancieve_PWM_Prescalers(int prescalerValues[]) {
 		if (selectedSerialPort == null)
 			return;
 		byte[] buffer = new byte[MESSAGE_LENGTH]; // Settings for the PWM timers
 		buffer[0] = WRITE_PWM_FREQUENCIES;
 		fillBuffer(buffer, prescalerValues, 1);
-		selectedSerialPort.writeBytes(buffer, buffer.length);
+		selectedSerialPort.writeBytes(buffer, buffer.length);		
 	}
 
-	public void transceive(int[] PWM, int[] DAC) {
+	public void transceive_PWM_DAC(int[] PWM, int[] DAC) {
 		if (selectedSerialPort == null)
 			return;
 		byte[] buffer = new byte[MESSAGE_LENGTH]; // DAC and PWM have range 0-4095, eg 12-bit, but they have room for 16-bit
@@ -84,29 +86,41 @@ public class Serial {
 		fillBuffer(buffer, DAC, PWM.length*2 + 1);
 		selectedSerialPort.writeBytes(buffer, buffer.length); // Read with uint16_t = (buffer[i + i] << 8) | (buffer[i + i + 1] & 0xFF);
 	}
+	
+	public void askIfReady() {
+		if (selectedSerialPort == null)
+			return;
+		byte[] buffer = new byte[MESSAGE_LENGTH];
+		buffer[0] = ASK_IF_READY; 
+		selectedSerialPort.writeBytes(buffer, buffer.length);
+	}
+	
+	public boolean isOK() {
+		if (selectedSerialPort == null)
+			return false;
+		byte[] buffer = new byte[MESSAGE_LENGTH]; 
+		selectedSerialPort.readBytes(buffer, buffer.length);
+		return buffer[0] == 1 ? true : false;
+	}
+	
+	public void receive_ADC_SDADC_DSDADC_DI(int[] ADC, int[] SDADC, int[] DSDADC, boolean[] DI) {
+		if (selectedSerialPort == null)
+			return;
+		byte[] buffer = new byte[MESSAGE_LENGTH]; 
+		selectedSerialPort.readBytes(buffer, buffer.length);
+		
+		// Read ADC, SDADC, DSDADC and DI
+		fillArray(buffer, ADC, 0);
+		fillArray(buffer, SDADC, ADC.length * 2);
+		fillArray(buffer, DSDADC, (ADC.length + SDADC.length) * 2);
+		fillArray(buffer, DI, (ADC.length + SDADC.length + DSDADC.length) * 2);
+	}
 
 	private void fillBuffer(byte[] byteArray, int[] intArray, int elementsThatHasBeenWritten) {
 		for (int i = 0; i < intArray.length; i++) {
 			byteArray[i + i + elementsThatHasBeenWritten] = (byte) (intArray[i] >> 8);
 			byteArray[i + i + 1 + elementsThatHasBeenWritten] = (byte) intArray[i];
 		}
-	}
-
-	public void receive(int[] ADC, int[] SDADC, int[] DSDADC, boolean[] DI) {
-		if (selectedSerialPort == null)
-			return;
-		int size = selectedSerialPort.bytesAvailable();
-		if (size < ADC.length * 2 + SDADC.length * 2 + DSDADC.length * 2 + DI.length)
-			return;
-
-		byte[] buffer = new byte[size]; // We will always get a fixed size
-		selectedSerialPort.readBytes(buffer, buffer.length);
-
-		// Read ADC, SDADC, DSDADC and DI
-		fillArray(buffer, ADC, 0);
-		fillArray(buffer, SDADC, ADC.length * 2);
-		fillArray(buffer, DSDADC, (ADC.length + SDADC.length) * 2);
-		fillArray(buffer, DI, (ADC.length + SDADC.length + DSDADC.length) * 2);
 	}
 
 	private void fillArray(byte[] buffer, boolean[] booleanArray, int elementsThatHasBeenWritten) {
