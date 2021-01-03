@@ -277,24 +277,26 @@ public class SamplingThread extends Thread {
 	}
 
 	private void updatePlotAndPulseAndInputs() {
-		ui.access(() -> {
-			apexChart.updateSeries(
-					MySQLView.createSerie(A0, "A0"),
-					MySQLView.createSerie(A1, "A1"),
-					MySQLView.createSerie(A2, "A2"),
-					MySQLView.createSerie(A3, "A3"),
-					MySQLView.createSerie(SA0, "SA0"),
-					MySQLView.createSerie(SA1, "SA1"),
-					MySQLView.createSerie(SA1D, "SA1D"),
-					MySQLView.createSerie(SA2D, "SA2D"),
-					MySQLView.createSerie(SA3D, "SA3D"));
-			counters.get(0).setValue(pulseNumber); // This is countedPulses
-			
-			// This is the digital inputs
-			for (int i = 0; i < checkBoxes.size(); i++)
-				checkBoxes.get(i).setValue(ControlThread.DI[i]);
-			disableOrEnableComponents();
-		});
+		if(!ui.isClosing()) {
+			ui.access(() -> {
+				apexChart.updateSeries(
+						MySQLView.createSerie(A0, "A0"),
+						MySQLView.createSerie(A1, "A1"),
+						MySQLView.createSerie(A2, "A2"),
+						MySQLView.createSerie(A3, "A3"),
+						MySQLView.createSerie(SA0, "SA0"),
+						MySQLView.createSerie(SA1, "SA1"),
+						MySQLView.createSerie(SA1D, "SA1D"),
+						MySQLView.createSerie(SA2D, "SA2D"),
+						MySQLView.createSerie(SA3D, "SA3D"));
+				counters.get(0).setValue(pulseNumber); // This is countedPulses
+				
+				// This is the digital inputs
+				for (int i = 0; i < checkBoxes.size(); i++)
+					checkBoxes.get(i).setValue(ControlThread.DI[i]);
+				disableOrEnableComponents();
+			});
+		}
 
 	}
 
