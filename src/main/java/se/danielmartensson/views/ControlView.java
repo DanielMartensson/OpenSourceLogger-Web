@@ -300,7 +300,7 @@ public class ControlView extends AppLayout {
 		samplingTime.addValueChangeListener(e -> selectedSamplingTime = e.getValue());
 
 		// Show amount of samples at the plot
-		Select<Integer> showSamples = new Select<Integer>(new Integer[] { 10, 20, 30, 40, 50 });
+		Select<Integer> showSamples = new Select<Integer>(new Integer[] { 10, 20, 30, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 });
 		showSamples.setLabel("Show samples");
 		showSamples.setValue(selectedShowSamples);
 		showSamples.addValueChangeListener(e -> selectedShowSamples = e.getValue());
