@@ -25,6 +25,10 @@ public class DataService {
 	public Data save(Data data) {
 		return dataRepository.save(data);
 	}
+	
+	public List<Data> saveAll(List<Data> dataList) {
+		return dataRepository.saveAll(dataList);
+	}
 
 	// We only want data for each name
 	public Collection<Data> findAllNames() {

@@ -20,6 +20,7 @@ store them into a MySQL database.
 * SMTP alarm functionality
 * CSV generation of measurements
 * Connect with RX and TX from Raspberry Pi pins
+* Offline sampling and insert into database when connection reestablish
 
 With this user view, you can control PWM, DAC, read ADC and logging digital inputs online over the web.
 Set an alarm and calibration of a special sensor you want to use. Store all data inside the database. 

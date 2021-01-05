@@ -1,6 +1,7 @@
 package se.danielmartensson.threads;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,8 +48,8 @@ public class SamplingThread extends Thread {
 	private Float[] SA3D;
 
 	// Counter
-	private static boolean pastPulse;
-	private static int pulseNumber;
+	private boolean pastPulse;
+	private int pulseNumber;
 
 	// UI components
 	private UI ui;
@@ -57,10 +58,14 @@ public class SamplingThread extends Thread {
 	private Button loggingActivate;
 	private List<IntegerField> counters;
 	private List<Checkbox> checkBoxes;
+	
+	// Buffert for saving to database later if database connection died
+	private List<Data> saveDataLater;
 
 	public SamplingThread(MailService mailService, DataService dataService) {
 		this.mailService = mailService;
 		this.dataService = dataService;
+		saveDataLater = new ArrayList<Data>();
 	}
 
 	@Override
@@ -71,6 +76,21 @@ public class SamplingThread extends Thread {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {}
+				
+				// Load into database if we have some data that could not be saved directly
+				if(saveDataLater.size() > 0) {
+					int partIndex = 0;
+					if(saveDataLater.size() >= 2000) {
+						partIndex = 2000;
+					}else {
+						partIndex = saveDataLater.size();
+					}
+					List<Data> insertThese = saveDataLater.subList(0, partIndex);
+					try {
+						dataService.saveAll(insertThese);
+						insertThese.clear();
+					}catch(Exception e) {}
+				}
 			}
 
 			// Series for the plot and restore the plot and counting
@@ -188,7 +208,11 @@ public class SamplingThread extends Thread {
 
 				// Save them to the database
 				Data dataLogg = new Data(0, jobName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
-				dataService.save(dataLogg);
+				try {
+					dataService.save(dataLogg);
+				}catch(Exception e) {
+					saveDataLater.add(dataLogg); // Save it for later
+				}
 
 				// Show the values on the plot - First shift it back 1 step, set the last
 				// element and update the plot

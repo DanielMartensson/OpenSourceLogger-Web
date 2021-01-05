@@ -265,7 +265,7 @@ public class MySQLView extends AppLayout {
 			dialog.open();
 
 		});
-
+		
 		// Layout
 		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexLast, countAmoutOfSamples, pulseField);
 		HorizontalLayout secondRow = new HorizontalLayout(countSamples, createPlot, download, deletePlot);
