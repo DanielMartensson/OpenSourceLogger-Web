@@ -29,13 +29,11 @@ public class AlarmService {
 	}
 
 	public boolean delete(Alarm alarm) {
-		boolean parentExist = false;
 		if (jobService.existsByAlarm(alarm)) {
-			parentExist = true;
-			return parentExist; // Cannot delete child because it's connected to a parent
+			return false; // Cannot delete child because it's connected to a parent
 		} else {
 			alarmRepository.delete(alarm); // Delete child because the parent don't exist
-			return parentExist;
+			return true;
 		}
 	}
 

@@ -81,8 +81,8 @@ public class AlarmView extends AppLayout {
 
 			@Override
 			public void delete(Alarm alarm) {
-				boolean parentExist = alarmService.delete(alarm);
-				if (parentExist) {
+				boolean childDeleted = alarmService.delete(alarm);
+				if (!childDeleted) {
 					new Notification("Cannot delete this alarm because a job that have this alarm exist.", 3000).open();
 				}
 			}
