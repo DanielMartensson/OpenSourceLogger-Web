@@ -115,16 +115,20 @@ public class ControlView extends AppLayout {
 		// Create pulse list drop down boxes
 		List<IntegerField> counters = createPulseCounter();
 
-		// Create checkboxes for digital input signals
-		List<Checkbox> checkBoxes = createInputCheckBoxes();
+		// Create check boxes for digital input signals
+		Checkbox[] inputBoxes = createCheckBoxes(new String[] {"I0 - Counter", "I1 - Stop signal", "I2", "I3", "I4", "I5"});
+		
+		// Create check boxes for showing the measurement series
+		Checkbox[] seriesBoxes = createCheckBoxes(new String[] {"A0", "A1", "A2", "A3", "SA0", "SA1", "SA1D", "SA2D", "SA3D"});
 
 		// Create control panel
 		HorizontalLayout firstRow = createFirstRow(jobService, counters);
 		HorizontalLayout secondRow = createVariableLayout(PWMSliders, "P", 0, 5);
 		HorizontalLayout thirdRow = createVariableLayout(PWMSliders, "P", 5, 9);
 		HorizontalLayout fourthRow = createVariableLayout(DACSliders, "D", 0, 3);
-		HorizontalLayout fifthRow = createInputCHeckBoxesLayout(checkBoxes);
-		HorizontalLayout sixthRow = createStartButtonAndShowPlotButton(jobService);
+		HorizontalLayout fifthRow = createCheckBoxesLayout(inputBoxes);
+		HorizontalLayout sixthRow = createCheckBoxesLayout(seriesBoxes);
+		HorizontalLayout seventhRow = createStartButtonAndShowPlotButton(jobService);
 
 		// Start the tread for control
 		if (control == null) {
@@ -140,10 +144,10 @@ public class ControlView extends AppLayout {
 		}
 		// Set components to sampling thread - So we can disable and enable inside the
 		// thread
-		sampling.setComponentsToThread(UI.getCurrent(), firstRow, loggingActivate, apexChart, counters, checkBoxes);
+		sampling.setComponentsToThread(UI.getCurrent(), firstRow, loggingActivate, apexChart, counters, inputBoxes, seriesBoxes);
 
 		// Content
-		setContent(new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, sixthRow, apexChart));
+		setContent(new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, sixthRow, seventhRow, apexChart));
 	}
 
 	public ControlView(JobService jobService, MailService mailService, DataService dataService) {
@@ -152,7 +156,7 @@ public class ControlView extends AppLayout {
 		this.dataService = dataService;
 	}
 
-	private HorizontalLayout createInputCHeckBoxesLayout(List<Checkbox> checkBoxes) {
+	private HorizontalLayout createCheckBoxesLayout(Checkbox[] checkBoxes) {
 		HorizontalLayout checkBoxLayout = new HorizontalLayout();
 		for (Checkbox checkbox : checkBoxes)
 			checkBoxLayout.add(checkbox);
@@ -160,20 +164,10 @@ public class ControlView extends AppLayout {
 		return checkBoxLayout;
 	}
 
-	private List<Checkbox> createInputCheckBoxes() {
-		List<Checkbox> list = new ArrayList<>();
-		Checkbox DI0 = new Checkbox("I0 - Counter");
-		Checkbox DI1 = new Checkbox("I1 - Stop signal");
-		Checkbox DI2 = new Checkbox("I2");
-		Checkbox DI3 = new Checkbox("I3");
-		Checkbox DI4 = new Checkbox("I4");
-		Checkbox DI5 = new Checkbox("I5");
-		list.add(DI0);
-		list.add(DI1);
-		list.add(DI2);
-		list.add(DI3);
-		list.add(DI4);
-		list.add(DI5);
+	private Checkbox[] createCheckBoxes(String[] labels) {
+		Checkbox[] list = new Checkbox[labels.length];
+		for(int i = 0; i < labels.length; i++)
+			list[i] = new Checkbox(labels[i]);
 		return list;
 	}
 

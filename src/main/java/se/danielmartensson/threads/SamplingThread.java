@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.appreciated.apexcharts.ApexCharts;
+import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -58,7 +59,8 @@ public class SamplingThread extends Thread {
 	private HorizontalLayout firstRow;
 	private Button loggingActivate;
 	private List<IntegerField> counters;
-	private List<Checkbox> checkBoxes;
+	private Checkbox[] inputBoxes;
+	private Checkbox[] seriesBoxes;
 	
 	// Buffert for saving to database later if database connection died
 	private List<Data> saveDataLater;
@@ -314,21 +316,65 @@ public class SamplingThread extends Thread {
 	private void updatePlotAndPulseAndInputs() {
 		if(!ui.isClosing()) {
 			ui.access(() -> {
-				apexChart.updateSeries(
-						MySQLView.createSerie(A0, "A0"),
-						MySQLView.createSerie(A1, "A1"),
-						MySQLView.createSerie(A2, "A2"),
-						MySQLView.createSerie(A3, "A3"),
-						MySQLView.createSerie(SA0, "SA0"),
-						MySQLView.createSerie(SA1, "SA1"),
-						MySQLView.createSerie(SA1D, "SA1D"),
-						MySQLView.createSerie(SA2D, "SA2D"),
-						MySQLView.createSerie(SA3D, "SA3D"));
-				counters.get(0).setValue(pulseNumber); // This is countedPulses
+				
+				// Count how many series boxes that are being checked
+				int boxesChecked = 0;
+				for(Checkbox seriesBox : seriesBoxes) {
+					if(seriesBox.getValue())
+						boxesChecked++;
+				}
+				
+				// Create the series list
+				Series<?>[] seriesList = new Series[boxesChecked];
+				int seriesIndex = 0;
+				int seriesBoxesIndex = 0;
+				for(Checkbox seriesBox : seriesBoxes) {
+					seriesBoxesIndex++; // Will be starting at 1
+					if(!seriesBox.getValue())
+						continue;
+						
+					switch(seriesBoxesIndex) {
+						case 1:
+							seriesList[seriesIndex] = MySQLView.createSerie(A0, "A0");
+							break;
+						case 2:
+							seriesList[seriesIndex] = MySQLView.createSerie(A1, "A1");
+							break;
+						case 3:
+							seriesList[seriesIndex] = MySQLView.createSerie(A2, "A2");
+							break;
+						case 4:
+							seriesList[seriesIndex] = MySQLView.createSerie(A3, "A3");
+							break;
+						case 5:
+							seriesList[seriesIndex] = MySQLView.createSerie(SA0, "SA0");
+							break;
+						case 6:
+							seriesList[seriesIndex] = MySQLView.createSerie(SA1, "SA1");
+							break;
+						case 7:
+							seriesList[seriesIndex] = MySQLView.createSerie(SA1D, "SA1D");
+							break;
+						case 8:
+							seriesList[seriesIndex] = MySQLView.createSerie(SA2D, "SA2D");
+							break;
+						case 9:
+							seriesList[seriesIndex] = MySQLView.createSerie(SA3D, "SA3D");
+							break;
+					}
+					seriesIndex++;
+				}
+		
+				// Update the plot now
+				if(boxesChecked > 0)
+					apexChart.updateSeries(seriesList);
+				
+				// This is countedPulses
+				counters.get(0).setValue(pulseNumber); 
 				
 				// This is the digital inputs
-				for (int i = 0; i < checkBoxes.size(); i++)
-					checkBoxes.get(i).setValue(ControlThread.DI[i]);
+				for (int i = 0; i < inputBoxes.length; i++)
+					inputBoxes[i].setValue(ControlThread.DI[i]);
 				disableOrEnableComponents();
 			});
 		}
@@ -346,13 +392,14 @@ public class SamplingThread extends Thread {
 		}
 	}
 
-	public void setComponentsToThread(UI ui, HorizontalLayout firstRow, Button loggingActivate, ApexCharts apexChart, List<IntegerField> counters, List<Checkbox> checkBoxes) {
+	public void setComponentsToThread(UI ui, HorizontalLayout firstRow, Button loggingActivate, ApexCharts apexChart, List<IntegerField> counters, Checkbox[] inputBoxes, Checkbox[] seriesBoxes) {
 		this.ui = ui;
 		this.firstRow = firstRow;
 		this.apexChart = apexChart;
 		this.loggingActivate = loggingActivate;
 		this.counters = counters;
-		this.checkBoxes = checkBoxes;
+		this.inputBoxes = inputBoxes;
+		this.seriesBoxes = seriesBoxes;
 		disableOrEnableComponents(); // Once we have set our components, disable them or not.
 	}
 }
