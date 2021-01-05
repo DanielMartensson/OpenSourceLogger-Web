@@ -35,7 +35,11 @@ public class MailService {
 		
 		// Save the mark inside the database
 		alarm.setMessageHasBeenSent(true);
-		alarmService.save(alarm);
+		try {
+			alarmService.save(alarm);
+		}catch(Exception e) {
+			// Does not matter, we still have issues with the database
+		}
 		
 		// Send message
 		SimpleMailMessage msg = new SimpleMailMessage();

@@ -46,34 +46,52 @@ public class ControlThread extends Thread {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
+				
+				// This turn down PWM and DAC if we are not logging - Safety feature
+				talkToSTM32(0,0,0,0,0,0,0,0,0,0,0,0);
 			}
 
 			// Control loop - When sampling thread are done, then this will quit too
 			while (ControlView.loggingNow.get()) {
-				
-				// Ask if ready and then check
-				serial.askIfReady();
-				if(!serial.isOK())
-					continue;
-
-				// Send PWM and DAC
-				PWM[0] = ControlView.sliderSelectedP0;
-				PWM[1] = ControlView.sliderSelectedP1;
-				PWM[2] = ControlView.sliderSelectedP2;
-				PWM[3] = ControlView.sliderSelectedP3;
-				PWM[4] = ControlView.sliderSelectedP4;
-				PWM[5] = ControlView.sliderSelectedP5;
-				PWM[6] = ControlView.sliderSelectedP6;
-				PWM[7] = ControlView.sliderSelectedP7;
-				PWM[8] = ControlView.sliderSelectedP8;
-				DAC[0] = ControlView.sliderSelectedD0;
-				DAC[1] = ControlView.sliderSelectedD1;
-				DAC[2] = ControlView.sliderSelectedD2;
-				serial.transceive_PWM_DAC(PWM, DAC);
-
-				// Receive ADC, SDADC, DSDADC and DI
-				serial.receive_ADC_SDADC_DSDADC_DI(ADC, SDADC, DSDADC, DI);
+				// Send PWM and DAC to STM32 and receive measurements
+				talkToSTM32(ControlView.sliderSelectedP0, 
+							ControlView.sliderSelectedP1,
+							ControlView.sliderSelectedP2,
+							ControlView.sliderSelectedP3,
+							ControlView.sliderSelectedP4,
+							ControlView.sliderSelectedP5,
+							ControlView.sliderSelectedP6,
+							ControlView.sliderSelectedP7,
+							ControlView.sliderSelectedP8,
+							ControlView.sliderSelectedD0,
+							ControlView.sliderSelectedD1,
+							ControlView.sliderSelectedD2);
 			}
 		}
+	}
+
+	private void talkToSTM32(int P0, int P1, int P2, int P3, int P4, int P5, int P6, int P7, int P8, int D0, int D1, int D2) {
+		// Ask if ready and then check
+		serial.askIfReady();
+		if(!serial.isOK())
+			return;
+
+		// Send PWM and DAC
+		PWM[0] = P0;
+		PWM[1] = P1;
+		PWM[2] = P2;
+		PWM[3] = P3;
+		PWM[4] = P4;
+		PWM[5] = P5;
+		PWM[6] = P6;
+		PWM[7] = P7;
+		PWM[8] = P8;
+		DAC[0] = D0;
+		DAC[1] = D1;
+		DAC[2] = D2;
+		serial.transceive_PWM_DAC(PWM, DAC);
+
+		// Receive ADC, SDADC, DSDADC and DI
+		serial.receive_ADC_SDADC_DSDADC_DI(ADC, SDADC, DSDADC, DI);
 	}
 }

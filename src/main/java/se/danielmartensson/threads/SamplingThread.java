@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -31,6 +32,7 @@ import se.danielmartensson.views.MySQLView;
 public class SamplingThread extends Thread {
 
 	private static final int BIT_15 = 32768;
+	private static final int MAX_ATTEMPT = 5;
 	
 	// Services
 	private MailService mailService;
@@ -161,8 +163,9 @@ public class SamplingThread extends Thread {
 			String message = alarm.getMessage();
 			String email = alarm.getEmail();
 			boolean alarmActive = alarm.isAlarmActive();
-
+			
 			// Sampling loop
+			int connectionAttempts = 0;
 			while (ControlView.loggingNow.get()) {
 
 				// Outputs - PWM and DAC
@@ -210,8 +213,15 @@ public class SamplingThread extends Thread {
 				Data dataLogg = new Data(0, jobName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
 				try {
 					dataService.save(dataLogg);
+					connectionAttempts = 0; 
 				}catch(Exception e) {
-					saveDataLater.add(dataLogg); // Save it for later
+					if(connectionAttempts > MAX_ATTEMPT) {
+						mailService.sendMessage(alarm, email, "Max database connection attempts(" + MAX_ATTEMPT + ") achieved. Logging shutting down.\n" + e.getMessage(), message);
+						break; // This will jump out of the while loop
+					}else {
+						connectionAttempts++;
+					}
+					saveDataLater.add(dataLogg); // Save it for later if something just happen
 				}
 
 				// Show the values on the plot - First shift it back 1 step, set the last
