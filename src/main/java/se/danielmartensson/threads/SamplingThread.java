@@ -23,16 +23,15 @@ import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.MySQLView;
 
 /**
- * This class plot the values from the ControlTread.java class and also check
- * their thresholds
+ * This class plot the values from the ControlTread.java class and also check their thresholds
  * 
- * @author dell
+ * @author Daniel Mårtensson
  *
  */
 public class SamplingThread extends Thread {
 
 	private static final int BIT_15 = 32768;
-	private static final int MAX_ATTEMPT = 5;
+	private static final int MAX_ATTEMPT = 10;
 	
 	// Services
 	private MailService mailService;
