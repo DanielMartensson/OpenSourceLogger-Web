@@ -75,7 +75,6 @@ public class AlarmView extends AppLayout {
 					new Notification("Cannot update this with a name that already exist.", 3000).open();
 					return alarm;
 				}
-				
 				return alarmService.save(alarm);
 			}
 

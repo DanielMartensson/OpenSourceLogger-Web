@@ -30,10 +30,10 @@ public class CalibrationService {
 
 	public boolean delete(Calibration calibration) {
 		if (jobService.existsByCalibration(calibration)) {
-			return true; // Cannot delete child because it's connected to a parent
+			return false; // Cannot delete child because it's connected to a parent
 		} else {
 			calibrationRepository.delete(calibration); // Delete child because the parent don't exist
-			return false;
+			return true;
 		}
 	}
 

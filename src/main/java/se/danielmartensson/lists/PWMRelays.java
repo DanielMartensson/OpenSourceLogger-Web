@@ -11,6 +11,4 @@ public class PWMRelays {
 	private String variable;
 	private String resolution;
 	private String loadConnection;
-	private String maxVoltage;
-	private String maxLoad;
 }

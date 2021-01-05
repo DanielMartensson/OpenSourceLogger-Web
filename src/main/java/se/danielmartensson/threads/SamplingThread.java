@@ -31,7 +31,7 @@ import se.danielmartensson.views.MySQLView;
 public class SamplingThread extends Thread {
 
 	private static final int BIT_15 = 32768;
-	private static final int MAX_ATTEMPT = 10;
+	private static final int MAX_ATTEMPT = 5;
 	
 	// Services
 	private MailService mailService;

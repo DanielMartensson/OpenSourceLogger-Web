@@ -81,17 +81,13 @@ public class CalibrationView extends AppLayout {
 
 			@Override
 			public void delete(Calibration calibration) {
-				boolean parentExist = calibrationService.delete(calibration);
-				if (parentExist) {
+				boolean childDeleted = calibrationService.delete(calibration);
+				if (!childDeleted) {
 					new Notification("Cannot delete this calibration because a job that have this calibration exist.", 3000).open();
 				}
-
 			}
 
 		});
-
 		setContent(calibrationCrud);
-
 	}
-
 }
