@@ -69,14 +69,8 @@ public class AboutView extends AppLayout {
 		pwmRelayTitle.setClassName("headingH1");
 		Grid<PWMRelays> pwmRelayGrid = createGridPWMRelay();
 
-		// How to calibrate
-		Label sensorManualTitle = new Label("How to calibrate with MATLAB/GNU Octave");
-		sensorManualTitle.setClassName("headingH1");
-		Image sensorManual = new Image("img/sensormanual.png", "Sensor");
-		sensorManual.setHeight("300px");
-
 		// Layout
-		VerticalLayout layout = new VerticalLayout(title, board, analogInputTitle, analogInputGrid, digitalInputTitle, digitalInputGrid, analogOutputTitle, analogOutputGrid, pwmRelayTitle, pwmRelayGrid, pwmRelayGrid, sensorManualTitle, sensorManual);
+		VerticalLayout layout = new VerticalLayout(title, board, analogInputTitle, analogInputGrid, digitalInputTitle, digitalInputGrid, analogOutputTitle, analogOutputGrid, pwmRelayTitle, pwmRelayGrid, pwmRelayGrid);
 		layout.setAlignItems(Alignment.CENTER);
 		setContent(layout);
 	}
