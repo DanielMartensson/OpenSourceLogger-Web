@@ -16,6 +16,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 
 import se.danielmartensson.entities.Alarm;
 import se.danielmartensson.entities.Calibration;
+import se.danielmartensson.entities.Sensor;
 import se.danielmartensson.entities.Data;
 import se.danielmartensson.entities.Job;
 import se.danielmartensson.service.DataService;
@@ -119,99 +120,141 @@ public class SamplingThread extends Thread {
 			Job job = ControlView.selectedJob;
 			String jobName = job.getName();
 
-			// Get calibration
-			Calibration calibration = job.getCalibration();
-			float sa0Slope = calibration.getSa0Slope();
-			float sa0Bias = calibration.getSa0Bias();
-			float sa1Slope = calibration.getSa1Slope();
-			float sa1Bias = calibration.getSa1Bias();
-			float sa1dSlope = calibration.getSa1dSlope();
-			float sa1dBias = calibration.getSa1dBias();
-			float sa2dSlope = calibration.getSa2dSlope();
-			float sa2dBias = calibration.getSa2dBias();
-			float sa3dSlope = calibration.getSa3dSlope();
-			float sa3dBias = calibration.getSa3dBias();
-			float a0Slope = calibration.getA0Slope();
-			float a0Bias = calibration.getA0Bias();
-			float a1Slope = calibration.getA1Slope();
-			float a1Bias = calibration.getA1Bias();
-			float a2Slope = calibration.getA2Slope();
-			float a2Bias = calibration.getA2Bias();
-			float a3Slope = calibration.getA3Slope();
-			float a3Bias = calibration.getA3Bias();
-			String calibrationName = calibration.getName();
-
 			// Get alarm
 			Alarm alarm = job.getAlarm();
-			float sa0Min = alarm.getSa0Min();
-			float sa0Max = alarm.getSa0Max();
-			float sa1Min = alarm.getSa1Min();
-			float sa1Max = alarm.getSa1Max();
-			float sa1dMin = alarm.getSa1dMin();
-			float sa1dMax = alarm.getSa1dMax();
-			float sa2dMin = alarm.getSa2dMin();
-			float sa2dMax = alarm.getSa2dMax();
-			float sa3dMin = alarm.getSa3dMin();
-			float sa3dMax = alarm.getSa3dMax();
-			float a0Min = alarm.getA0Min();
-			float a0Max = alarm.getA0Max();
-			float a1Min = alarm.getA1Min();
-			float a1Max = alarm.getA1Max();
-			float a2Min = alarm.getA2Min();
-			float a2Max = alarm.getA2Max();
-			float a3Min = alarm.getA3Min();
-			float a3Max = alarm.getA3Max();
+			float sa0MinBreak = alarm.getSa0MinBreak();
+			float sa0MaxBreak = alarm.getSa0MaxBreak();
+			float sa1MinBreak = alarm.getSa1MinBreak();
+			float sa1MaxBreak = alarm.getSa1MaxBreak();
+			float sa1dMinBreak = alarm.getSa1dMinBreak();
+			float sa1dMaxBreak = alarm.getSa1dMaxBreak();
+			float sa2dMinBreak = alarm.getSa2dMinBreak();
+			float sa2dMaxBreak = alarm.getSa2dMaxBreak();
+			float sa3dMinBreak = alarm.getSa3dMinBreak();
+			float sa3dMaxBreak = alarm.getSa3dMaxBreak();
+			float a0MinBreak = alarm.getA0MinBreak();
+			float a0MaxBreak = alarm.getA0MaxBreak();
+			float a1MinBreak = alarm.getA1MinBreak();
+			float a1MaxBreak = alarm.getA1MaxBreak();
+			float a2MinBreak = alarm.getA2MinBreak();
+			float a2MaxBreak = alarm.getA2MaxBreak();
+			float a3MinBreak = alarm.getA3MinBreak();
+			float a3MaxBreak = alarm.getA3MaxBreak();
 			String message = alarm.getMessage();
 			String email = alarm.getEmail();
 			boolean alarmActive = alarm.isAlarmActive();
+			
+			// Get sensor
+			Sensor sensor = job.getSensor();
+			float sa0MinValue = sensor.getSa0MinValue();
+			float sa0MaxValue = sensor.getSa0MaxValue();
+			float sa1MinValue = sensor.getSa1MinValue();
+			float sa1MaxValue = sensor.getSa1MaxValue();
+			float sa1dMinValue = sensor.getSa1dMinValue();
+			float sa1dMaxValue = sensor.getSa1dMaxValue();
+			float sa2dMinValue = sensor.getSa2dMinValue();
+			float sa2dMaxValue = sensor.getSa2dMaxValue();
+			float sa3dMinValue = sensor.getSa3dMinValue();
+			float sa3dMaxValue = sensor.getSa3dMaxValue();
+			float a0MinValue = sensor.getA0MinValue();
+			float a0MaxValue = sensor.getA0MaxValue();
+			float a1MinValue = sensor.getA1MinValue();
+			float a1MaxValue = sensor.getA1MaxValue();
+			float a2MinValue = sensor.getA2MinValue();
+			float a2MaxValue = sensor.getA2MaxValue();
+			float a3MinValue = sensor.getA3MinValue();
+			float a3MaxValue = sensor.getA3MaxValue();
+			String sensorName = sensor.getName();
+			
+			// Get calibration
+			Calibration calibration = sensor.getCalibration();
+			int sa0MinADC = calibration.getSa0MinADC();
+			int sa0MaxADC = calibration.getSa0MaxADC() != sa0MinADC ? calibration.getSa0MaxADC() : sa0MinADC + 1; // This prevent us to divide by zero
+			int sa1MinADC = calibration.getSa1MinADC();
+			int sa1MaxADC = calibration.getSa1MaxADC() != sa1MinADC ? calibration.getSa1MaxADC() : sa1MinADC + 1;
+			int sa1dMinADC = calibration.getSa1dMinADC();
+			int sa1dMaxADC = calibration.getSa1dMaxADC() != sa1dMinADC ? calibration.getSa1dMaxADC() : sa1dMinADC + 1;
+			int sa2dMinADC = calibration.getSa2dMinADC();
+			int sa2dMaxADC = calibration.getSa2dMaxADC() != sa2dMinADC ? calibration.getSa2dMaxADC() : sa2dMinADC + 1;
+			int sa3dMinADC = calibration.getSa3dMinADC();
+			int sa3dMaxADC = calibration.getSa3dMaxADC() != sa3dMinADC ? calibration.getSa3dMaxADC() : sa3dMinADC + 1;
+			int a0MinADC = calibration.getA0MinADC();
+			int a0MaxADC = calibration.getA0MaxADC() != a0MinADC ? calibration.getA0MaxADC() : a0MinADC + 1;
+			int a1MinADC = calibration.getA1MinADC();
+			int a1MaxADC = calibration.getA1MaxADC() != a1MinADC ? calibration.getA1MaxADC() : a1MinADC + 1;
+			int a2MinADC = calibration.getA2MinADC();
+			int a2MaxADC = calibration.getA2MaxADC() != a2MinADC ? calibration.getA2MaxADC() : a2MinADC + 1;
+			int a3MinADC = calibration.getA3MinADC();
+			int a3MaxADC = calibration.getA3MaxADC() != a3MinADC ? calibration.getA3MaxADC() : a3MinADC + 1;
+			String calibrationName = calibration.getName();
+			
+			// Find the scalar and bias by using Cramer's rule for solving Ax = b
+			float a0Scalar = (a0MaxValue - a0MinValue)/(a0MaxADC - a0MinADC);
+			float a0Bias = a0MinValue - a0MinADC * a0Scalar;
+			float a1Scalar = (a1MaxValue - a1MinValue)/(a1MaxADC - a1MinADC);
+			float a1Bias = a1MinValue - a1MinADC * a1Scalar;
+			float a2Scalar = (a2MaxValue - a2MinValue)/(a2MaxADC - a2MinADC);
+			float a2Bias = a2MinValue - a2MinADC * a2Scalar;
+			float a3Scalar = (a3MaxValue - a3MinValue)/(a3MaxADC - a3MinADC);
+			float a3Bias = a3MinValue - a3MinADC * a3Scalar;
+			float sa0Scalar = (sa0MaxValue - sa0MinValue)/(sa0MaxADC - sa0MinADC);
+			float sa0Bias = sa0MinValue - sa0MinADC * sa0Scalar;
+			float sa1Scalar = (sa1MaxValue - sa1MinValue)/(sa1MaxADC - sa1MinADC);
+			float sa1Bias = sa1MinValue - sa1MinADC * sa1Scalar;
+			float sa1dScalar = (sa1dMaxValue - sa1dMinValue)/(sa1dMaxADC - sa1dMinADC);
+			float sa1dBias = sa1dMinValue - sa1dMinADC * sa1dScalar;
+			float sa2dScalar = (sa2dMaxValue - sa2dMinValue)/(sa2dMaxADC - sa2dMinADC);
+			float sa2dBias = sa2dMinValue - sa2dMinADC * sa2dScalar;
+			float sa3dScalar = (sa3dMaxValue - sa3dMinValue)/(sa3dMaxADC - sa3dMinADC);
+			float sa3dBias = sa3dMinValue - sa3dMinADC * sa3dScalar;
 			
 			// Sampling loop
 			int connectionAttempts = 0;
 			while (ControlView.loggingNow.get()) {
 
 				// Outputs - PWM and DAC
-				int p0 = ControlThread.PWM[0];
-				int p1 = ControlThread.PWM[1];
-				int p2 = ControlThread.PWM[2];
-				int p3 = ControlThread.PWM[3];
-				int p4 = ControlThread.PWM[4];
-				int p5 = ControlThread.PWM[5];
-				int p6 = ControlThread.PWM[6];
-				int p7 = ControlThread.PWM[7];
-				int p8 = ControlThread.PWM[8];
-				int d0 = ControlThread.DAC[0];
-				int d1 = ControlThread.DAC[1];
-				int d2 = ControlThread.DAC[2];
+				int p0Value = ControlThread.PWM[0];
+				int p1Value = ControlThread.PWM[1];
+				int p2Value = ControlThread.PWM[2];
+				int p3Value = ControlThread.PWM[3];
+				int p4Value = ControlThread.PWM[4];
+				int p5Value = ControlThread.PWM[5];
+				int p6Value = ControlThread.PWM[6];
+				int p7Value = ControlThread.PWM[7];
+				int p8Value = ControlThread.PWM[8];
+				int d0Value = ControlThread.DAC[0];
+				int d1Value = ControlThread.DAC[1];
+				int d2Value = ControlThread.DAC[2];
 
 				// Inputs - ADC and SDADC and DSDADC and DI
-				float a0 = a0Slope * ControlThread.ADC[3] + a0Bias;
-				float a1 = a1Slope * ControlThread.ADC[2] + a1Bias;
-				float a2 = a2Slope * ControlThread.ADC[0] + a2Bias;
-				float a3 = a3Slope * ControlThread.ADC[1] + a3Bias;
-				float sa0 = sa0Slope * (ControlThread.SDADC[0] + BIT_15) + sa0Bias; // This will turn -32768 to 0 if slope is 1 and bias is 0
-				float sa1 = sa1Slope * (ControlThread.SDADC[1] + BIT_15) + sa1Bias;
-				float sa1d = sa1dSlope * ControlThread.DSDADC[0] + sa1dBias;
-				float sa2d = sa2dSlope * ControlThread.DSDADC[1] + sa2dBias;
-				float sa3d = sa3dSlope * ControlThread.DSDADC[2] + sa3dBias;
-				boolean di0 = ControlThread.DI[0]; // Counter
-				boolean di1 = ControlThread.DI[1]; // Stop signal
-				boolean di2 = ControlThread.DI[2];
-				boolean di3 = ControlThread.DI[3];
-				boolean di4 = ControlThread.DI[4];
-				boolean di5 = ControlThread.DI[5];
+				float a0Value = a0Scalar * ControlThread.ADC[3] + a0Bias;
+				float a1Value = a1Scalar * ControlThread.ADC[2] + a1Bias;
+				float a2Value = a2Scalar * ControlThread.ADC[0] + a2Bias;
+				float a3Value = a3Scalar * ControlThread.ADC[1] + a3Bias;
+				float sa0Value = sa0Scalar * (ControlThread.SDADC[0] + BIT_15) + sa0Bias; // This will turn -32768 to 0 if slope is 1 and bias is 0
+				float sa1Value = sa1Scalar * (ControlThread.SDADC[1] + BIT_15) + sa1Bias;
+				float sa1dValue = sa1dScalar * ControlThread.DSDADC[0] + sa1dBias;
+				float sa2dValue = sa2dScalar * ControlThread.DSDADC[1] + sa2dBias;
+				float sa3dValue = sa3dScalar * ControlThread.DSDADC[2] + sa3dBias;
+				boolean di0Value = ControlThread.DI[0]; // Counter
+				boolean di1Value = ControlThread.DI[1]; // Stop signal
+				boolean di2Value = ControlThread.DI[2];
+				boolean di3Value = ControlThread.DI[3];
+				boolean di4Value = ControlThread.DI[4];
+				boolean di5Value = ControlThread.DI[5];
 
 				// Read the pulse signal and count it if...
-				if (di0 != pastPulse && di0 == true)
+				if (di0Value != pastPulse && di0Value == true)
 					pulseNumber++;
-				pastPulse = di0;
+				pastPulse = di0Value;
 
 				// Read the alarm signal if the alarm is active
 				boolean stopSignal = false;
 				if(alarmActive)
-					stopSignal = di1;
+					stopSignal = di1Value;
 
 				// Save them to the database
-				Data dataLogg = new Data(0, jobName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
+				Data dataLogg = new Data(0, jobName, sensorName, calibrationName, LocalDateTime.now(), sa0Value, sa1Value, sa1dValue, sa2dValue, sa3dValue, a0Value, a1Value, a2Value, a3Value, di0Value, di1Value, di2Value, di3Value, di4Value, di5Value, p0Value, p1Value, p2Value, p3Value, p4Value, p5Value, p6Value, p7Value, p8Value, d0Value, d1Value, d2Value, pulseNumber, selectedBreakPulseLimit, stopSignal);
 				try {
 					dataService.save(dataLogg);
 					connectionAttempts = 0; 
@@ -237,28 +280,28 @@ public class SamplingThread extends Thread {
 					Collections.rotate(Arrays.asList(SA1D), -1);
 					Collections.rotate(Arrays.asList(SA2D), -1);
 					Collections.rotate(Arrays.asList(SA3D), -1);
-					A0[showSamplesValue - 1] = a0;
-					A1[showSamplesValue - 1] = a1;
-					A2[showSamplesValue - 1] = a2;
-					A3[showSamplesValue - 1] = a3;
-					SA0[showSamplesValue - 1] = sa0;
-					SA1[showSamplesValue - 1] = sa1;
-					SA1D[showSamplesValue - 1] = sa1d;
-					SA2D[showSamplesValue - 1] = sa2d;
-					SA3D[showSamplesValue - 1] = sa3d;
+					A0[showSamplesValue - 1] = a0Value;
+					A1[showSamplesValue - 1] = a1Value;
+					A2[showSamplesValue - 1] = a2Value;
+					A3[showSamplesValue - 1] = a3Value;
+					SA0[showSamplesValue - 1] = sa0Value;
+					SA1[showSamplesValue - 1] = sa1Value;
+					SA1D[showSamplesValue - 1] = sa1dValue;
+					SA2D[showSamplesValue - 1] = sa2dValue;
+					SA3D[showSamplesValue - 1] = sa3dValue;
 					updatePlotAndPulseAndInputs();
 				}
 
 				// If we exceeded the thresholds
-				boolean breakThreshHold0 = (a0 > a0Max) || (a1 < a0Min);
-				boolean breakThreshHold1 = (a1 > a1Max) || (a1 < a1Min);
-				boolean breakThreshHold2 = (a2 > a2Max) || (a2 < a2Min);
-				boolean breakThreshHold3 = (a3 > a3Max) || (a3 < a3Min);
-				boolean breakThreshHold4 = (sa0 > sa0Max) || (sa0 < sa0Min);
-				boolean breakThreshHold5 = (sa1 > sa1Max) || (sa1 < sa1Min);
-				boolean breakThreshHold6 = (sa1d > sa1dMax) || (sa1d < sa1dMin);
-				boolean breakThreshHold7 = (sa2d > sa2dMax) || (sa2d < sa2dMin);
-				boolean breakThreshHold8 = (sa3d > sa3dMax) || (sa3d < sa3dMin);
+				boolean breakThreshHold0 = (a0Value > a0MaxBreak) || (a1Value < a0MinBreak);
+				boolean breakThreshHold1 = (a1Value > a1MaxBreak) || (a1Value < a1MinBreak);
+				boolean breakThreshHold2 = (a2Value > a2MaxBreak) || (a2Value < a2MinBreak);
+				boolean breakThreshHold3 = (a3Value > a3MaxBreak) || (a3Value < a3MinBreak);
+				boolean breakThreshHold4 = (sa0Value > sa0MaxBreak) || (sa0Value < sa0MinBreak);
+				boolean breakThreshHold5 = (sa1Value > sa1MaxBreak) || (sa1Value < sa1MinBreak);
+				boolean breakThreshHold6 = (sa1dValue > sa1dMaxBreak) || (sa1dValue < sa1dMinBreak);
+				boolean breakThreshHold7 = (sa2dValue > sa2dMaxBreak) || (sa2dValue < sa2dMinBreak);
+				boolean breakThreshHold8 = (sa3dValue > sa3dMaxBreak) || (sa3dValue < sa3dMinBreak);
 				
 				if(alarmActive) {
 					if (breakThreshHold0) {
@@ -378,7 +421,6 @@ public class SamplingThread extends Thread {
 				disableOrEnableComponents();
 			});
 		}
-
 	}
 
 	private void disableOrEnableComponents() {

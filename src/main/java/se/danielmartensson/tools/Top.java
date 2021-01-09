@@ -11,6 +11,7 @@ import se.danielmartensson.configuration.SecurityConfig;
 import se.danielmartensson.views.AboutView;
 import se.danielmartensson.views.AlarmView;
 import se.danielmartensson.views.CalibrationView;
+import se.danielmartensson.views.SensorView;
 import se.danielmartensson.views.CameraView;
 import se.danielmartensson.views.ControlView;
 import se.danielmartensson.views.JobView;
@@ -48,6 +49,10 @@ public class Top {
 		mySQLTab.getElement().addEventListener("click", e -> {
 			UI.getCurrent().navigate(MySQLView.class);
 		});
+		Tab sensorTab = new Tab("Sensor");
+		sensorTab.getElement().addEventListener("click", e -> {
+			UI.getCurrent().navigate(SensorView.class);
+		});
 		Tab calibrationTab = new Tab("Calibration");
 		calibrationTab.getElement().addEventListener("click", e -> {
 			UI.getCurrent().navigate(CalibrationView.class);
@@ -73,7 +78,7 @@ public class Top {
 			UI.getCurrent().getPage().setLocation(SecurityConfig.LOGOUT);
 		});
 
-		tabs = new Tabs(jobbTab, controlTab, mySQLTab, calibrationTab, alarmTab, cameraTab, aboutTab, deviceSettingsTab, logoutTab);
+		tabs = new Tabs(jobbTab, controlTab, mySQLTab, sensorTab, calibrationTab, alarmTab, cameraTab, aboutTab, deviceSettingsTab, logoutTab);
 		tabs.setOrientation(Tabs.Orientation.VERTICAL);
 
 	}

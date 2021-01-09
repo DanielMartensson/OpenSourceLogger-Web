@@ -1,6 +1,5 @@
 package se.danielmartensson.entities;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,51 +12,52 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Calibration {
-
+	
 	// ID
 	@Id
 	@GeneratedValue
 	private long id;
 	@NotNull
 	private String name;
-
-	// Measurement = Slope*input + Bias
 	@NotNull
-	private float sa0Slope;
+	private String comment;
+	
 	@NotNull
-	private float sa0Bias;
+	private int sa0MinADC;
 	@NotNull
-	private float sa1Slope;
+	private int sa0MaxADC;
 	@NotNull
-	private float sa1Bias;
+	private int sa1MinADC;
 	@NotNull
-	private float sa1dSlope;
+	private int sa1MaxADC;
 	@NotNull
-	private float sa1dBias;
+	private int sa1dMinADC;
 	@NotNull
-	private float sa2dSlope;
+	private int sa1dMaxADC;
 	@NotNull
-	private float sa2dBias;
+	private int sa2dMinADC;
 	@NotNull
-	private float sa3dSlope;
+	private int sa2dMaxADC;
 	@NotNull
-	private float sa3dBias;
+	private int sa3dMinADC;
 	@NotNull
-	private float a0Slope;
+	private int sa3dMaxADC;
 	@NotNull
-	private float a0Bias;
+	private int a0MinADC;
 	@NotNull
-	private float a1Slope;
+	private int a0MaxADC;
 	@NotNull
-	private float a1Bias;
+	private int a1MinADC;
 	@NotNull
-	private float a2Slope;
+	private int a1MaxADC;
 	@NotNull
-	private float a2Bias;
+	private int a2MinADC;
 	@NotNull
-	private float a3Slope;
+	private int a2MaxADC;
 	@NotNull
-	private float a3Bias;
+	private int a3MinADC;
+	@NotNull
+	private int a3MaxADC;
 
 	@Override
 	public String toString() {

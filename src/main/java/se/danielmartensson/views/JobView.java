@@ -1,6 +1,7 @@
 package se.danielmartensson.views;
 
 import java.util.Collection;
+
 import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.CrudFormFactory;
@@ -15,10 +16,11 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
 import se.danielmartensson.entities.Alarm;
-import se.danielmartensson.entities.Calibration;
+import se.danielmartensson.entities.Sensor;
 import se.danielmartensson.entities.Job;
 import se.danielmartensson.service.AlarmService;
-import se.danielmartensson.service.CalibrationService;
+import se.danielmartensson.service.SensorService;
+import se.danielmartensson.service.DataService;
 import se.danielmartensson.service.JobService;
 import se.danielmartensson.tools.Top;
 
@@ -50,7 +52,7 @@ public class JobView extends AppLayout {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JobView(JobService jobService, CalibrationService calibrationService, AlarmService alarmService) {
+	private JobView(JobService jobService, SensorService sensorService, AlarmService alarmService, DataService dataService) {
 		Top top = new Top();
 		top.setTopAppLayout(this);
 
@@ -58,12 +60,12 @@ public class JobView extends AppLayout {
 		GridCrud<Job> jobCrud = new GridCrud<>(Job.class);
 		CrudFormFactory<Job> crudFormFactory = new DefaultCrudFormFactory<Job>(Job.class);
 		jobCrud.setCrudFormFactory(crudFormFactory);
-		jobCrud.getGrid().setColumns("name", "date", "calibration", "alarm");
+		jobCrud.getGrid().setColumns("name", "date", "sensor", "alarm");
 		jobCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setVisibleProperties(new String[] { "name", "date", "calibration", "alarm" });
+		crudFormFactory.setVisibleProperties(new String[] { "name", "date", "sensor", "alarm" });
 		crudFormFactory.setFieldType("date", DatePicker.class);
-		crudFormFactory.setFieldProvider("calibration", new ComboBoxProvider<>("Calibration", calibrationService.findAll(), new TextRenderer<>(Calibration::getName), Calibration::getName));
+		crudFormFactory.setFieldProvider("sensor", new ComboBoxProvider<>("Sensor", sensorService.findAll(), new TextRenderer<>(Sensor::getName), Sensor::getName));
 		crudFormFactory.setFieldProvider("alarm", new ComboBoxProvider<>("Alarm", alarmService.findAll(), new TextRenderer<>(Alarm::getName), Alarm::getName));
 
 		// Listener
@@ -92,12 +94,17 @@ public class JobView extends AppLayout {
 			@Override
 			public Job update(Job job) {
 				// Check if we updating the same row
-				boolean nameExist = jobService.existsByName(job.getName());
-				Job anotherJobWithSameName = jobService.findByName(job.getName());
-				if (nameExist && anotherJobWithSameName.getId() != job.getId()) {
+				String jobName = job.getName();
+				long jobId = job.getId();
+				boolean nameExist = jobService.existsByName(jobName);
+				Job anotherJobWithSameName = jobService.findByName(jobName);
+				if (nameExist && anotherJobWithSameName.getId() != jobId) {
 					new Notification("Cannot update this with a name that already exist.", 3000).open();
 					return job;
-				}
+				}		
+				// If we rename the name, then all data should be renamed as well
+				String oldJobName = jobService.findById(jobId).getName(); // Even if the name is going to be changed, ID is the same
+				dataService.updateJobNameWhereJobName(jobName, oldJobName);
 				return jobService.save(job);
 			}
 
@@ -110,5 +117,4 @@ public class JobView extends AppLayout {
 		setContent(jobCrud);
 
 	}
-
 }

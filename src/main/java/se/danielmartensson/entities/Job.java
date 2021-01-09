@@ -28,7 +28,7 @@ public class Job {
 	private Alarm alarm;
 	@ManyToOne
 	@NotNull
-	private Calibration calibration;
+	private Sensor sensor;
 
 	@Override
 	public String toString() {

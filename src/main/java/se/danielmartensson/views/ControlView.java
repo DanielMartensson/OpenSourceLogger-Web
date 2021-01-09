@@ -123,12 +123,10 @@ public class ControlView extends AppLayout {
 
 		// Create control panel
 		HorizontalLayout firstRow = createFirstRow(jobService, counters);
-		HorizontalLayout secondRow = createVariableLayout(PWMSliders, "P", 0, 5);
-		HorizontalLayout thirdRow = createVariableLayout(PWMSliders, "P", 5, 9);
-		HorizontalLayout fourthRow = createVariableLayout(DACSliders, "D", 0, 3);
-		HorizontalLayout fifthRow = createCheckBoxesLayout(inputBoxes);
-		HorizontalLayout sixthRow = createCheckBoxesLayout(seriesBoxes);
-		HorizontalLayout seventhRow = createStartButtonAndShowPlotButton(jobService);
+		VerticalLayout secondRow = createVariableLayout(PWMSliders, DACSliders);
+		HorizontalLayout thirdRow = createCheckBoxesLayout(inputBoxes);
+		HorizontalLayout fourthRow = createCheckBoxesLayout(seriesBoxes);
+		HorizontalLayout fifthRow = createStartButtonAndShowPlotButton(jobService);
 
 		// Start the tread for control
 		if (control == null) {
@@ -142,12 +140,11 @@ public class ControlView extends AppLayout {
 			sampling = new SamplingThread(mailService, dataService);
 			sampling.start();
 		}
-		// Set components to sampling thread - So we can disable and enable inside the
-		// thread
+		// Set components to sampling thread - So we can disable and enable inside the thread
 		sampling.setComponentsToThread(UI.getCurrent(), firstRow, loggingActivate, apexChart, counters, inputBoxes, seriesBoxes);
 
 		// Content
-		setContent(new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, sixthRow, seventhRow, apexChart));
+		setContent(new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, apexChart));
 	}
 
 	public ControlView(JobService jobService, MailService mailService, DataService dataService) {
@@ -278,6 +275,7 @@ public class ControlView extends AppLayout {
 		List<Job> jobs = jobService.findAll();
 		selectJob.setItems(jobs);
 		if (selectedJob != null) {
+			// If we removed the job and then go back to this page, then selectJob.getValue() should be null
 			for(Job job : jobs) {
 				if(job.getName().equals(selectedJob.getName())) {
 					selectedJob = job;
@@ -302,15 +300,15 @@ public class ControlView extends AppLayout {
 		return new HorizontalLayout(selectJob, showSamples, samplingTime, counters.get(0), counters.get(1));
 
 	}
-
-	private HorizontalLayout createVariableLayout(List<PaperSlider> sliders, String label, int start, int stop) {
-		HorizontalLayout variableLayout = new HorizontalLayout();
-		for (int i = start; i < stop; i++) {
-			VerticalLayout sliderLayout = new VerticalLayout(new Label(label + i), sliders.get(i));
-			sliderLayout.setAlignItems(Alignment.CENTER);
-			variableLayout.add(sliderLayout);
-		}
-		variableLayout.setAlignItems(Alignment.CENTER);
-		return variableLayout;
+	
+	private VerticalLayout createVariableLayout(List<PaperSlider> PWMSliders, List<PaperSlider> DACSliders) {
+		return new VerticalLayout(
+				new HorizontalLayout(new Label("P0"), PWMSliders.get(0), new Label("P1"), PWMSliders.get(1)),
+				new HorizontalLayout(new Label("P2"), PWMSliders.get(2), new Label("P3"), PWMSliders.get(3)),
+				new HorizontalLayout(new Label("P4"), PWMSliders.get(4), new Label("P5"), PWMSliders.get(5)),
+				new HorizontalLayout(new Label("P6"), PWMSliders.get(6), new Label("P7"), PWMSliders.get(7)),
+				new HorizontalLayout(new Label("P8"), PWMSliders.get(8), new Label("D0"), DACSliders.get(0)),
+				new HorizontalLayout(new Label("D1"), DACSliders.get(1), new Label("D2"), DACSliders.get(2))
+		);
 	}
 }

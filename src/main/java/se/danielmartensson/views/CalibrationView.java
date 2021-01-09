@@ -39,10 +39,10 @@ public class CalibrationView extends AppLayout {
 		GridCrud<Calibration> calibrationCrud = new GridCrud<>(Calibration.class);
 		CrudFormFactory<Calibration> crudFormFactory = new DefaultCrudFormFactory<Calibration>(Calibration.class);
 		calibrationCrud.setCrudFormFactory(crudFormFactory);
-		calibrationCrud.getGrid().setColumns("name", "sa0Slope", "sa0Bias", "sa1Slope", "sa1Bias", "sa1dSlope", "sa1dBias", "sa2dSlope", "sa2dBias", "sa3dSlope", "sa3dBias", "a0Slope", "a0Bias", "a1Slope", "a1Bias", "a2Slope", "a2Bias", "a3Slope", "a3Bias");
+		calibrationCrud.getGrid().setColumns("name", "comment", "sa0MinADC", "sa0MaxADC", "sa1MinADC", "sa1MaxADC", "sa1dMinADC", "sa1dMaxADC", "sa2dMinADC", "sa2dMaxADC", "sa3dMinADC", "sa3dMaxADC", "a0MinADC", "a0MaxADC", "a1MinADC", "a1MaxADC", "a2MinADC", "a2MaxADC", "a3MinADC", "a3MaxADC");
 		calibrationCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setVisibleProperties(new String[] { "name", "sa0Slope", "sa0Bias", "sa1Slope", "sa1Bias", "sa1dSlope", "sa1dBias", "sa2dSlope", "sa2dBias", "sa3dSlope", "sa3dBias", "a0Slope", "a0Bias", "a1Slope", "a1Bias", "a2Slope", "a2Bias", "a3Slope", "a3Bias" });
+		crudFormFactory.setVisibleProperties(new String[] {"name", "comment", "sa0MinADC", "sa0MaxADC", "sa1MinADC", "sa1MaxADC", "sa1dMinADC", "sa1dMaxADC", "sa2dMinADC", "sa2dMaxADC", "sa3dMinADC", "sa3dMaxADC", "a0MinADC", "a0MaxADC", "a1MinADC", "a1MaxADC", "a2MinADC", "a2MaxADC", "a3MinADC", "a3MaxADC"});
 
 		// Listener
 		calibrationCrud.setCrudListener(new CrudListener<Calibration>() {
@@ -83,7 +83,7 @@ public class CalibrationView extends AppLayout {
 			public void delete(Calibration calibration) {
 				boolean childDeleted = calibrationService.delete(calibration);
 				if (!childDeleted) {
-					new Notification("Cannot delete this calibration because a job that have this calibration exist.", 3000).open();
+					new Notification("Cannot delete this calibration because a sensor that have this calibration exist.", 3000).open();
 				}
 			}
 

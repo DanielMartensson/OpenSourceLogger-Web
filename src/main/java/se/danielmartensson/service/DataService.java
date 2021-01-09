@@ -1,11 +1,8 @@
 package se.danielmartensson.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
 import se.danielmartensson.entities.Data;
 import se.danielmartensson.repositories.DataRepository;
 
@@ -29,30 +26,32 @@ public class DataService {
 	public List<Data> saveAll(List<Data> dataList) {
 		return dataRepository.saveAll(dataList);
 	}
-
-	// We only want data for each name
-	public Collection<Data> findAllNames() {
-		List<Data> jobList = new ArrayList<Data>();
-		List<String> jobName = new ArrayList<String>();
-		for (Data data : findAll()) {
-			if (!jobName.contains(data.getJobName())) {
-				jobList.add(data);
-				jobName.add(data.getJobName());
-			}
-		}
-		return jobList;
+	
+	public void deleteByJobName(String jobName) {
+		dataRepository.deleteByJobName(jobName);
 	}
-
-	public List<Data> findByJobName(String jobName) {
-		return dataRepository.findByJobName(jobName);
+		
+	public List<Data> findByJobNameOrderByDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
+		return dataRepository.findByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}
-
-	public List<Data> findByJobNameOrderByDateTime(String jobName) {
-		return dataRepository.findByJobNameOrderByDateTime(jobName);
+	
+	public void deleteByJobNameOrderByDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
+		dataRepository.deleteByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}
 
 	public void deleteInBatch(List<Data> deleteTheseLists) {
 		dataRepository.deleteInBatch(deleteTheseLists);
 	}
+	
+	public void updateJobNameWhereJobName(String newJobName, String jobName) {
+		dataRepository.updateJobNameWhereJobName(newJobName, jobName);
+	}
 
+	public Data findFirstByJobNameOrderByDateTimeDesc(String jobName) {
+		return dataRepository.findFirstByJobNameOrderByDateTimeDesc(jobName);
+	}
+
+	public long countByJobName(String jobName) {
+		return dataRepository.countByJobName(jobName);
+	}
 }

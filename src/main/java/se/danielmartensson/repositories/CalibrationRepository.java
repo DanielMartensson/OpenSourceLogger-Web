@@ -7,8 +7,6 @@ import se.danielmartensson.entities.Calibration;
 
 @Repository
 public interface CalibrationRepository extends JpaRepository<Calibration, Long> {
-
 	boolean existsByName(String name);
 	Calibration findByName(String name);
-
 }

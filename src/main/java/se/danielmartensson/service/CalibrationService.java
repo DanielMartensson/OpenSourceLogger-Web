@@ -12,7 +12,7 @@ import se.danielmartensson.repositories.CalibrationRepository;
 public class CalibrationService {
 
 	@Autowired
-	private JobService jobService;
+	private SensorService sensorService;
 
 	private final CalibrationRepository calibrationRepository;
 
@@ -29,7 +29,7 @@ public class CalibrationService {
 	}
 
 	public boolean delete(Calibration calibration) {
-		if (jobService.existsByCalibration(calibration)) {
+		if (sensorService.existsByCalibration(calibration)) {
 			return false; // Cannot delete child because it's connected to a parent
 		} else {
 			calibrationRepository.delete(calibration); // Delete child because the parent don't exist

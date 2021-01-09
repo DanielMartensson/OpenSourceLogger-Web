@@ -4,12 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.common.collect.Lists;
-
 import se.danielmartensson.entities.Alarm;
-import se.danielmartensson.entities.Calibration;
-import se.danielmartensson.entities.Data;
+import se.danielmartensson.entities.Sensor;
 import se.danielmartensson.entities.Job;
 import se.danielmartensson.repositories.JobRepository;
 
@@ -46,19 +42,16 @@ public class JobService {
 	}
 
 	public void delete(Job job) {
-		List<Data> jobData = dataService.findByJobName(job.getName());
-		for (List<Data> deleteTheseLists : Lists.partition(jobData, 2000)) {
-			dataService.deleteInBatch(deleteTheseLists);
-		}
+		dataService.deleteByJobName(job.getName());
 		jobRepository.delete(job);
 	}
 
-	public Job findByCalibration(Calibration calibration) {
-		return jobRepository.findByCalibration(calibration);
+	public Job findBySensor(Sensor sensor) {
+		return jobRepository.findBySensor(sensor);
 	}
 
-	public boolean existsByCalibration(Calibration calibration) {
-		return jobRepository.existsByCalibration(calibration);
+	public boolean existsBySensor(Sensor sensor) {
+		return jobRepository.existsBySensor(sensor);
 	}
 
 	public boolean existsByAlarm(Alarm alarm) {
@@ -68,5 +61,4 @@ public class JobService {
 	public boolean existsByName(String name) {
 		return jobRepository.existsByName(name);
 	}
-
 }

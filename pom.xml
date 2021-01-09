@@ -173,13 +173,6 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-		<!-- For deleting list with JPA -->
-		<dependency>
-		  	<groupId>com.google.guava</groupId>
-		  	<artifactId>guava</artifactId>
-		  	<version>30.1-jre</version>
-		 </dependency>
 		 
 		<!-- USB Serial -->
 		<dependency>

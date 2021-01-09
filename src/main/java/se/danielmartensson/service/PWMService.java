@@ -35,5 +35,4 @@ public class PWMService {
 	public void deleteAll() {
 		pwmRepository.deleteAll();
 	}
-
 }

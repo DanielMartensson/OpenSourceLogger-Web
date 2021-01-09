@@ -14,6 +14,6 @@ public class AnalogInputs {
 	private String resolution;
 	private String mode;
 	private String maxInput;
-	private String calibrationSlopeVariable;
-	private String calibrationBiasVariable;
+	private String sensorMinVariable;
+	private String sensorMaxVariable;
 }

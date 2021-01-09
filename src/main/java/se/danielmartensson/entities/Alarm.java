@@ -34,41 +34,41 @@ public class Alarm {
 
 	// Thresholds
 	@NotNull
-	private float sa0Min;
+	private float sa0MinBreak;
 	@NotNull
-	private float sa0Max;
+	private float sa0MaxBreak;
 	@NotNull
-	private float sa1Min;
+	private float sa1MinBreak;
 	@NotNull
-	private float sa1Max;
+	private float sa1MaxBreak;
 	@NotNull
-	private float sa1dMin;
+	private float sa1dMinBreak;
 	@NotNull
-	private float sa1dMax;
+	private float sa1dMaxBreak;
 	@NotNull
-	private float sa2dMin;
+	private float sa2dMinBreak;
 	@NotNull
-	private float sa2dMax;
+	private float sa2dMaxBreak;
 	@NotNull
-	private float sa3dMin;
+	private float sa3dMinBreak;
 	@NotNull
-	private float sa3dMax;
+	private float sa3dMaxBreak;
 	@NotNull
-	private float a0Min;
+	private float a0MinBreak;
 	@NotNull
-	private float a0Max;
+	private float a0MaxBreak;
 	@NotNull
-	private float a1Min;
+	private float a1MinBreak;
 	@NotNull
-	private float a1Max;
+	private float a1MaxBreak;
 	@NotNull
-	private float a2Min;
+	private float a2MinBreak;
 	@NotNull
-	private float a2Max;
+	private float a2MaxBreak;
 	@NotNull
-	private float a3Min;
+	private float a3MinBreak;
 	@NotNull
-	private float a3Max;
+	private float a3MaxBreak;
 
 	@Override
 	public String toString() {
