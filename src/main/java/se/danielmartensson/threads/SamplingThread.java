@@ -190,71 +190,71 @@ public class SamplingThread extends Thread {
 			
 			// Find the scalar and bias by using Cramer's rule for solving Ax = b
 			float a0Scalar = (a0MaxValue - a0MinValue)/(a0MaxADC - a0MinADC);
-			float a0Bias = a0MinValue - a0MinADC * a0Scalar;
+			float a0Bias = a0MaxValue - a0MaxADC * a0Scalar;
 			float a1Scalar = (a1MaxValue - a1MinValue)/(a1MaxADC - a1MinADC);
-			float a1Bias = a1MinValue - a1MinADC * a1Scalar;
+			float a1Bias = a1MaxValue - a1MaxADC * a1Scalar;
 			float a2Scalar = (a2MaxValue - a2MinValue)/(a2MaxADC - a2MinADC);
-			float a2Bias = a2MinValue - a2MinADC * a2Scalar;
+			float a2Bias = a2MaxValue - a2MaxADC * a2Scalar;
 			float a3Scalar = (a3MaxValue - a3MinValue)/(a3MaxADC - a3MinADC);
-			float a3Bias = a3MinValue - a3MinADC * a3Scalar;
+			float a3Bias = a3MaxValue - a3MaxADC * a3Scalar;
 			float sa0Scalar = (sa0MaxValue - sa0MinValue)/(sa0MaxADC - sa0MinADC);
-			float sa0Bias = sa0MinValue - sa0MinADC * sa0Scalar;
+			float sa0Bias = sa0MaxValue - sa0MaxADC * sa0Scalar;
 			float sa1Scalar = (sa1MaxValue - sa1MinValue)/(sa1MaxADC - sa1MinADC);
-			float sa1Bias = sa1MinValue - sa1MinADC * sa1Scalar;
+			float sa1Bias = sa1MaxValue - sa1MaxADC * sa1Scalar;
 			float sa1dScalar = (sa1dMaxValue - sa1dMinValue)/(sa1dMaxADC - sa1dMinADC);
-			float sa1dBias = sa1dMinValue - sa1dMinADC * sa1dScalar;
+			float sa1dBias = sa1dMaxValue - sa1dMaxADC * sa1dScalar;
 			float sa2dScalar = (sa2dMaxValue - sa2dMinValue)/(sa2dMaxADC - sa2dMinADC);
-			float sa2dBias = sa2dMinValue - sa2dMinADC * sa2dScalar;
+			float sa2dBias = sa2dMaxValue - sa2dMaxADC * sa2dScalar;
 			float sa3dScalar = (sa3dMaxValue - sa3dMinValue)/(sa3dMaxADC - sa3dMinADC);
-			float sa3dBias = sa3dMinValue - sa3dMinADC * sa3dScalar;
+			float sa3dBias = sa3dMaxValue - sa3dMaxADC * sa3dScalar;
 			
 			// Sampling loop
 			int connectionAttempts = 0;
 			while (ControlView.loggingNow.get()) {
 
 				// Outputs - PWM and DAC
-				int p0Value = ControlThread.PWM[0];
-				int p1Value = ControlThread.PWM[1];
-				int p2Value = ControlThread.PWM[2];
-				int p3Value = ControlThread.PWM[3];
-				int p4Value = ControlThread.PWM[4];
-				int p5Value = ControlThread.PWM[5];
-				int p6Value = ControlThread.PWM[6];
-				int p7Value = ControlThread.PWM[7];
-				int p8Value = ControlThread.PWM[8];
-				int d0Value = ControlThread.DAC[0];
-				int d1Value = ControlThread.DAC[1];
-				int d2Value = ControlThread.DAC[2];
+				int p0 = ControlThread.PWM[0];
+				int p1 = ControlThread.PWM[1];
+				int p2 = ControlThread.PWM[2];
+				int p3 = ControlThread.PWM[3];
+				int p4 = ControlThread.PWM[4];
+				int p5 = ControlThread.PWM[5];
+				int p6 = ControlThread.PWM[6];
+				int p7 = ControlThread.PWM[7];
+				int p8 = ControlThread.PWM[8];
+				int d0 = ControlThread.DAC[0];
+				int d1 = ControlThread.DAC[1];
+				int d2 = ControlThread.DAC[2];
 
 				// Inputs - ADC and SDADC and DSDADC and DI
-				float a0Value = a0Scalar * ControlThread.ADC[3] + a0Bias;
-				float a1Value = a1Scalar * ControlThread.ADC[2] + a1Bias;
-				float a2Value = a2Scalar * ControlThread.ADC[0] + a2Bias;
-				float a3Value = a3Scalar * ControlThread.ADC[1] + a3Bias;
-				float sa0Value = sa0Scalar * (ControlThread.SDADC[0] + BIT_15) + sa0Bias; // This will turn -32768 to 0 if slope is 1 and bias is 0
-				float sa1Value = sa1Scalar * (ControlThread.SDADC[1] + BIT_15) + sa1Bias;
-				float sa1dValue = sa1dScalar * ControlThread.DSDADC[0] + sa1dBias;
-				float sa2dValue = sa2dScalar * ControlThread.DSDADC[1] + sa2dBias;
-				float sa3dValue = sa3dScalar * ControlThread.DSDADC[2] + sa3dBias;
-				boolean di0Value = ControlThread.DI[0]; // Counter
-				boolean di1Value = ControlThread.DI[1]; // Stop signal
-				boolean di2Value = ControlThread.DI[2];
-				boolean di3Value = ControlThread.DI[3];
-				boolean di4Value = ControlThread.DI[4];
-				boolean di5Value = ControlThread.DI[5];
+				float a0 = a0Scalar * ControlThread.ADC[3] + a0Bias;
+				float a1 = a1Scalar * ControlThread.ADC[2] + a1Bias;
+				float a2 = a2Scalar * ControlThread.ADC[0] + a2Bias;
+				float a3 = a3Scalar * ControlThread.ADC[1] + a3Bias;
+				float sa0 = sa0Scalar * (ControlThread.SDADC[0] + BIT_15) + sa0Bias; // This will turn -32768 to 0 if slope is 1 and bias is 0
+				float sa1 = sa1Scalar * (ControlThread.SDADC[1] + BIT_15) + sa1Bias;
+				float sa1d = sa1dScalar * ControlThread.DSDADC[0] + sa1dBias;
+				float sa2d = sa2dScalar * ControlThread.DSDADC[1] + sa2dBias;
+				float sa3d = sa3dScalar * ControlThread.DSDADC[2] + sa3dBias;
+				boolean di0 = ControlThread.DI[0]; // Counter
+				boolean di1 = ControlThread.DI[1]; // Stop signal
+				boolean di2 = ControlThread.DI[2];
+				boolean di3 = ControlThread.DI[3];
+				boolean di4 = ControlThread.DI[4];
+				boolean di5 = ControlThread.DI[5];
 
 				// Read the pulse signal and count it if...
-				if (di0Value != pastPulse && di0Value == true)
+				if (di0 != pastPulse && di0 == true)
 					pulseNumber++;
-				pastPulse = di0Value;
+				pastPulse = di0;
 
 				// Read the alarm signal if the alarm is active
 				boolean stopSignal = false;
 				if(alarmActive)
-					stopSignal = di1Value;
+					stopSignal = di1;
 
 				// Save them to the database
-				Data dataLogg = new Data(0, jobName, sensorName, calibrationName, LocalDateTime.now(), sa0Value, sa1Value, sa1dValue, sa2dValue, sa3dValue, a0Value, a1Value, a2Value, a3Value, di0Value, di1Value, di2Value, di3Value, di4Value, di5Value, p0Value, p1Value, p2Value, p3Value, p4Value, p5Value, p6Value, p7Value, p8Value, d0Value, d1Value, d2Value, pulseNumber, selectedBreakPulseLimit, stopSignal);
+				Data dataLogg = new Data(0, jobName, sensorName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
 				try {
 					dataService.save(dataLogg);
 					connectionAttempts = 0; 
@@ -280,28 +280,28 @@ public class SamplingThread extends Thread {
 					Collections.rotate(Arrays.asList(SA1D), -1);
 					Collections.rotate(Arrays.asList(SA2D), -1);
 					Collections.rotate(Arrays.asList(SA3D), -1);
-					A0[showSamplesValue - 1] = a0Value;
-					A1[showSamplesValue - 1] = a1Value;
-					A2[showSamplesValue - 1] = a2Value;
-					A3[showSamplesValue - 1] = a3Value;
-					SA0[showSamplesValue - 1] = sa0Value;
-					SA1[showSamplesValue - 1] = sa1Value;
-					SA1D[showSamplesValue - 1] = sa1dValue;
-					SA2D[showSamplesValue - 1] = sa2dValue;
-					SA3D[showSamplesValue - 1] = sa3dValue;
+					A0[showSamplesValue - 1] = a0;
+					A1[showSamplesValue - 1] = a1;
+					A2[showSamplesValue - 1] = a2;
+					A3[showSamplesValue - 1] = a3;
+					SA0[showSamplesValue - 1] = sa0;
+					SA1[showSamplesValue - 1] = sa1;
+					SA1D[showSamplesValue - 1] = sa1d;
+					SA2D[showSamplesValue - 1] = sa2d;
+					SA3D[showSamplesValue - 1] = sa3d;
 					updatePlotAndPulseAndInputs();
 				}
 
 				// If we exceeded the thresholds
-				boolean breakThreshHold0 = (a0Value > a0MaxBreak) || (a1Value < a0MinBreak);
-				boolean breakThreshHold1 = (a1Value > a1MaxBreak) || (a1Value < a1MinBreak);
-				boolean breakThreshHold2 = (a2Value > a2MaxBreak) || (a2Value < a2MinBreak);
-				boolean breakThreshHold3 = (a3Value > a3MaxBreak) || (a3Value < a3MinBreak);
-				boolean breakThreshHold4 = (sa0Value > sa0MaxBreak) || (sa0Value < sa0MinBreak);
-				boolean breakThreshHold5 = (sa1Value > sa1MaxBreak) || (sa1Value < sa1MinBreak);
-				boolean breakThreshHold6 = (sa1dValue > sa1dMaxBreak) || (sa1dValue < sa1dMinBreak);
-				boolean breakThreshHold7 = (sa2dValue > sa2dMaxBreak) || (sa2dValue < sa2dMinBreak);
-				boolean breakThreshHold8 = (sa3dValue > sa3dMaxBreak) || (sa3dValue < sa3dMinBreak);
+				boolean breakThreshHold0 = (a0 > a0MaxBreak) || (a0 < a0MinBreak);
+				boolean breakThreshHold1 = (a1 > a1MaxBreak) || (a1 < a1MinBreak);
+				boolean breakThreshHold2 = (a2 > a2MaxBreak) || (a2 < a2MinBreak);
+				boolean breakThreshHold3 = (a3 > a3MaxBreak) || (a3 < a3MinBreak);
+				boolean breakThreshHold4 = (sa0 > sa0MaxBreak) || (sa0 < sa0MinBreak);
+				boolean breakThreshHold5 = (sa1 > sa1MaxBreak) || (sa1 < sa1MinBreak);
+				boolean breakThreshHold6 = (sa1d > sa1dMaxBreak) || (sa1d < sa1dMinBreak);
+				boolean breakThreshHold7 = (sa2d > sa2dMaxBreak) || (sa2d < sa2dMinBreak);
+				boolean breakThreshHold8 = (sa3d > sa3dMaxBreak) || (sa3d < sa3dMinBreak);
 				
 				if(alarmActive) {
 					if (breakThreshHold0) {

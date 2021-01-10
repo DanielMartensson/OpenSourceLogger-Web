@@ -35,6 +35,10 @@ public class DataService {
 		return dataRepository.findByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}
 	
+	public List<Data> findByJobNameOrderByDateTimeAscLimitStep(String jobName, long selectedOffset, long selectedLimit, long step) {
+		return dataRepository.findByJobNameOrderByDateTimeAscLimitStep(jobName, selectedOffset, selectedLimit, step);
+	}
+	
 	public void deleteByJobNameOrderByDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
 		dataRepository.deleteByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}

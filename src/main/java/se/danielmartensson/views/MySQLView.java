@@ -169,8 +169,12 @@ public class MySQLView extends AppLayout {
 			int selectedOffset = firstIndex;
 			String jobName = selectJob.getValue().getName();
 
-			// Get the selected rows in the database depending on choice of loggerId
-			List<Data> selectedData = dataService.findByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
+			// Get the selected rows in the database
+			List<Data> selectedData = null;
+			if(step > 1)
+				selectedData = dataService.findByJobNameOrderByDateTimeAscLimitStep(jobName, selectedOffset, selectedLimit, step);
+			else
+				selectedData = dataService.findByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 			
 			// Do filtering
 			if(doFiltering.getValue()) {
@@ -188,50 +192,51 @@ public class MySQLView extends AppLayout {
 			}
 			
 			// Fill the values for the plot
-			Float[] A0 = new Float[selectedLimit];
-			Float[] A1 = new Float[selectedLimit];
-			Float[] A2 = new Float[selectedLimit];
-			Float[] A3 = new Float[selectedLimit];
-			Float[] SA0 = new Float[selectedLimit];
-			Float[] SA1 = new Float[selectedLimit];
-			Float[] SA1D = new Float[selectedLimit];
-			Float[] SA2D = new Float[selectedLimit];
-			Float[] SA3D = new Float[selectedLimit];
-			Float[] PWM0 = new Float[selectedLimit];
-			Float[] PWM1 = new Float[selectedLimit];
-			Float[] PWM2 = new Float[selectedLimit];
-			Float[] PWM3 = new Float[selectedLimit];
-			Float[] PWM4 = new Float[selectedLimit];
-			Float[] PWM5 = new Float[selectedLimit];
-			Float[] PWM6 = new Float[selectedLimit];
-			Float[] PWM7 = new Float[selectedLimit];
-			Float[] PWM8 = new Float[selectedLimit];
-			Float[] DAC0 = new Float[selectedLimit];
-			Float[] DAC1 = new Float[selectedLimit];
-			Float[] DAC2 = new Float[selectedLimit];
-			for(int i = 0; i < selectedData.size(); i++){
+			int selectedSamples = selectedData.size();
+			Float[] A0 = new Float[selectedSamples];
+			Float[] A1 = new Float[selectedSamples];
+			Float[] A2 = new Float[selectedSamples];
+			Float[] A3 = new Float[selectedSamples];
+			Float[] SA0 = new Float[selectedSamples];
+			Float[] SA1 = new Float[selectedSamples];
+			Float[] SA1D = new Float[selectedSamples];
+			Float[] SA2D = new Float[selectedSamples];
+			Float[] SA3D = new Float[selectedSamples];
+			Float[] PWM0 = new Float[selectedSamples];
+			Float[] PWM1 = new Float[selectedSamples];
+			Float[] PWM2 = new Float[selectedSamples];
+			Float[] PWM3 = new Float[selectedSamples];
+			Float[] PWM4 = new Float[selectedSamples];
+			Float[] PWM5 = new Float[selectedSamples];
+			Float[] PWM6 = new Float[selectedSamples];
+			Float[] PWM7 = new Float[selectedSamples];
+			Float[] PWM8 = new Float[selectedSamples];
+			Float[] DAC0 = new Float[selectedSamples];
+			Float[] DAC1 = new Float[selectedSamples];
+			Float[] DAC2 = new Float[selectedSamples];
+			for(int i = 0; i < selectedSamples; i++){
 				Data data = selectedData.get(i);
-				A0[i] = data.getA0Value();
-				A1[i] = data.getA1Value();
-				A2[i] = data.getA2Value();
-				A3[i] = data.getA3Value();
-				SA0[i] = data.getSa0Value();
-				SA1[i] = data.getSa1Value();
-				SA1D[i] = data.getSa1dValue();
-				SA2D[i] = data.getSa2dValue();
-				SA3D[i] = data.getSa3dValue();
-				PWM0[i] = (float) data.getP0Value();
-				PWM1[i] = (float) data.getP1Value();
-				PWM2[i] = (float) data.getP2Value();
-				PWM3[i] = (float) data.getP3Value();
-				PWM4[i] = (float) data.getP4Value();
-				PWM5[i] = (float) data.getP5Value();
-				PWM6[i] = (float) data.getP6Value();
-				PWM7[i] = (float) data.getP7Value();
-				PWM8[i] = (float) data.getP8Value();
-				DAC0[i] = (float) data.getD0Value();
-				DAC1[i] = (float) data.getD1Value();
-				DAC2[i] = (float) data.getD2Value();
+				A0[i] = data.getA0();
+				A1[i] = data.getA1();
+				A2[i] = data.getA2();
+				A3[i] = data.getA3();
+				SA0[i] = data.getSa0();
+				SA1[i] = data.getSa1();
+				SA1D[i] = data.getSa1d();
+				SA2D[i] = data.getSa2d();
+				SA3D[i] = data.getSa3d();
+				PWM0[i] = (float) data.getP0();
+				PWM1[i] = (float) data.getP1();
+				PWM2[i] = (float) data.getP2();
+				PWM3[i] = (float) data.getP3();
+				PWM4[i] = (float) data.getP4();
+				PWM5[i] = (float) data.getP5();
+				PWM6[i] = (float) data.getP6();
+				PWM7[i] = (float) data.getP7();
+				PWM8[i] = (float) data.getP8();
+				DAC0[i] = (float) data.getD0();
+				DAC1[i] = (float) data.getD1();
+				DAC2[i] = (float) data.getD2();
 			}
 			
 			// Count how many series boxes that are being checked
@@ -469,39 +474,39 @@ public class MySQLView extends AppLayout {
 	// bytes
 	public StreamResource getStreamResource(String filename, List<Data> selectedData) {
 		StringWriter stringWriter = new StringWriter();
-		stringWriter.write("id,jobName,sensorName,dateTime,sa0Value,sa1Value,sa1dValue,sa2dValue,sa3dValue,a0Value,a1Value,a2Value,a3Value,i0Value,i1Value,i2Value,i3Value,i4Value,i5Value,p0Value,p1Value,p2Value,p3Value,p4Value,p5Value,p6Value,p7Value,p8Value,d0Value,d1Value,d2Value,pulseNumber,breakPulseLimit,stopSignal\n");
+		stringWriter.write("id,jobName,sensorName,dateTime,sa0,sa1,sa1d,sa2d,sa3d,a0,a1,a2,a3,i0,i1,i2,i3,i4,i5,p0,p1,p2,p3,p4,p5,p6,p7,p8,d0,d1,d2,pulseNumber,breakPulseLimit,stopSignal\n");
 		for (Data data : selectedData) {
 			String row = data.getId() + "," +
 					data.getJobName() + "," +
 					data.getSensorName() + "," +
 					data.getDateTime() + "," +
-					data.getSa0Value() + "," +
-					data.getSa1Value() + "," +
-					data.getSa1dValue() + "," +
-					data.getSa2dValue() + "," +
-					data.getSa3dValue() + "," +
-					data.getA0Value() + "," +
-					data.getA1Value() + "," +
-					data.getA2Value() + "," +
-					data.getA3Value() + "," +
-					data.isI0Value() + "," +
-					data.isI1Value() + "," +
-					data.isI2Value() + "," +
-					data.isI3Value() + "," +
-					data.isI4Value() + "," +
-					data.isI5Value() + "," +
-					data.getP0Value() + "," +
-					data.getP1Value() + "," +
-					data.getP2Value() + "," +
-					data.getP3Value() + "," +
-					data.getP4Value() + "," +
-					data.getP5Value() + "," +
-					data.getP6Value() + "," +
-					data.getP7Value() + "," +
-					data.getP8Value() + "," +
-					data.getD0Value() + "," +
-					data.getD1Value() + "," +
-					data.getD2Value() + "," +
+					data.getSa0() + "," +
+					data.getSa1() + "," +
+					data.getSa1d() + "," +
+					data.getSa2d() + "," +
+					data.getSa3d() + "," +
+					data.getA0() + "," +
+					data.getA1() + "," +
+					data.getA2() + "," +
+					data.getA3() + "," +
+					data.isI0() + "," +
+					data.isI1() + "," +
+					data.isI2() + "," +
+					data.isI3() + "," +
+					data.isI4() + "," +
+					data.isI5() + "," +
+					data.getP0() + "," +
+					data.getP1() + "," +
+					data.getP2() + "," +
+					data.getP3() + "," +
+					data.getP4() + "," +
+					data.getP5() + "," +
+					data.getP6() + "," +
+					data.getP7() + "," +
+					data.getP8() + "," +
+					data.getD0() + "," +
+					data.getD1() + "," +
+					data.getD2() + "," +
 					data.getPulseNumber() + "," +
 					data.getBreakPulseLimit() + "," +
 					data.isStopSignal() + "\n";

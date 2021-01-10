@@ -32,39 +32,39 @@ public class Data {
 	private LocalDateTime dateTime;
 
 	// Analog input
-	private float sa0Value;
-	private float sa1Value;
-	private float sa1dValue;
-	private float sa2dValue;
-	private float sa3dValue;
-	private float a0Value;
-	private float a1Value;
-	private float a2Value;
-	private float a3Value;
+	private float sa0;
+	private float sa1;
+	private float sa1d;
+	private float sa2d;
+	private float sa3d;
+	private float a0;
+	private float a1;
+	private float a2;
+	private float a3;
 
 	// Digital input
-	private boolean i0Value;
-	private boolean i1Value;
-	private boolean i2Value;
-	private boolean i3Value;
-	private boolean i4Value;
-	private boolean i5Value;
+	private boolean i0;
+	private boolean i1;
+	private boolean i2;
+	private boolean i3;
+	private boolean i4;
+	private boolean i5;
 
 	// Digital PWM
-	private int p0Value;
-	private int p1Value;
-	private int p2Value;
-	private int p3Value;
-	private int p4Value;
-	private int p5Value;
-	private int p6Value;
-	private int p7Value;
-	private int p8Value;
+	private int p0;
+	private int p1;
+	private int p2;
+	private int p3;
+	private int p4;
+	private int p5;
+	private int p6;
+	private int p7;
+	private int p8;
 
 	// Analog output
-	private int d0Value;
-	private int d1Value;
-	private int d2Value;
+	private int d0;
+	private int d1;
+	private int d2;
 
 	// Pulses
 	private int pulseNumber;
