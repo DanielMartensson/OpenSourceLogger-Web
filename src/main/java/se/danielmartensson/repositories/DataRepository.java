@@ -18,6 +18,8 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
 	Data findFirstByJobNameOrderByLocalDateTimeDesc(String jobName);
 	
+	Data findFirstByOrderByLocalDateTimeDesc();
+	
 	void deleteByJobName(String jobName);
 	
 	@Transactional
@@ -38,4 +40,5 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 	@Modifying
 	@Query(value = "DELETE FROM data WHERE id IN (SELECT * FROM (SELECT id FROM data WHERE job_name = :jobName ORDER BY local_date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset) as t)",  nativeQuery = true)
 	void deleteByJobNameOrderByLocalDateTimeAscLimit(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit);
+	
 }

@@ -20,6 +20,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
@@ -121,8 +122,10 @@ public class ControlView extends AppLayout {
 		// Create check boxes for showing the measurement series
 		Checkbox[] seriesBoxes = createCheckBoxes(new String[] {"A0", "A1", "A2", "A3", "SA0", "SA1", "SA1D", "SA2D", "SA3D"});
 
+		TextField maxLeftField = createHowManyPrimaryKeysLeftIntegerField();
+		
 		// Create control panel
-		HorizontalLayout firstRow = createFirstRow(jobService, counters);
+		HorizontalLayout firstRow = createFirstRow(jobService, counters, maxLeftField);
 		VerticalLayout secondRow = createVariableLayout(PWMSliders, DACSliders);
 		HorizontalLayout thirdRow = createCheckBoxesLayout(inputBoxes);
 		HorizontalLayout fourthRow = createCheckBoxesLayout(seriesBoxes);
@@ -145,6 +148,15 @@ public class ControlView extends AppLayout {
 
 		// Content
 		setContent(new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, apexChart));
+	}
+
+	private TextField createHowManyPrimaryKeysLeftIntegerField() {
+		Long wiritingLeft = Long.MAX_VALUE - dataService.findFirstByOrderByLocalDateTimeDesc().getId();
+		TextField maxLeftField = new TextField("Database wirting left");
+		maxLeftField.setValue(Long.toString(wiritingLeft));
+		maxLeftField.setEnabled(false);
+		maxLeftField.setWidth("200px");
+		return maxLeftField;
 	}
 
 	public ControlView(JobService jobService, MailService mailService, DataService dataService) {
@@ -268,7 +280,7 @@ public class ControlView extends AppLayout {
 		return new HorizontalLayout(showPlot, loggingActivate);
 	}
 
-	private HorizontalLayout createFirstRow(JobService jobService, List<IntegerField> counters) {
+	private HorizontalLayout createFirstRow(JobService jobService, List<IntegerField> counters, TextField maxLeftField) {
 		// Set job names
 		Select<Job> selectJob = new Select<Job>();
 		selectJob.setLabel("Job name");
@@ -297,7 +309,7 @@ public class ControlView extends AppLayout {
 		showSamples.setValue(selectedShowSamples);
 		showSamples.addValueChangeListener(e -> selectedShowSamples = e.getValue());
 
-		return new HorizontalLayout(selectJob, showSamples, samplingTime, counters.get(0), counters.get(1));
+		return new HorizontalLayout(selectJob, showSamples, samplingTime, counters.get(0), counters.get(1), maxLeftField);
 
 	}
 	

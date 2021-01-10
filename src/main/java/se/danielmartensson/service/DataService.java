@@ -58,4 +58,8 @@ public class DataService {
 	public long countByJobName(String jobName) {
 		return dataRepository.countByJobName(jobName);
 	}
+
+	public Data findFirstByOrderByLocalDateTimeDesc() {
+		return dataRepository.findFirstByOrderByLocalDateTimeDesc();
+	}
 }
