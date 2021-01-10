@@ -23,7 +23,7 @@ public class Data {
 	// ID
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	// Made by
 	private String jobName;

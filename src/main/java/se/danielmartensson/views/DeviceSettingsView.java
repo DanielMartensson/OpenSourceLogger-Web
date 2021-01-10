@@ -148,7 +148,7 @@ public class DeviceSettingsView extends AppLayout {
 
 			// OK! Write to database and send to the device about new settings
 			pwmService.deleteAll(); // Only one setting allowed
-			pwmService.save(new PWM(0, portDescription, P0_P1_P2_Value, P3_P7_P8_Value, P6_P5_Value, P4_Value));
+			pwmService.save(new PWM(0L, portDescription, P0_P1_P2_Value, P3_P7_P8_Value, P6_P5_Value, P4_Value));
 			pwmCrud.refreshGrid();
 		});
 

@@ -33,12 +33,12 @@ public class JobService {
 		return jobRepository.findByName(name);
 	}
 
-	public boolean existById(long id) {
+	public boolean existById(Long id) {
 		return jobRepository.existsById(id);
 	}
 
-	public Job findById(long id) {
-		return jobRepository.findById(id).get();
+	public Job findById(Long jobId) {
+		return jobRepository.findById(jobId).get();
 	}
 
 	public void delete(Job job) {

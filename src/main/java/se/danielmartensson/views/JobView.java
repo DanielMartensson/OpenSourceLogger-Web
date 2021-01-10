@@ -95,7 +95,7 @@ public class JobView extends AppLayout {
 			public Job update(Job job) {
 				// Check if we updating the same row
 				String jobName = job.getName();
-				long jobId = job.getId();
+				Long jobId = job.getId();
 				boolean nameExist = jobService.existsByName(jobName);
 				Job anotherJobWithSameName = jobService.findByName(jobName);
 				if (nameExist && anotherJobWithSameName.getId() != jobId) {

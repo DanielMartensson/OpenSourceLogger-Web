@@ -24,6 +24,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
@@ -38,6 +39,7 @@ import se.danielmartensson.tools.Top;
 @Route("mysql")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
+@PreserveOnRefresh
 /**
  * This is the datbase viewer class
  * 
@@ -88,7 +90,7 @@ public class MySQLView extends AppLayout {
 
 		// Range settings
 		IntegerField indexFirst = createRangeField(1, "No index", "First index");
-		IntegerField indexStep = createRangeField(1, "No index", "Step index(plot only)");
+		IntegerField indexStep = createRangeField(1, "No index", "Step index");
 		IntegerField indexLast = createRangeField(1, "No index", "Last index");
 		
 		// Filtfilt factor
@@ -345,7 +347,7 @@ public class MySQLView extends AppLayout {
 				return;
 
 			// Show dialog and ask
-			Dialog dialog = new Dialog(new Label("Do you want to delete samples between " + firstIndex + " and " + lastIndex));
+			Dialog dialog = new Dialog(new Label("Do you want to delete samples from index " + firstIndex + " and to index " + lastIndex));
 			dialog.setCloseOnEsc(false);
 			dialog.setCloseOnOutsideClick(false);
 

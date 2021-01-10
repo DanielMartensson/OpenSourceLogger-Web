@@ -18,7 +18,7 @@ import lombok.Setter;
 public class PWM {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	private String portDescription;
 	private int frequencyP0P1P2;
