@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 
 import se.danielmartensson.lists.AnalogInputs;
@@ -68,9 +69,27 @@ public class AboutView extends AppLayout {
 		Label pwmRelayTitle = new Label("PWM Relays");
 		pwmRelayTitle.setClassName("headingH1");
 		Grid<PWMRelays> pwmRelayGrid = createGridPWMRelay();
-
+		
+		// How to calibrate
+		Label calibrationTitle = new Label("Calibration");
+		calibrationTitle.setClassName("headingH1");
+		TextArea calibrateInstructions = new TextArea("How to calibrate");
+		calibrateInstructions.setValue(
+				  "1. Go to Calibration and create a new row where you set all MIN value boxes to 0 and MAX value boxes to 1"
+				+ "\n2. Go to Sensor and create a new row where you set all MIN value boxes to 0 and MAX value boxes to 1."
+				+ "\n3. Go to Control and start logging. "
+				+ "\n4. Now apply the minimum & maximum input signal, given from your sensor, into A0, A1, A2, A3, SA0, SA1, SA1D, SA2D, SA3D."
+				+ "\n5. Go to MySQL and collect the data download the .csv file after you have plot the data."
+				+ "\n6. Open the .csv file and find the minimum & maximum average of A0, A1, A2, A3, SA0, SA1, SA1D, SA2D, SA3D."
+				+ "\n7. Go Calibration and write in these ADC values into the MIN value boxes and MAX value boxes."
+				+ "\n8. Go to Sensor and write in the minimum & maximum physical value for the sensor e.g 0-400 Bar"
+				+ "\n9. Now you have calibrate for that type of sensor e.g 4-20mA or 0-20mA sensor"
+				+ "\n10. Notice if you are using another sensor with different output intervall, you need to create a new calibration");
+		calibrateInstructions.setEnabled(false);
+		calibrateInstructions.setWidthFull();
+		
 		// Layout
-		VerticalLayout layout = new VerticalLayout(title, board, analogInputTitle, analogInputGrid, digitalInputTitle, digitalInputGrid, analogOutputTitle, analogOutputGrid, pwmRelayTitle, pwmRelayGrid, pwmRelayGrid);
+		VerticalLayout layout = new VerticalLayout(title, board, analogInputTitle, analogInputGrid, digitalInputTitle, digitalInputGrid, analogOutputTitle, analogOutputGrid, pwmRelayTitle, pwmRelayGrid, pwmRelayGrid, calibrationTitle, calibrateInstructions);
 		layout.setAlignItems(Alignment.CENTER);
 		setContent(layout);
 	}

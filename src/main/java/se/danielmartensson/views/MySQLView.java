@@ -214,8 +214,8 @@ public class MySQLView extends AppLayout {
 			Float[] DAC0 = new Float[selectedSamples];
 			Float[] DAC1 = new Float[selectedSamples];
 			Float[] DAC2 = new Float[selectedSamples];
-			for(int i = 0; i < selectedSamples; i++){
-				Data data = selectedData.get(i);
+			int i = 0;
+			for(Data data : selectedData){
 				A0[i] = data.getA0();
 				A1[i] = data.getA1();
 				A2[i] = data.getA2();
@@ -237,8 +237,9 @@ public class MySQLView extends AppLayout {
 				DAC0[i] = (float) data.getD0();
 				DAC1[i] = (float) data.getD1();
 				DAC2[i] = (float) data.getD2();
+				i++;
 			}
-			
+
 			// Count how many series boxes that are being checked
 			int boxesChecked = 0;
 			for(Checkbox seriesBox : seriesBoxes) {
