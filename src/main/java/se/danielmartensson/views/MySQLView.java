@@ -95,10 +95,10 @@ public class MySQLView extends AppLayout {
 		
 		// Filtfilt factor
 		Checkbox doFiltering = new Checkbox("Filtfilt", false);
-		NumberField a0Filtfilt = createFiltfiltSimulationConstant("A1 filtfilt", 0.1, 10.0);
-		NumberField a1Filtfilt = createFiltfiltSimulationConstant("A2 filtfilt", 0.1, 10.0);
-		NumberField a2Filtfilt = createFiltfiltSimulationConstant("A3 filtfilt", 0.1, 10.0);
-		NumberField a3Filtfilt = createFiltfiltSimulationConstant("A4 filtfilt", 0.1, 10.0);
+		NumberField a0Filtfilt = createFiltfiltSimulationConstant("A0 filtfilt", 0.1, 10.0);
+		NumberField a1Filtfilt = createFiltfiltSimulationConstant("A1 filtfilt", 0.1, 10.0);
+		NumberField a2Filtfilt = createFiltfiltSimulationConstant("A2 filtfilt", 0.1, 10.0);
+		NumberField a3Filtfilt = createFiltfiltSimulationConstant("A3 filtfilt", 0.1, 10.0);
 		NumberField sa0Filtfilt = createFiltfiltSimulationConstant("SA0 filtfilt", 0.1, 10.0);
 		NumberField sa1Filtfilt = createFiltfiltSimulationConstant("SA1 filtfilt", 0.1, 10.0);
 		NumberField sa1dFiltfilt = createFiltfiltSimulationConstant("SA1D filtfilt", 0.1, 10.0);
