@@ -87,14 +87,9 @@ public class MySQLView extends AppLayout {
 		countSamples.addClickListener(e -> updateSamplesAndPulses(selectJob, dataService, countAmoutOfSamples, pulseField));
 
 		// Range settings
-		IntegerField indexFirst = new IntegerField();
-		indexFirst.setMin(1);
-		indexFirst.setPlaceholder("No index");
-		indexFirst.setLabel("First index");
-		IntegerField indexLast = new IntegerField();
-		indexLast.setMin(1);
-		indexLast.setPlaceholder("No index");
-		indexLast.setLabel("Last index");
+		IntegerField indexFirst = createRangeField(1, "No index", "First index");
+		IntegerField indexStep = createRangeField(1, "No index", "Step index");
+		IntegerField indexLast = createRangeField(1, "No index", "Last index");
 		
 		// Filtfilt factor
 		Checkbox doFiltering = new Checkbox("Filtfilt", false);
@@ -159,9 +154,11 @@ public class MySQLView extends AppLayout {
 			if(forgotToSelectValues(indexFirst, indexLast, countAmoutOfSamples))
 				return;
 			int firstIndex = indexFirst.getValue(); // Min 1
+			int step = indexStep.getValue(); // Min 1
 			int lastIndex = indexLast.getValue(); // Min 1
 			int samples = countAmoutOfSamples.getValue(); // Min 1
-			if(errorIndexing(samples, firstIndex, lastIndex))
+
+			if(errorIndexing(samples, firstIndex, lastIndex, step))
 				return;
 
 			// Change to zero-indexing by removing one value from firstIndex
@@ -335,9 +332,10 @@ public class MySQLView extends AppLayout {
 			if(forgotToSelectValues(indexFirst, indexLast, countAmoutOfSamples))
 				return;
 			int firstIndex = indexFirst.getValue(); // Min 1
+			int stepIndex = indexStep.getValue(); // Min 1
 			int lastIndex = indexLast.getValue(); // Min 1
 			int samples = countAmoutOfSamples.getValue(); // Min 1
-			if(errorIndexing(samples, firstIndex, lastIndex))
+			if(errorIndexing(samples, firstIndex, lastIndex, stepIndex))
 				return;
 
 			// Show dialog and ask
@@ -360,7 +358,7 @@ public class MySQLView extends AppLayout {
 		});
 		
 		// Layout
-		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexLast, countAmoutOfSamples, pulseField);
+		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexStep, indexLast, countAmoutOfSamples, pulseField);
 		HorizontalLayout secondRow = new HorizontalLayout(countSamples, doFiltering, createPlot, download, deletePlot);
 		secondRow.setAlignItems(Alignment.CENTER);
 		HorizontalLayout thirdRow = new HorizontalLayout(a0Filtfilt, a1Filtfilt, a2Filtfilt, a3Filtfilt, sa0Filtfilt, sa1Filtfilt, sa1dFiltfilt, sa2dFiltfilt, sa3dFiltfilt);
@@ -369,6 +367,21 @@ public class MySQLView extends AppLayout {
 		VerticalLayout layout = new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, apexChart);
 		setContent(layout);
 
+	}
+
+	private IntegerField createRangeField(int minValue, String placeHolder, String label) {
+		IntegerField integerField = new IntegerField();
+		integerField.setMin(minValue);
+		integerField.setPlaceholder(placeHolder);
+		integerField.setLabel(label);
+		integerField.setValue(minValue);
+		integerField.addValueChangeListener(e -> {
+			if(e.getValue() == null)
+				integerField.setValue(e.getOldValue());
+			if(e.getValue() < minValue)
+				integerField.setValue(e.getOldValue());
+		});
+		return integerField;
 	}
 
 	private NumberField createFiltfiltSimulationConstant(String label, double step, double max) {
@@ -380,6 +393,8 @@ public class MySQLView extends AppLayout {
 		numberFiled.setValue(step);
 		numberFiled.addValueChangeListener(e -> {
 			if(e.getValue() == null) // Type in wrong value
+				numberFiled.setValue(e.getOldValue());
+			if(e.getValue() > max || e.getValue() < step)
 				numberFiled.setValue(e.getOldValue());
 		});
 		return numberFiled;
@@ -412,7 +427,7 @@ public class MySQLView extends AppLayout {
 		}
 	}
 
-	private boolean errorIndexing(int samples, int firstIndex, int lastIndex) {
+	private boolean errorIndexing(int samples, int firstIndex, int lastIndex, int step) {
 		if (firstIndex > lastIndex) {
 			new Notification("First index cannot be greater than last index", 3000).open();
 			return true;
@@ -429,6 +444,10 @@ public class MySQLView extends AppLayout {
 			new Notification("First index cannot be under 1", 3000).open();
 			return true;
 		}
+		if(step > samples) {
+			new Notification("Step index cannot be larger than samples", 3000).open();
+			return true;
+		}
 		return false;
 	}
 
@@ -443,10 +462,7 @@ public class MySQLView extends AppLayout {
 	}
 
 	static public Series<Float> createSerie(Float[] data, String legend) {
-		Series<Float> serie = new Series<Float>();
-		serie.setData(data);
-		serie.setName(legend);
-		return serie;
+		return new Series<Float>(legend, data);
 	}
 
 	// Create a large CSV file in a form of StringBuilder and then convert it all to

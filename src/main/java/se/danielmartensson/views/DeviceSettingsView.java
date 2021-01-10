@@ -117,29 +117,18 @@ public class DeviceSettingsView extends AppLayout {
 				new Notification("No port open", 3000).open();
 				return;
 			}
-			
-			// Check if our values are OK
-			int P0_P1_P2_Value = Frequency_P0_P1_P2.getValue();
-			int P3_P7_P8_Value = Frequency_P3_P7_P8.getValue();
-			int P6_P5_Value = Frequency_P6_P5.getValue();
-			int P4_Value = Frequency_P4.getValue();
-			String portDescription = serialDevice.getValue().getPortDescription();
-			if (P0_P1_P2_Value < MIN_VALUE_INTEGER_FIELD || P3_P7_P8_Value < MIN_VALUE_INTEGER_FIELD || P6_P5_Value < MIN_VALUE_INTEGER_FIELD || P4_Value < MIN_VALUE_INTEGER_FIELD) {
-				new Notification("Too small number!", 3000).open();
-				return;
-			}
-				
-			if (P0_P1_P2_Value > MAX_VALUE_INTEGER_FIELD || P3_P7_P8_Value > MAX_VALUE_INTEGER_FIELD || P6_P5_Value > MAX_VALUE_INTEGER_FIELD || P4_Value > MAX_VALUE_INTEGER_FIELD) {
-				new Notification("Too large number!", 3000).open();
-				return;
-			}
-			
+
 			/*
 			 *  The TIM clock is on 2 Mhz. 
 			 *  We take -1 because prescaling the clock we divide e.g New clock frequency = (Original Clock Frequency In Mhz)/(Our prescaler value - 1)
 			 *  If prescalerValues == MAX_VALUE_INTEGER_FIELD, then prescalerValues[0] == 0 and then TIM2 will have MAX_VALUE_INTEGER_FIELD Hz PWM.
 			 *  If prescalerValues == MIN_VALUE_INTEGER_FIELD, then prescalerValues[0] == 64515 and then TIM2 WILL have MIN_VALUE_INTEGER_FIELD Hz PWM.
 			 */
+			int P0_P1_P2_Value = Frequency_P0_P1_P2.getValue();
+			int P3_P7_P8_Value = Frequency_P3_P7_P8.getValue();
+			int P6_P5_Value = Frequency_P6_P5.getValue();
+			int P4_Value = Frequency_P4.getValue();
+			String portDescription = serialDevice.getValue().getPortDescription();
 			int[] prescalerValues = new int[4];
 			prescalerValues[0] = MAX_VALUE_INTEGER_FIELD / P4_Value -1; //TIM2
 			prescalerValues[1] = MAX_VALUE_INTEGER_FIELD / P6_P5_Value -1; //TIM3
@@ -147,15 +136,15 @@ public class DeviceSettingsView extends AppLayout {
 			prescalerValues[3] = MAX_VALUE_INTEGER_FIELD / P0_P1_P2_Value -1; //TIM5
 			serial.askIfReady();
 			if(!serial.isOK()) {
-				new Notification("Is not ready. Please try again.", 3000).open();
+				new Notification("Device is not ready. Please try again.", 3000).open();
 				return;
 			}
 			serial.trancieve_PWM_Prescalers(prescalerValues);
 			if(!serial.isOK()){
-				new Notification("Could not write settings!", 3000).open();
+				new Notification("Could not write settings to STM32!", 3000).open();
 				return;
 			}
-			new Notification("Success!", 3000).open();
+			new Notification("Success writing to STM32!", 3000).open();
 
 			// OK! Write to database and send to the device about new settings
 			pwmService.deleteAll(); // Only one setting allowed
@@ -219,6 +208,12 @@ public class DeviceSettingsView extends AppLayout {
 		integerField.setHasControls(true);
 		integerField.setMax(MAX_VALUE_INTEGER_FIELD);
 		integerField.setValue(value);
+		integerField.addValueChangeListener(e -> {
+			if(e.getValue() == null)
+				integerField.setValue(e.getOldValue());
+			if(e.getValue() > MAX_VALUE_INTEGER_FIELD || e.getValue() < MIN_VALUE_INTEGER_FIELD)
+				integerField.setValue(e.getOldValue());
+		});
 	}
 
 	public DeviceSettingsView() {
