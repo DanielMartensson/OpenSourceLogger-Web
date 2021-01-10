@@ -159,7 +159,6 @@ public class MySQLView extends AppLayout {
 			int step = indexStep.getValue(); // Min 1
 			int lastIndex = indexLast.getValue(); // Min 1
 			int samples = countAmoutOfSamples.getValue(); // Min 1
-
 			if(errorIndexing(samples, firstIndex, lastIndex, step))
 				return;
 
@@ -436,24 +435,16 @@ public class MySQLView extends AppLayout {
 	}
 
 	private boolean errorIndexing(int samples, int firstIndex, int lastIndex, int step) {
-		if (firstIndex > lastIndex) {
-			new Notification("First index cannot be greater than last index", 3000).open();
-			return true;
-		}
 		if (lastIndex > samples) {
 			new Notification("Not enough of samples", 3000).open();
 			return true;
 		}
-		if (lastIndex <= 0) {
-			new Notification("Last index cannot be under 1", 3000).open();
+		if (firstIndex > lastIndex) {
+			new Notification("First index cannot be greater than last index", 3000).open();
 			return true;
 		}
-		if (firstIndex <= 0) {
-			new Notification("First index cannot be under 1", 3000).open();
-			return true;
-		}
-		if(step > samples) {
-			new Notification("Step index cannot be larger than samples", 3000).open();
+		if(step > lastIndex) {
+			new Notification("Step index cannot be larger than last index", 3000).open();
 			return true;
 		}
 		return false;
