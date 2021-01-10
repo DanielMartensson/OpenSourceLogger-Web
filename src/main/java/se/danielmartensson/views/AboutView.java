@@ -76,7 +76,7 @@ public class AboutView extends AppLayout {
 		TextArea calibrateInstructions = new TextArea("How to calibrate");
 		calibrateInstructions.setValue(
 				  "1. Go to Calibration and create a new row where you set all MIN value boxes to 0 and MAX value boxes to 1"
-				+ "\n2. Go to Sensor and create a new row where you set all MIN value boxes to 0 and MAX value boxes to 1. Now scalar is = 1 and bias = 0 (measurement = scalar*x + bias)."
+				+ "\n2. Go to Sensor and create a new row where you set all MIN value boxes to 0 and MAX value boxes to 1. Now scalar = 1 and bias = 0 (measurement = scalar*x + bias)."
 				+ "\n3. Go to Control and start logging. "
 				+ "\n4. Now apply the minimum & maximum input signal, given from your sensor, into A0, A1, A2, A3, SA0, SA1, SA1D, SA2D, SA3D."
 				+ "\n5. Go to MySQL and collect the data download the .csv file after you have plot the data."
