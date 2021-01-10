@@ -32,12 +32,11 @@ public class Filtering {
 		for(int i = 0; i < filtfiltKValues.length; i++)
 			K[i] = (float) filtfiltKValues[i];
 		
-		// Find time difference in seconds
-		long timedifferenceMilliseconds = ChronoUnit.MILLIS.between(dataList.get(0).getDateTime(), dataList.get(1).getDateTime());
-		float timedifferenceSeconds = (float) ((timedifferenceMilliseconds) / 1000.0);
-		
 		// Euler simulation
 		for(int i = 1; i < dataList.size(); i++) {
+			// Find time difference in seconds
+			long timedifferenceMilliseconds = ChronoUnit.MILLIS.between(dataList.get(i-1).getDateTime(), dataList.get(i).getDateTime());
+			float timedifferenceSeconds = (float) ((timedifferenceMilliseconds) / 1000.0);
 			
 			// Compute
 			a0 = a0 + timedifferenceSeconds*(-1/K[0]*a0 + 1/K[0]*dataList.get(i).getA0Value());
