@@ -35,7 +35,7 @@ public class Filtering {
 		// Euler simulation
 		for(int i = 1; i < dataList.size(); i++) {
 			// Find time difference in seconds
-			long timedifferenceMilliseconds = ChronoUnit.MILLIS.between(dataList.get(i-1).getDateTime(), dataList.get(i).getDateTime());
+			long timedifferenceMilliseconds = ChronoUnit.MILLIS.between(dataList.get(i-1).getLocalDateTime(), dataList.get(i).getLocalDateTime());
 			float timedifferenceSeconds = (float) ((timedifferenceMilliseconds) / 1000.0);
 			
 			// Compute

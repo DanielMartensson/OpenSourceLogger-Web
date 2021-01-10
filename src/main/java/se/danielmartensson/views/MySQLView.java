@@ -475,12 +475,12 @@ public class MySQLView extends AppLayout {
 	// bytes
 	public StreamResource getStreamResource(String filename, List<Data> selectedData) {
 		StringWriter stringWriter = new StringWriter();
-		stringWriter.write("id,jobName,sensorName,dateTime,sa0,sa1,sa1d,sa2d,sa3d,a0,a1,a2,a3,i0,i1,i2,i3,i4,i5,p0,p1,p2,p3,p4,p5,p6,p7,p8,d0,d1,d2,pulseNumber,breakPulseLimit,stopSignal\n");
+		stringWriter.write("id,jobName,sensorName,localDateTime,sa0,sa1,sa1d,sa2d,sa3d,a0,a1,a2,a3,i0,i1,i2,i3,i4,i5,p0,p1,p2,p3,p4,p5,p6,p7,p8,d0,d1,d2,pulseNumber,breakPulseLimit,stopSignal\n");
 		for (Data data : selectedData) {
 			String row = data.getId() + "," +
 					data.getJobName() + "," +
 					data.getSensorName() + "," +
-					data.getDateTime() + "," +
+					data.getLocalDateTime() + "," +
 					data.getSa0() + "," +
 					data.getSa1() + "," +
 					data.getSa1d() + "," +

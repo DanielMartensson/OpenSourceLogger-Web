@@ -29,7 +29,7 @@ public class Data {
 	private String sensorName;
 	private String calibrationName;
 	@Column(columnDefinition = "DATETIME(3)")
-	private LocalDateTime dateTime;
+	private LocalDateTime localDateTime;
 
 	// Analog input
 	private float sa0;
