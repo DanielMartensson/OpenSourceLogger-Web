@@ -88,7 +88,7 @@ public class MySQLView extends AppLayout {
 
 		// Range settings
 		IntegerField indexFirst = createRangeField(1, "No index", "First index");
-		IntegerField indexStep = createRangeField(1, "No index", "Step index");
+		IntegerField indexStep = createRangeField(1, "No index", "Step index(plot only)");
 		IntegerField indexLast = createRangeField(1, "No index", "Last index");
 		
 		// Filtfilt factor
