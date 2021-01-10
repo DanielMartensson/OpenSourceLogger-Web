@@ -41,7 +41,7 @@ import se.danielmartensson.tools.Top;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @PreserveOnRefresh
 /**
- * This is the datbase viewer class
+ * This is the database viewer class
  * 
  * @author dell
  *
@@ -398,7 +398,7 @@ public class MySQLView extends AppLayout {
 		numberFiled.setStep(step);
 		numberFiled.setMin(step);
 		numberFiled.setMax(max);
-		numberFiled.setValue(step);
+		numberFiled.setValue(1d);
 		numberFiled.addValueChangeListener(e -> {
 			if(e.getValue() == null) // Type in wrong value
 				numberFiled.setValue(e.getOldValue());
