@@ -31,16 +31,16 @@ public class DataService {
 		dataRepository.deleteByJobName(jobName);
 	}
 		
-	public List<Data> findByJobNameOrderByDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
-		return dataRepository.findByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
+	public List<Data> findByJobNameOrderByLocalDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
+		return dataRepository.findByJobNameOrderByLocalDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}
 	
-	public List<Data> findByJobNameOrderByDateTimeAscLimitStep(String jobName, long selectedOffset, long selectedLimit, long step) {
-		return dataRepository.findByJobNameOrderByDateTimeAscLimitStep(jobName, selectedOffset, selectedLimit, step);
+	public List<Data> findByJobNameOrderByLocalDateTimeAscLimitStep(String jobName, long selectedOffset, long selectedLimit, long step) {
+		return dataRepository.findByJobNameOrderByLocalDateTimeAscLimitStep(jobName, selectedOffset, selectedLimit, step);
 	}
 	
-	public void deleteByJobNameOrderByDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
-		dataRepository.deleteByJobNameOrderByDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
+	public void deleteByJobNameOrderByLocalDateTimeAscLimit(String jobName, long selectedOffset, long selectedLimit) {
+		dataRepository.deleteByJobNameOrderByLocalDateTimeAscLimit(jobName, selectedOffset, selectedLimit);
 	}
 
 	public void deleteInBatch(List<Data> deleteTheseLists) {
@@ -51,8 +51,8 @@ public class DataService {
 		dataRepository.updateJobNameWhereJobName(newJobName, jobName);
 	}
 
-	public Data findFirstByJobNameOrderByDateTimeDesc(String jobName) {
-		return dataRepository.findFirstByJobNameOrderByDateTimeDesc(jobName);
+	public Data findFirstByJobNameOrderByLocalDateTimeDesc(String jobName) {
+		return dataRepository.findFirstByJobNameOrderByLocalDateTimeDesc(jobName);
 	}
 
 	public long countByJobName(String jobName) {

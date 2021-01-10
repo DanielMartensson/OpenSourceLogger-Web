@@ -16,7 +16,7 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 	
 	long countByJobName(String jobName);
 
-	Data findFirstByJobNameOrderByDateTimeDesc(String jobName);
+	Data findFirstByJobNameOrderByLocalDateTimeDesc(String jobName);
 	
 	void deleteByJobName(String jobName);
 	
@@ -26,16 +26,16 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     void updateJobNameWhereJobName(@Param("newJobName") String newJobName, @Param("jobName") String jobName);
 		
 	@Transactional
-	@Query(value = "SELECT * FROM data WHERE job_name = :jobName ORDER BY date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset" , nativeQuery = true)
-    List<Data> findByJobNameOrderByDateTimeAscLimit(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit);
+	@Query(value = "SELECT * FROM data WHERE job_name = :jobName ORDER BY local_date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset" , nativeQuery = true)
+    List<Data> findByJobNameOrderByLocalDateTimeAscLimit(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit);
 
-	// If step = 1, please use "findByJobNameOrderByDateTimeAscLimit" instead. Notice that \\:= is Hibernate SQL stuff
+	// If step = 1, please use "findByJobNameOrderByLocalDateTimeAscLimit" instead. Notice that \\:= is Hibernate SQL stuff
 	@Transactional
-	@Query(value = "SELECT * FROM (SELECT @row \\:= @row + 1 AS rownum, D.* FROM (SELECT @row \\:= 0) r, (SELECT * FROM data WHERE job_name = :jobName ORDER BY date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset) D) RANKED WHERE rownum % :step = 1", nativeQuery = true)
-    List<Data> findByJobNameOrderByDateTimeAscLimitStep(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit, @Param("step") long step);
+	@Query(value = "SELECT * FROM (SELECT @row \\:= @row + 1 AS rownum, D.* FROM (SELECT @row \\:= 0) r, (SELECT * FROM data WHERE job_name = :jobName ORDER BY local_date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset) D) RANKED WHERE rownum % :step = 1", nativeQuery = true)
+    List<Data> findByJobNameOrderByLocalDateTimeAscLimitStep(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit, @Param("step") long step);
 
 	@Transactional
 	@Modifying
-	@Query(value = "DELETE FROM data WHERE id IN (SELECT * FROM (SELECT id FROM data WHERE job_name = :jobName ORDER BY date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset) as t)",  nativeQuery = true)
-	void deleteByJobNameOrderByDateTimeAscLimit(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit);
+	@Query(value = "DELETE FROM data WHERE id IN (SELECT * FROM (SELECT id FROM data WHERE job_name = :jobName ORDER BY local_date_time ASC LIMIT :selectedLimit OFFSET :selectedOffset) as t)",  nativeQuery = true)
+	void deleteByJobNameOrderByLocalDateTimeAscLimit(@Param("jobName") String jobName, @Param("selectedOffset") long selectedOffset, @Param("selectedLimit") long selectedLimit);
 }
