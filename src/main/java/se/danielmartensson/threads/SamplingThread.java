@@ -378,31 +378,31 @@ public class SamplingThread extends Thread {
 						
 					switch(seriesBoxesIndex) {
 						case 1:
-							seriesList[seriesIndex] = MySQLView.createSerie(A0, "A0");
+							seriesList[seriesIndex] = MySQLView.createSerie(A0, Data.Analog0);
 							break;
 						case 2:
-							seriesList[seriesIndex] = MySQLView.createSerie(A1, "A1");
+							seriesList[seriesIndex] = MySQLView.createSerie(A1, Data.Analog1);
 							break;
 						case 3:
-							seriesList[seriesIndex] = MySQLView.createSerie(A2, "A2");
+							seriesList[seriesIndex] = MySQLView.createSerie(A2, Data.Analog2);
 							break;
 						case 4:
-							seriesList[seriesIndex] = MySQLView.createSerie(A3, "A3");
+							seriesList[seriesIndex] = MySQLView.createSerie(A3, Data.Analog3);
 							break;
 						case 5:
-							seriesList[seriesIndex] = MySQLView.createSerie(SA0, "SA0");
+							seriesList[seriesIndex] = MySQLView.createSerie(SA0, Data.SigmaDelta0);
 							break;
 						case 6:
-							seriesList[seriesIndex] = MySQLView.createSerie(SA1, "SA1");
+							seriesList[seriesIndex] = MySQLView.createSerie(SA1, Data.SigmaDelta1);
 							break;
 						case 7:
-							seriesList[seriesIndex] = MySQLView.createSerie(SA1D, "SA1D");
+							seriesList[seriesIndex] = MySQLView.createSerie(SA1D, Data.SigmaDeltaDifferential1);
 							break;
 						case 8:
-							seriesList[seriesIndex] = MySQLView.createSerie(SA2D, "SA2D");
+							seriesList[seriesIndex] = MySQLView.createSerie(SA2D, Data.SigmaDeltaDifferential2);
 							break;
 						case 9:
-							seriesList[seriesIndex] = MySQLView.createSerie(SA3D, "SA3D");
+							seriesList[seriesIndex] = MySQLView.createSerie(SA3D, Data.SigmaDeltaDifferential3);
 							break;
 					}
 					seriesIndex++;

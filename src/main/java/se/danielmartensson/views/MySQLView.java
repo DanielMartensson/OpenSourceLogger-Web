@@ -93,39 +93,39 @@ public class MySQLView extends AppLayout {
 		IntegerField indexLast = createRangeField(1, "No index", "Last index");
 		
 		// MovingAverage factor
-		Checkbox doFiltering = new Checkbox("MovingAverage", false);
-		IntegerField a0MovingAverage = createMovingAveragePointSelector("A0 moving average", 1, 100);
-		IntegerField a1MovingAverage = createMovingAveragePointSelector("A1 moving average", 1, 100);
-		IntegerField a2MovingAverage = createMovingAveragePointSelector("A2 moving average", 1, 100);
-		IntegerField a3MovingAverage = createMovingAveragePointSelector("A3 moving average", 1, 100);
-		IntegerField sa0MovingAverage = createMovingAveragePointSelector("SA0 moving average", 1, 100);
-		IntegerField sa1MovingAverage = createMovingAveragePointSelector("SA1 moving average", 1, 100);
-		IntegerField sa1dMovingAverage = createMovingAveragePointSelector("SA1D moving average", 1, 100);
-		IntegerField sa2dMovingAverage = createMovingAveragePointSelector("SA2D moving average", 1, 100);
-		IntegerField sa3dMovingAverage = createMovingAveragePointSelector("SA3D moving average", 1, 100);
+		Checkbox doFiltering = new Checkbox("Moving average", false);
+		IntegerField a0Points = createMovingAveragePointSelector(Data.Analog0 + " points", 1, 100);
+		IntegerField a1Points = createMovingAveragePointSelector(Data.Analog1 + " points", 1, 100);
+		IntegerField a2Points = createMovingAveragePointSelector(Data.Analog2 + " points", 1, 100);
+		IntegerField a3Points = createMovingAveragePointSelector(Data.Analog3 + " points", 1, 100);
+		IntegerField sa0Points = createMovingAveragePointSelector(Data.SigmaDelta0 + " points", 1, 100);
+		IntegerField sa1Points = createMovingAveragePointSelector(Data.SigmaDelta1 + " points", 1, 100);
+		IntegerField sa1dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential1 + " points", 1, 100);
+		IntegerField sa2dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential2 + " points", 1, 100);
+		IntegerField sa3dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential3 + " points", 1, 100);
 		
 		// Which plot should be shown
-		Checkbox showA0 = new Checkbox("A0");
-		Checkbox showA1 = new Checkbox("A1");
-		Checkbox showA2 = new Checkbox("A2");
-		Checkbox showA3 = new Checkbox("A3");
-		Checkbox showSA0 = new Checkbox("SA0");
-		Checkbox showSA1 = new Checkbox("SA1");
-		Checkbox showSA1D = new Checkbox("SA1D");
-		Checkbox showSA2D = new Checkbox("SA2D");
-		Checkbox showSA3D = new Checkbox("SA3D");
-		Checkbox showP0 = new Checkbox("P0");
-		Checkbox showP1 = new Checkbox("P1");
-		Checkbox showP2 = new Checkbox("P2");
-		Checkbox showP3 = new Checkbox("P3");
-		Checkbox showP4 = new Checkbox("P4");
-		Checkbox showP5 = new Checkbox("P5");
-		Checkbox showP6 = new Checkbox("P6");
-		Checkbox showP7 = new Checkbox("P7");
-		Checkbox showP8 = new Checkbox("P8");
-		Checkbox showD0 = new Checkbox("D0");
-		Checkbox showD1 = new Checkbox("D1");
-		Checkbox showD2 = new Checkbox("D2");
+		Checkbox showA0 = new Checkbox(Data.Analog0);
+		Checkbox showA1 = new Checkbox(Data.Analog1);
+		Checkbox showA2 = new Checkbox(Data.Analog2);
+		Checkbox showA3 = new Checkbox(Data.Analog3);
+		Checkbox showSA0 = new Checkbox(Data.SigmaDelta0);
+		Checkbox showSA1 = new Checkbox(Data.SigmaDelta1);
+		Checkbox showSA1D = new Checkbox(Data.SigmaDeltaDifferential1);
+		Checkbox showSA2D = new Checkbox(Data.SigmaDeltaDifferential2);
+		Checkbox showSA3D = new Checkbox(Data.SigmaDeltaDifferential3);
+		Checkbox showP0 = new Checkbox(Data.PWM0);
+		Checkbox showP1 = new Checkbox(Data.PWM1);
+		Checkbox showP2 = new Checkbox(Data.PWM2);
+		Checkbox showP3 = new Checkbox(Data.PWM3);
+		Checkbox showP4 = new Checkbox(Data.PWM4);
+		Checkbox showP5 = new Checkbox(Data.PWM5);
+		Checkbox showP6 = new Checkbox(Data.PWM6);
+		Checkbox showP7 = new Checkbox(Data.PWM7);
+		Checkbox showP8 = new Checkbox(Data.PWM8);
+		Checkbox showD0 = new Checkbox(Data.DAC0);
+		Checkbox showD1 = new Checkbox(Data.DAC1);
+		Checkbox showD2 = new Checkbox(Data.DAC2);
 		List<Checkbox> seriesBoxes = new ArrayList<Checkbox>();
 		seriesBoxes.add(showA0);
 		seriesBoxes.add(showA1);
@@ -179,15 +179,15 @@ public class MySQLView extends AppLayout {
 			// Do filtering
 			if(doFiltering.getValue()) {
 				int[] points = new int[] {
-										   a0MovingAverage.getValue(), 
-										   a1MovingAverage.getValue(), 
-										   a2MovingAverage.getValue(), 
-										   a3MovingAverage.getValue(),
-										   sa0MovingAverage.getValue(),
-										   sa1MovingAverage.getValue(),
-										   sa1dMovingAverage.getValue(),
-										   sa2dMovingAverage.getValue(),
-										   sa3dMovingAverage.getValue()};
+										   a0Points.getValue(), 
+										   a1Points.getValue(), 
+										   a2Points.getValue(), 
+										   a3Points.getValue(),
+										   sa0Points.getValue(),
+										   sa1Points.getValue(),
+										   sa1dPoints.getValue(),
+										   sa2dPoints.getValue(),
+										   sa3dPoints.getValue()};
 				Filtering.movingAverageFiltering(selectedData, points);
 			}
 			
@@ -258,67 +258,67 @@ public class MySQLView extends AppLayout {
 					
 				switch(seriesBoxesIndex) {
 					case 1:
-						seriesList[seriesIndex] = createSerie(A0, "A0");
+						seriesList[seriesIndex] = createSerie(A0, Data.Analog0);
 						break;
 					case 2:
-						seriesList[seriesIndex] = createSerie(A1, "A1");
+						seriesList[seriesIndex] = createSerie(A1, Data.Analog1);
 						break;
 					case 3:
-						seriesList[seriesIndex] = createSerie(A2, "A2");
+						seriesList[seriesIndex] = createSerie(A2, Data.Analog2);
 						break;
 					case 4:
-						seriesList[seriesIndex] = createSerie(A3, "A3");
+						seriesList[seriesIndex] = createSerie(A3, Data.Analog3);
 						break;
 					case 5:
-						seriesList[seriesIndex] = createSerie(SA0, "SA0");
+						seriesList[seriesIndex] = createSerie(SA0, Data.SigmaDelta0);
 						break;
 					case 6:
-						seriesList[seriesIndex] = createSerie(SA1, "SA1");
+						seriesList[seriesIndex] = createSerie(SA1, Data.SigmaDelta0);
 						break;
 					case 7:
-						seriesList[seriesIndex] = createSerie(SA1D, "SA1D");
+						seriesList[seriesIndex] = createSerie(SA1D, Data.SigmaDeltaDifferential1);
 						break;
 					case 8:
-						seriesList[seriesIndex] = createSerie(SA2D, "SA2D");
+						seriesList[seriesIndex] = createSerie(SA2D, Data.SigmaDeltaDifferential2);
 						break;
 					case 9:
-						seriesList[seriesIndex] = createSerie(SA3D, "SA3D");
+						seriesList[seriesIndex] = createSerie(SA3D, Data.SigmaDeltaDifferential3);
 						break;
 					case 10:
-						seriesList[seriesIndex] = createSerie(PWM0, "P0");
+						seriesList[seriesIndex] = createSerie(PWM0, Data.PWM0);
 						break;
 					case 11:
-						seriesList[seriesIndex] = createSerie(PWM1, "P1");
+						seriesList[seriesIndex] = createSerie(PWM1, Data.PWM1);
 						break;
 					case 12:
-						seriesList[seriesIndex] = createSerie(PWM2, "P2");
+						seriesList[seriesIndex] = createSerie(PWM2, Data.PWM2);
 						break;
 					case 13:
-						seriesList[seriesIndex] = createSerie(PWM3, "P3");
+						seriesList[seriesIndex] = createSerie(PWM3, Data.PWM3);
 						break;
 					case 14:
-						seriesList[seriesIndex] = createSerie(PWM4, "P4");
+						seriesList[seriesIndex] = createSerie(PWM4, Data.PWM4);
 						break;
 					case 15:
-						seriesList[seriesIndex] = createSerie(PWM5, "P5");
+						seriesList[seriesIndex] = createSerie(PWM5, Data.PWM5);
 						break;
 					case 16:
-						seriesList[seriesIndex] = createSerie(PWM6, "P6");
+						seriesList[seriesIndex] = createSerie(PWM6, Data.PWM6);
 						break;
 					case 17:
-						seriesList[seriesIndex] = createSerie(PWM7, "P7");
+						seriesList[seriesIndex] = createSerie(PWM7, Data.PWM7);
 						break;
 					case 18:
-						seriesList[seriesIndex] = createSerie(PWM8, "P8");
+						seriesList[seriesIndex] = createSerie(PWM8, Data.PWM8);
 						break;
 					case 19:
-						seriesList[seriesIndex] = createSerie(DAC0, "D0");
+						seriesList[seriesIndex] = createSerie(DAC0, Data.DAC0);
 						break;
 					case 20:
-						seriesList[seriesIndex] = createSerie(DAC1, "D1");
+						seriesList[seriesIndex] = createSerie(DAC1, Data.DAC1);
 						break;
 					case 21:
-						seriesList[seriesIndex] = createSerie(DAC2, "D2");
+						seriesList[seriesIndex] = createSerie(DAC2, Data.DAC2);
 						break;
 				}
 				seriesIndex++;
@@ -367,7 +367,7 @@ public class MySQLView extends AppLayout {
 		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexStep, indexLast, countAmoutOfSamples, pulseField);
 		HorizontalLayout secondRow = new HorizontalLayout(countSamples, doFiltering, createPlot, download, deletePlot);
 		secondRow.setAlignItems(Alignment.CENTER);
-		HorizontalLayout thirdRow = new HorizontalLayout(a0MovingAverage, a1MovingAverage, a2MovingAverage, a3MovingAverage, sa0MovingAverage, sa1MovingAverage, sa1dMovingAverage, sa2dMovingAverage, sa3dMovingAverage);
+		HorizontalLayout thirdRow = new HorizontalLayout(a0Points, a1Points, a2Points, a3Points, sa0Points, sa1Points, sa1dPoints, sa2dPoints, sa3dPoints);
 		HorizontalLayout fourthRow = new HorizontalLayout(showA0, showA1, showA2, showA3, showSA0, showSA1, showSA1D, showSA2D, showSA3D);
 		HorizontalLayout fifthRow = new HorizontalLayout(showP0, showP1, showP2, showP3, showP3, showP4, showP5, showP6, showP7, showP8, showD0, showD1, showD2);
 		VerticalLayout layout = new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, apexChart);
@@ -467,7 +467,41 @@ public class MySQLView extends AppLayout {
 	// bytes
 	public StreamResource getStreamResource(String filename, List<Data> selectedData) {
 		StringWriter stringWriter = new StringWriter();
-		stringWriter.write("id,jobName,sensorName,calibrationName,localDateTime,sa0,sa1,sa1d,sa2d,sa3d,a0,a1,a2,a3,i0,i1,i2,i3,i4,i5,p0,p1,p2,p3,p4,p5,p6,p7,p8,d0,d1,d2,pulseNumber,breakPulseLimit,stopSignal\n");
+		stringWriter.write(Data.ID + "," + 
+						   Data.JOB_NAME + "," + 
+						   Data.SENSOR_NAME + "," + 
+						   Data.CALIBRATION_NAME + "," + 
+						   Data.LOCAL_DATE_TIME + "," + 
+						   Data.SigmaDelta0 + "," + 
+						   Data.SigmaDelta1 + "," + 
+						   Data.SigmaDeltaDifferential1 + "," +  
+						   Data.SigmaDeltaDifferential2 + "," +  
+						   Data.SigmaDeltaDifferential3 + "," + 
+						   Data.Analog0 + "," + 
+						   Data.Analog1 + "," + 
+						   Data.Analog2 + "," + 
+						   Data.Analog3 + "," + 
+						   Data.DIGITAL0 + "," + 
+						   Data.DIGITAL1 + "," + 
+						   Data.DIGITAL2 + "," + 
+						   Data.DIGITAL3 + "," + 
+						   Data.DIGITAL4 + "," + 
+						   Data.DIGITAL5 + "," + 
+						   Data.PWM0 + "," + 
+						   Data.PWM1 + "," + 
+						   Data.PWM2 + "," + 
+						   Data.PWM3 + "," + 
+						   Data.PWM4 + "," + 
+						   Data.PWM5 + "," + 
+						   Data.PWM6 + "," + 
+						   Data.PWM7 + "," + 
+						   Data.PWM8 + "," + 
+						   Data.DAC0 + "," + 
+						   Data.DAC1 + "," + 
+						   Data.DAC2 + "," + 
+						   Data.PULSE_NUMBER + "," + 
+						   Data.BREAK_PULSE_LIMIT + "," + 
+						   Data.STOP_SIGNAL);
 		for (Data data : selectedData) {
 			String row = data.getId() + "," +
 					data.getJobName() + "," +

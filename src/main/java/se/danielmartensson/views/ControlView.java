@@ -118,10 +118,10 @@ public class ControlView extends AppLayout {
 		List<IntegerField> counters = createPulseCounter();
 
 		// Create check boxes for digital input signals
-		Checkbox[] inputBoxes = createCheckBoxes(new String[] {"I0 - Counter", "I1 - Stop signal", "I2", "I3", "I4", "I5"});
+		Checkbox[] inputBoxes = createCheckBoxes(new String[] {Data.DIGITAL0 + " - Counter", Data.DIGITAL1 + " - Stop signal", Data.DIGITAL2, Data.DIGITAL3, Data.DIGITAL4, Data.DIGITAL5});
 		
 		// Create check boxes for showing the measurement series
-		Checkbox[] seriesBoxes = createCheckBoxes(new String[] {"A0", "A1", "A2", "A3", "SA0", "SA1", "SA1D", "SA2D", "SA3D"});
+		Checkbox[] seriesBoxes = createCheckBoxes(new String[] {Data.Analog0, Data.Analog1, Data.Analog2, Data.Analog3, Data.SigmaDelta0, Data.SigmaDelta1, Data.SigmaDeltaDifferential1, Data.SigmaDeltaDifferential2, Data.SigmaDeltaDifferential3});
 
 		TextField maxLeftField = createHowManyPrimaryKeysLeftIntegerField();
 		
@@ -320,12 +320,12 @@ public class ControlView extends AppLayout {
 	
 	private VerticalLayout createVariableLayout(List<PaperSlider> PWMSliders, List<PaperSlider> DACSliders) {
 		return new VerticalLayout(
-				new HorizontalLayout(new Label("P0"), PWMSliders.get(0), new Label("P1"), PWMSliders.get(1)),
-				new HorizontalLayout(new Label("P2"), PWMSliders.get(2), new Label("P3"), PWMSliders.get(3)),
-				new HorizontalLayout(new Label("P4"), PWMSliders.get(4), new Label("P5"), PWMSliders.get(5)),
-				new HorizontalLayout(new Label("P6"), PWMSliders.get(6), new Label("P7"), PWMSliders.get(7)),
-				new HorizontalLayout(new Label("P8"), PWMSliders.get(8), new Label("D0"), DACSliders.get(0)),
-				new HorizontalLayout(new Label("D1"), DACSliders.get(1), new Label("D2"), DACSliders.get(2))
+				new HorizontalLayout(new Label(Data.PWM0), PWMSliders.get(0), new Label(Data.PWM1), PWMSliders.get(1)),
+				new HorizontalLayout(new Label(Data.PWM2), PWMSliders.get(2), new Label(Data.PWM2), PWMSliders.get(3)),
+				new HorizontalLayout(new Label(Data.PWM4), PWMSliders.get(4), new Label(Data.PWM5), PWMSliders.get(5)),
+				new HorizontalLayout(new Label(Data.PWM6), PWMSliders.get(6), new Label(Data.PWM6), PWMSliders.get(7)),
+				new HorizontalLayout(new Label(Data.PWM8), PWMSliders.get(8), new Label(Data.DAC0), DACSliders.get(0)),
+				new HorizontalLayout(new Label(Data.DAC1), DACSliders.get(1), new Label(Data.DAC2), DACSliders.get(2))
 		);
 	}
 }

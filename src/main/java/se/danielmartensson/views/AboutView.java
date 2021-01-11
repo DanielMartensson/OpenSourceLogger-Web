@@ -15,6 +15,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 
+import se.danielmartensson.entities.Data;
 import se.danielmartensson.lists.AnalogInputs;
 import se.danielmartensson.lists.AnalogOutputs;
 import se.danielmartensson.lists.DigitalInputs;
@@ -97,15 +98,15 @@ public class AboutView extends AppLayout {
 	private Grid<PWMRelays> createGridPWMRelay() {
 		Grid<PWMRelays> grid = new Grid<>(PWMRelays.class);
 		List<PWMRelays> list = new ArrayList<>();
-		list.add(new PWMRelays("P0", "4096", "NPN"));
-		list.add(new PWMRelays("P1", "4096", "NPN"));
-		list.add(new PWMRelays("P2", "4096", "NPN"));
-		list.add(new PWMRelays("P3", "4096", "NPN"));
-		list.add(new PWMRelays("P4", "4096", "NPN"));
-		list.add(new PWMRelays("P5", "4096", "NPN"));
-		list.add(new PWMRelays("P6", "4096", "NPN"));
-		list.add(new PWMRelays("P7", "4096", "NPN"));
-		list.add(new PWMRelays("P8", "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM0, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM1, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM2, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM3, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM4, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM5, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM6, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM7, "4096", "NPN"));
+		list.add(new PWMRelays(Data.PWM8, "4096", "NPN"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "resolution", "loadConnection");
@@ -115,9 +116,9 @@ public class AboutView extends AppLayout {
 	private Grid<AnalogOutputs> createGridAnalogOutputs() {
 		Grid<AnalogOutputs> grid = new Grid<>(AnalogOutputs.class);
 		List<AnalogOutputs> list = new ArrayList<>();
-		list.add(new AnalogOutputs("D0", "0-3.3V", "4096", "30V"));
-		list.add(new AnalogOutputs("D1", "0-3.3V", "4096", "30V"));
-		list.add(new AnalogOutputs("D2", "0-3.3V", "4096", "30V"));
+		list.add(new AnalogOutputs(Data.DAC0, "0-3.3V", "4096", "30V"));
+		list.add(new AnalogOutputs(Data.DAC1, "0-3.3V", "4096", "30V"));
+		list.add(new AnalogOutputs(Data.DAC2, "0-3.3V", "4096", "30V"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "signalVoltage", "resolution", "maxReverseVoltage");
@@ -127,12 +128,12 @@ public class AboutView extends AppLayout {
 	private Grid<DigitalInputs> createGridDigitalInputs() {
 		Grid<DigitalInputs> grid = new Grid<>(DigitalInputs.class);
 		List<DigitalInputs> list = new ArrayList<>();
-		list.add(new DigitalInputs("I0", "0/24V", "50V"));
-		list.add(new DigitalInputs("I1", "0/24V", "50V"));
-		list.add(new DigitalInputs("I2", "0/24V", "50V"));
-		list.add(new DigitalInputs("I3", "0/24V", "50V"));
-		list.add(new DigitalInputs("I4", "0/24V", "50V"));
-		list.add(new DigitalInputs("I5", "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL0, "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL1, "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL2, "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL3, "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL4, "0/24V", "50V"));
+		list.add(new DigitalInputs(Data.DIGITAL5, "0/24V", "50V"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "signalVoltage", "maxInput");
@@ -142,15 +143,15 @@ public class AboutView extends AppLayout {
 	private Grid<AnalogInputs> createGridAnalogInputs() {
 		Grid<AnalogInputs> grid = new Grid<>(AnalogInputs.class);
 		List<AnalogInputs> list = new ArrayList<>();
-		list.add(new AnalogInputs("A0", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A0 Min", "A0 Max"));
-		list.add(new AnalogInputs("A1", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A1 Min", "A1 Max"));
-		list.add(new AnalogInputs("A2", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A2 Min", "A2 Max"));
-		list.add(new AnalogInputs("A3", "0-22mA", "0-3.3V", "4096", "Single", "30V", "A3 Min", "A3 Max"));
-		list.add(new AnalogInputs("SA0", "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa0 Min", "Sa0 Max"));
-		list.add(new AnalogInputs("SA1", "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa1 Min", "Sa1 Max"));
-		list.add(new AnalogInputs("SA1D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa1D Min", "Sa1D Max"));
-		list.add(new AnalogInputs("SA2D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa2D Min", "Sa2D Max"));
-		list.add(new AnalogInputs("SA3D", "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa3D Min", "Sa3D Max"));
+		list.add(new AnalogInputs(Data.Analog0, "0-22mA", "0-3.3V", "4096", "Single", "30V", "A0 Min Value", "A0 Max Value"));
+		list.add(new AnalogInputs(Data.Analog1, "0-22mA", "0-3.3V", "4096", "Single", "30V", "A1 Min Value", "A1 Max Value"));
+		list.add(new AnalogInputs(Data.Analog2, "0-22mA", "0-3.3V", "4096", "Single", "30V", "A2 Min Value", "A2 Max Value"));
+		list.add(new AnalogInputs(Data.Analog3, "0-22mA", "0-3.3V", "4096", "Single", "30V", "A3 Min Value", "A3 Max Value"));
+		list.add(new AnalogInputs(Data.SigmaDelta0, "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa0 Min Value", "Sa0 Max Value"));
+		list.add(new AnalogInputs(Data.SigmaDelta1, "0-22mA", "0-3.3V", "65536", "Single", "30V", "Sa1 Min Value", "Sa1 Max Value"));
+		list.add(new AnalogInputs(Data.SigmaDeltaDifferential1, "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa1d Min Value", "Sa1d Max Value"));
+		list.add(new AnalogInputs(Data.SigmaDeltaDifferential2, "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa2d Min Value", "Sa2d Max Value"));
+		list.add(new AnalogInputs(Data.SigmaDeltaDifferential1, "0-22mA", "0-3.3V", "65536", "Differential", "30V", "Sa3d Min Value", "Sa3d Max Value"));
 		grid.setItems(list);
 		grid.setHeightByRows(true);
 		grid.setColumns("variable", "signalAmpere", "signalVoltage", "resolution", "mode", "maxInput", "sensorMinVariable", "sensorMaxVariable");

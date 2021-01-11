@@ -19,7 +19,44 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Data {
-
+	
+	// Label names
+	public static final String Analog0 = "A0";
+	public static final String Analog1 = "A1";
+	public static final String Analog2 = "A2";
+	public static final String Analog3 = "A3";
+	public static final String SigmaDelta0 = "SA0";
+	public static final String SigmaDelta1 = "SA1";
+	public static final String SigmaDeltaDifferential1 = "SA1D";
+	public static final String SigmaDeltaDifferential2 = "SA2D";
+	public static final String SigmaDeltaDifferential3 = "SA3D";
+	public static final String PWM0 = "P0";
+	public static final String PWM1 = "P1";
+	public static final String PWM2 = "P2";
+	public static final String PWM3 = "P3";
+	public static final String PWM4 = "P4";
+	public static final String PWM5 = "P5";
+	public static final String PWM6 = "P6";
+	public static final String PWM7 = "P7";
+	public static final String PWM8 = "P8";
+	public static final String DAC0 = "D0";
+	public static final String DAC1 = "D1";
+	public static final String DAC2 = "D2";
+	public static final String JOB_NAME = "jobName";
+	public static final String SENSOR_NAME = "sensorName";
+	public static final String CALIBRATION_NAME = "calibrationName";
+	public static final String LOCAL_DATE_TIME = "localDateTime";
+	public static final String DIGITAL0 = "I0";
+	public static final String DIGITAL1 = "I1";
+	public static final String DIGITAL2 = "I2";
+	public static final String DIGITAL3 = "I3";
+	public static final String DIGITAL4 = "I4";
+	public static final String DIGITAL5 = "I5";
+	public static final String PULSE_NUMBER = "pulseNumber";
+	public static final String BREAK_PULSE_LIMIT = "breakPulseLimit";
+	public static final String STOP_SIGNAL = "stopSignal";
+	public static final String ID = "id";
+	
 	// ID
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
