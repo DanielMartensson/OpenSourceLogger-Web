@@ -42,20 +42,20 @@ public class Data {
 	public static final String DAC0 = "D0";
 	public static final String DAC1 = "D1";
 	public static final String DAC2 = "D2";
-	public static final String JOB_NAME = "jobName";
-	public static final String SENSOR_NAME = "sensorName";
-	public static final String CALIBRATION_NAME = "calibrationName";
-	public static final String LOCAL_DATE_TIME = "localDateTime";
+	public static final String JOB_NAME = "Job name";
+	public static final String SENSOR_NAME = "Sensor name";
+	public static final String CALIBRATION_NAME = "Calibration name";
+	public static final String LOCAL_DATE_TIME = "Local date time";
 	public static final String DIGITAL0 = "I0";
 	public static final String DIGITAL1 = "I1";
 	public static final String DIGITAL2 = "I2";
 	public static final String DIGITAL3 = "I3";
 	public static final String DIGITAL4 = "I4";
 	public static final String DIGITAL5 = "I5";
-	public static final String PULSE_NUMBER = "pulseNumber";
-	public static final String BREAK_PULSE_LIMIT = "breakPulseLimit";
-	public static final String STOP_SIGNAL = "stopSignal";
-	public static final String ID = "id";
+	public static final String PULSE_NUMBER = "Pulse number";
+	public static final String BREAK_PULSE_LIMIT = "Break pulse number";
+	public static final String STOP_SIGNAL = "Stop signal";
+	public static final String ID = "ID";
 	
 	// ID
 	@Id

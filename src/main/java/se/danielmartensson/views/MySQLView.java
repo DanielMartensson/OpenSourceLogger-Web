@@ -501,7 +501,7 @@ public class MySQLView extends AppLayout {
 						   Data.DAC2 + "," + 
 						   Data.PULSE_NUMBER + "," + 
 						   Data.BREAK_PULSE_LIMIT + "," + 
-						   Data.STOP_SIGNAL);
+						   Data.STOP_SIGNAL + "\n");
 		for (Data data : selectedData) {
 			String row = data.getId() + "," +
 					data.getJobName() + "," +
