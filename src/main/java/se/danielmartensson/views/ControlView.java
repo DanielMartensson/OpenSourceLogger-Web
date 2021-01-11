@@ -27,6 +27,7 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.Route;
 
 import lombok.Getter;
+import se.danielmartensson.entities.Data;
 import se.danielmartensson.entities.Job;
 import se.danielmartensson.hardware.Serial;
 import se.danielmartensson.service.AlarmService;
@@ -151,9 +152,10 @@ public class ControlView extends AppLayout {
 	}
 
 	private TextField createHowManyPrimaryKeysLeftIntegerField() {
-		Long maxIDValue = dataService.findFirstByOrderByLocalDateTimeDesc().getId();
-		if(maxIDValue == null)
-			maxIDValue = 0L;
+		Data data = dataService.findFirstByOrderByLocalDateTimeDesc();
+		Long maxIDValue = 0L;
+		if(data != null)
+			maxIDValue = data.getId();
 		Long wiritingLeft = Long.MAX_VALUE - maxIDValue;
 		TextField maxLeftField = new TextField("Database wirting left");
 		maxLeftField.setValue(Long.toString(wiritingLeft));
