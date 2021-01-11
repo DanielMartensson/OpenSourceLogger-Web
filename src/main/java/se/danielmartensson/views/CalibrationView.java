@@ -71,10 +71,12 @@ public class CalibrationView extends AppLayout {
 			public Calibration update(Calibration calibration) {
 				// Check if we updating the same row
 				boolean nameExist = calibrationService.existsByName(calibration.getName());
-				Calibration anotherCalibrationWithSameName = calibrationService.findByName(calibration.getName());
-				if (nameExist && anotherCalibrationWithSameName.getId() != calibration.getId()) {
-					new Notification("Cannot update this with a name that already exist.", 3000).open();
-					return calibration;
+				if (nameExist) {
+					Calibration anotherCalibrationWithSameName = calibrationService.findByName(calibration.getName());
+					if(anotherCalibrationWithSameName.getId() != calibration.getId()) {
+						new Notification("Cannot update this with a name that already exist.", 3000).open();
+						return calibration;
+					}
 				}
 				return calibrationService.save(calibration);
 			}

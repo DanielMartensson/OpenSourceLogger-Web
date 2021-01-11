@@ -151,7 +151,10 @@ public class ControlView extends AppLayout {
 	}
 
 	private TextField createHowManyPrimaryKeysLeftIntegerField() {
-		Long wiritingLeft = Long.MAX_VALUE - dataService.findFirstByOrderByLocalDateTimeDesc().getId();
+		Long maxIDValue = dataService.findFirstByOrderByLocalDateTimeDesc().getId();
+		if(maxIDValue == null)
+			maxIDValue = 0L;
+		Long wiritingLeft = Long.MAX_VALUE - maxIDValue;
 		TextField maxLeftField = new TextField("Database wirting left");
 		maxLeftField.setValue(Long.toString(wiritingLeft));
 		maxLeftField.setEnabled(false);

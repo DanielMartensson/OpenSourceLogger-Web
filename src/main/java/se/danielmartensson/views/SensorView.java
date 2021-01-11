@@ -76,10 +76,12 @@ public class SensorView extends AppLayout {
 			public Sensor update(Sensor sensor) {
 				// Check if we updating the same row
 				boolean nameExist = sensorService.existsByName(sensor.getName());
-				Sensor anotherSensorWithSameName = sensorService.findByName(sensor.getName());
-				if (nameExist && anotherSensorWithSameName.getId() != sensor.getId()) {
-					new Notification("Cannot update this with a name that already exist.", 3000).open();
-					return sensor;
+				if (nameExist) {
+					Sensor anotherSensorWithSameName = sensorService.findByName(sensor.getName());
+					if(anotherSensorWithSameName.getId() != sensor.getId()) {
+						new Notification("Cannot update this with a name that already exist.", 3000).open();
+						return sensor;
+					}
 				}
 				return sensorService.save(sensor);
 			}

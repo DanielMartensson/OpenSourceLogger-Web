@@ -94,17 +94,17 @@ public class JobView extends AppLayout {
 			@Override
 			public Job update(Job job) {
 				// Check if we updating the same row
-				String jobName = job.getName();
-				Long jobId = job.getId();
-				boolean nameExist = jobService.existsByName(jobName);
-				Job anotherJobWithSameName = jobService.findByName(jobName);
-				if (nameExist && anotherJobWithSameName.getId() != jobId) {
-					new Notification("Cannot update this with a name that already exist.", 3000).open();
-					return job;
+				boolean nameExist = jobService.existsByName(job.getName());
+				if (nameExist) {
+					Job anotherJobWithSameName = jobService.findByName(job.getName());
+					if(anotherJobWithSameName.getId() != job.getId()) {
+						new Notification("Cannot update this with a name that already exist.", 3000).open();
+						return job;
+					}
 				}		
 				// If we rename the name, then all data should be renamed as well
-				String oldJobName = jobService.findById(jobId).getName(); // Even if the name is going to be changed, ID is the same
-				dataService.updateJobNameWhereJobName(jobName, oldJobName);
+				String oldJobName = jobService.findById(job.getId()).getName(); // Even if the name is going to be changed, ID is the same
+				dataService.updateJobNameWhereJobName(job.getName(), oldJobName);
 				return jobService.save(job);
 			}
 
