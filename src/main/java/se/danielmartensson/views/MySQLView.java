@@ -23,7 +23,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -93,17 +92,17 @@ public class MySQLView extends AppLayout {
 		IntegerField indexStep = createRangeField(1, "No index", "Step index");
 		IntegerField indexLast = createRangeField(1, "No index", "Last index");
 		
-		// Filtfilt factor
-		Checkbox doFiltering = new Checkbox("Filtfilt", false);
-		NumberField a0Filtfilt = createFiltfiltSimulationConstant("A0 filtfilt", 0.1, 10.0);
-		NumberField a1Filtfilt = createFiltfiltSimulationConstant("A1 filtfilt", 0.1, 10.0);
-		NumberField a2Filtfilt = createFiltfiltSimulationConstant("A2 filtfilt", 0.1, 10.0);
-		NumberField a3Filtfilt = createFiltfiltSimulationConstant("A3 filtfilt", 0.1, 10.0);
-		NumberField sa0Filtfilt = createFiltfiltSimulationConstant("SA0 filtfilt", 0.1, 10.0);
-		NumberField sa1Filtfilt = createFiltfiltSimulationConstant("SA1 filtfilt", 0.1, 10.0);
-		NumberField sa1dFiltfilt = createFiltfiltSimulationConstant("SA1D filtfilt", 0.1, 10.0);
-		NumberField sa2dFiltfilt = createFiltfiltSimulationConstant("SA2D filtfilt", 0.1, 10.0);
-		NumberField sa3dFiltfilt = createFiltfiltSimulationConstant("SA3D filtfilt", 0.1, 10.0);
+		// MovingAverage factor
+		Checkbox doFiltering = new Checkbox("MovingAverage", false);
+		IntegerField a0MovingAverage = createMovingAveragePointSelector("A0 moving average", 1, 100);
+		IntegerField a1MovingAverage = createMovingAveragePointSelector("A1 moving average", 1, 100);
+		IntegerField a2MovingAverage = createMovingAveragePointSelector("A2 moving average", 1, 100);
+		IntegerField a3MovingAverage = createMovingAveragePointSelector("A3 moving average", 1, 100);
+		IntegerField sa0MovingAverage = createMovingAveragePointSelector("SA0 moving average", 1, 100);
+		IntegerField sa1MovingAverage = createMovingAveragePointSelector("SA1 moving average", 1, 100);
+		IntegerField sa1dMovingAverage = createMovingAveragePointSelector("SA1D moving average", 1, 100);
+		IntegerField sa2dMovingAverage = createMovingAveragePointSelector("SA2D moving average", 1, 100);
+		IntegerField sa3dMovingAverage = createMovingAveragePointSelector("SA3D moving average", 1, 100);
 		
 		// Which plot should be shown
 		Checkbox showA0 = new Checkbox("A0");
@@ -179,17 +178,17 @@ public class MySQLView extends AppLayout {
 			
 			// Do filtering
 			if(doFiltering.getValue()) {
-				double[] filtfiltKValues = new double[] {
-										   a0Filtfilt.getValue(), 
-										   a1Filtfilt.getValue(), 
-										   a2Filtfilt.getValue(), 
-										   a3Filtfilt.getValue(),
-										   sa0Filtfilt.getValue(),
-										   sa1Filtfilt.getValue(),
-										   sa1dFiltfilt.getValue(),
-										   sa2dFiltfilt.getValue(),
-										   sa3dFiltfilt.getValue()};
-				Filtering.filtfilt(selectedData, filtfiltKValues);
+				int[] points = new int[] {
+										   a0MovingAverage.getValue(), 
+										   a1MovingAverage.getValue(), 
+										   a2MovingAverage.getValue(), 
+										   a3MovingAverage.getValue(),
+										   sa0MovingAverage.getValue(),
+										   sa1MovingAverage.getValue(),
+										   sa1dMovingAverage.getValue(),
+										   sa2dMovingAverage.getValue(),
+										   sa3dMovingAverage.getValue()};
+				Filtering.movingAverageFiltering(selectedData, points);
 			}
 			
 			// Fill the values for the plot
@@ -368,7 +367,7 @@ public class MySQLView extends AppLayout {
 		HorizontalLayout firstRow = new HorizontalLayout(selectJob, indexFirst, indexStep, indexLast, countAmoutOfSamples, pulseField);
 		HorizontalLayout secondRow = new HorizontalLayout(countSamples, doFiltering, createPlot, download, deletePlot);
 		secondRow.setAlignItems(Alignment.CENTER);
-		HorizontalLayout thirdRow = new HorizontalLayout(a0Filtfilt, a1Filtfilt, a2Filtfilt, a3Filtfilt, sa0Filtfilt, sa1Filtfilt, sa1dFiltfilt, sa2dFiltfilt, sa3dFiltfilt);
+		HorizontalLayout thirdRow = new HorizontalLayout(a0MovingAverage, a1MovingAverage, a2MovingAverage, a3MovingAverage, sa0MovingAverage, sa1MovingAverage, sa1dMovingAverage, sa2dMovingAverage, sa3dMovingAverage);
 		HorizontalLayout fourthRow = new HorizontalLayout(showA0, showA1, showA2, showA3, showSA0, showSA1, showSA1D, showSA2D, showSA3D);
 		HorizontalLayout fifthRow = new HorizontalLayout(showP0, showP1, showP2, showP3, showP3, showP4, showP5, showP6, showP7, showP8, showD0, showD1, showD2);
 		VerticalLayout layout = new VerticalLayout(firstRow, secondRow, thirdRow, fourthRow, fifthRow, apexChart);
@@ -391,20 +390,20 @@ public class MySQLView extends AppLayout {
 		return integerField;
 	}
 
-	private NumberField createFiltfiltSimulationConstant(String label, double step, double max) {
-		NumberField numberFiled = new NumberField(label);
-		numberFiled.setHasControls(true);
-		numberFiled.setStep(step);
-		numberFiled.setMin(step);
-		numberFiled.setMax(max);
-		numberFiled.setValue(1d);
-		numberFiled.addValueChangeListener(e -> {
+	private IntegerField createMovingAveragePointSelector(String label, int step, int max) {
+		IntegerField filterField = new IntegerField(label);
+		filterField.setHasControls(true);
+		filterField.setStep(step);
+		filterField.setMin(step);
+		filterField.setMax(max);
+		filterField.setValue(10);
+		filterField.addValueChangeListener(e -> {
 			if(e.getValue() == null) // Type in wrong value
-				numberFiled.setValue(e.getOldValue());
+				filterField.setValue(e.getOldValue());
 			if(e.getValue() > max || e.getValue() < step)
-				numberFiled.setValue(e.getOldValue());
+				filterField.setValue(e.getOldValue());
 		});
-		return numberFiled;
+		return filterField;
 	}
 
 	private void updateSamplesAndPulses(Select<Job> selectJob, DataService dataService, IntegerField countAmoutOfSamples, IntegerField pulseField) {
