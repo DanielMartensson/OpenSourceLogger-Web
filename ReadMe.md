@@ -203,6 +203,12 @@ And place these line above `exit 0`
 cd /The/Path/To/Where/The/Jar/File/Is/Placed
 sudo java -jar opensourcelogger-1.0-SNAPSHOT.jar &
 ```
+Or if you want to specify the Java Heap Space for e.g `1024` Megabyte. Can be good if you want to download `.csv` data from the database.
+```
+cd /The/Path/To/Where/The/Jar/File/Is/Placed
+sudo java -Xmx1024m -jar opensourcelogger-1.0-SNAPSHOT.jar &
+```
+
 Important with `&`, else Raspberry Pi is going to get stuck there with the `Spring Boot` terminal at the startup.
 
 Then you need to enable `Serial` in Raspberry Pi.

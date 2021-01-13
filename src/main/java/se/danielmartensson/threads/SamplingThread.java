@@ -119,6 +119,7 @@ public class SamplingThread extends Thread {
 			// Get job
 			Job job = ControlView.selectedJob;
 			String jobName = job.getName();
+			String jobComment = job.getComment();
 
 			// Get alarm
 			Alarm alarm = job.getAlarm();
@@ -254,7 +255,7 @@ public class SamplingThread extends Thread {
 					stopSignal = di1;
 
 				// Save them to the database
-				Data dataLogg = new Data(0L, jobName, sensorName, calibrationName, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
+				Data dataLogg = new Data(0L, jobName, sensorName, calibrationName, jobComment, LocalDateTime.now(), sa0, sa1, sa1d, sa2d, sa3d, a0, a1, a2, a3, di0, di1, di2, di3, di4, di5, p0, p1, p2, p3, p4, p5, p6, p7, p8, d0, d1, d2, pulseNumber, selectedBreakPulseLimit, stopSignal);
 				try {
 					dataService.save(dataLogg);
 					connectionAttempts = 0; 

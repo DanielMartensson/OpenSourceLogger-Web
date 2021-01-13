@@ -45,6 +45,7 @@ public class Data {
 	public static final String JOB_NAME = "Job name";
 	public static final String SENSOR_NAME = "Sensor name";
 	public static final String CALIBRATION_NAME = "Calibration name";
+	public static final String JOB_COMMENT = "Job comment";
 	public static final String LOCAL_DATE_TIME = "Local date time";
 	public static final String DIGITAL0 = "I0";
 	public static final String DIGITAL1 = "I1";
@@ -66,6 +67,7 @@ public class Data {
 	private String jobName;
 	private String sensorName;
 	private String calibrationName;
+	private String jobComment;
 	@Column(columnDefinition = "DATETIME(3)")
 	private LocalDateTime localDateTime;
 

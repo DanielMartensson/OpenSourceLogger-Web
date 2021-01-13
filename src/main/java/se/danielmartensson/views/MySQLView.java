@@ -477,6 +477,7 @@ public class MySQLView extends AppLayout {
 						   Data.JOB_NAME + "," + 
 						   Data.SENSOR_NAME + "," + 
 						   Data.CALIBRATION_NAME + "," + 
+						   Data.JOB_COMMENT + "," + 
 						   Data.LOCAL_DATE_TIME + "," + 
 						   Data.SigmaDelta0 + "," + 
 						   Data.SigmaDelta1 + "," + 
@@ -513,6 +514,7 @@ public class MySQLView extends AppLayout {
 					data.getJobName() + "," +
 					data.getSensorName() + "," +
 					data.getCalibrationName() + "," +
+					data.getJobComment() + "," + 
 					data.getLocalDateTime() + "," +
 					data.getSa0() + "," +
 					data.getSa1() + "," +

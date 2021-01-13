@@ -30,6 +30,8 @@ public class Job {
 	@ManyToOne
 	@NotNull
 	private Sensor sensor;
+	@NotNull
+	private String comment;
 
 	@Override
 	public String toString() {
