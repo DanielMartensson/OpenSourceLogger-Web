@@ -94,15 +94,15 @@ public class MySQLView extends AppLayout {
 		
 		// MovingAverage factor
 		Checkbox doFiltering = new Checkbox("Moving average", false);
-		IntegerField a0Points = createMovingAveragePointSelector(Data.Analog0 + " points", 1, 100);
-		IntegerField a1Points = createMovingAveragePointSelector(Data.Analog1 + " points", 1, 100);
-		IntegerField a2Points = createMovingAveragePointSelector(Data.Analog2 + " points", 1, 100);
-		IntegerField a3Points = createMovingAveragePointSelector(Data.Analog3 + " points", 1, 100);
-		IntegerField sa0Points = createMovingAveragePointSelector(Data.SigmaDelta0 + " points", 1, 100);
-		IntegerField sa1Points = createMovingAveragePointSelector(Data.SigmaDelta1 + " points", 1, 100);
-		IntegerField sa1dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential1 + " points", 1, 100);
-		IntegerField sa2dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential2 + " points", 1, 100);
-		IntegerField sa3dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential3 + " points", 1, 100);
+		IntegerField a0Points = createMovingAveragePointSelector(Data.Analog0 + " points", 1, 1000);
+		IntegerField a1Points = createMovingAveragePointSelector(Data.Analog1 + " points", 1, 1000);
+		IntegerField a2Points = createMovingAveragePointSelector(Data.Analog2 + " points", 1, 1000);
+		IntegerField a3Points = createMovingAveragePointSelector(Data.Analog3 + " points", 1, 1000);
+		IntegerField sa0Points = createMovingAveragePointSelector(Data.SigmaDelta0 + " points", 1, 1000);
+		IntegerField sa1Points = createMovingAveragePointSelector(Data.SigmaDelta1 + " points", 1, 1000);
+		IntegerField sa1dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential1 + " points", 1, 1000);
+		IntegerField sa2dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential2 + " points", 1, 1000);
+		IntegerField sa3dPoints = createMovingAveragePointSelector(Data.SigmaDeltaDifferential3 + " points", 1, 1000);
 		
 		// Which plot should be shown
 		Checkbox showA0 = new Checkbox(Data.Analog0);
@@ -455,8 +455,14 @@ public class MySQLView extends AppLayout {
 		String fileName = String.valueOf(selectJob.getValue()) + ".csv";
 		download.removeAll();
 		download.removeHref();
-		download.setHref(getStreamResource(fileName, selectedData));
-		download.add(new Button("Download " + fileName, new Icon(VaadinIcon.DOWNLOAD_ALT)));
+		try {
+			StreamResource downloadResource = getStreamResource(fileName, selectedData);
+			download.setHref(downloadResource);
+			download.add(new Button("Download " + fileName, new Icon(VaadinIcon.DOWNLOAD_ALT)));
+		}catch(OutOfMemoryError e) {
+			new Notification("Java heap space out of memory - Run OpenSourceLogger JAR file with e.g 'java -Xmx2048m -jar' for 2048 MB heap", 5000).open();
+		}
+		
 	}
 
 	static public Series<Float> createSerie(Float[] data, String legend) {
