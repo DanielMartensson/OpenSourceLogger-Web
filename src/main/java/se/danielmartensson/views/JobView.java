@@ -60,10 +60,10 @@ public class JobView extends AppLayout {
 		GridCrud<Job> jobCrud = new GridCrud<>(Job.class);
 		CrudFormFactory<Job> crudFormFactory = new DefaultCrudFormFactory<Job>(Job.class);
 		jobCrud.setCrudFormFactory(crudFormFactory);
-		jobCrud.getGrid().setColumns("name", "date", "sensor", "alarm");
+		jobCrud.getGrid().setColumns("name", "date", "sensor", "alarm", "comment");
 		jobCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
-		crudFormFactory.setVisibleProperties(new String[] { "name", "date", "sensor", "alarm" });
+		crudFormFactory.setVisibleProperties(new String[] { "name", "date", "sensor", "alarm", "comment"});
 		crudFormFactory.setFieldType("date", DatePicker.class);
 		crudFormFactory.setFieldProvider("sensor", new ComboBoxProvider<>("Sensor", sensorService.findAll(), new TextRenderer<>(Sensor::getName), Sensor::getName));
 		crudFormFactory.setFieldProvider("alarm", new ComboBoxProvider<>("Alarm", alarmService.findAll(), new TextRenderer<>(Alarm::getName), Alarm::getName));
