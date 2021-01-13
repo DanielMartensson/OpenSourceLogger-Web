@@ -43,7 +43,7 @@ public class SensorView extends AppLayout {
 		GridCrud<Sensor> sensorCrud = new GridCrud<>(Sensor.class);
 		CrudFormFactory<Sensor> crudFormFactory = new DefaultCrudFormFactory<Sensor>(Sensor.class);
 		sensorCrud.setCrudFormFactory(crudFormFactory);
-		sensorCrud.getGrid().setColumns("name", "comment", "calibration", "sa0MinValue", "sa0MaxValue", "sa1MinValue", "sa1MaxValue", "sa1dMinValue", "sa1dMaxValue", "sa2dMinValue", "sa2dMaxValue", "sa3dMinValue", "sa3dMaxValue", "a0MinValue", "a0MaxValue", "a1MinValue", "a1MaxValue", "a2MinValue", "a2MaxValue", "a3MinValue", "a3MaxValue");
+		sensorCrud.getGrid().setColumns("name", "comment", "calibration");
 		sensorCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
 		crudFormFactory.setVisibleProperties(new String[] {"name", "comment", "calibration", "sa0MinValue", "sa0MaxValue", "sa1MinValue", "sa1MaxValue", "sa1dMinValue", "sa1dMaxValue", "sa2dMinValue", "sa2dMaxValue", "sa3dMinValue", "sa3dMaxValue", "a0MinValue", "a0MaxValue", "a1MinValue", "a1MaxValue", "a2MinValue", "a2MaxValue", "a3MinValue", "a3MaxValue"});

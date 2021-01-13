@@ -39,7 +39,7 @@ public class CalibrationView extends AppLayout {
 		GridCrud<Calibration> calibrationCrud = new GridCrud<>(Calibration.class);
 		CrudFormFactory<Calibration> crudFormFactory = new DefaultCrudFormFactory<Calibration>(Calibration.class);
 		calibrationCrud.setCrudFormFactory(crudFormFactory);
-		calibrationCrud.getGrid().setColumns("name", "comment", "sa0MinADC", "sa0MaxADC", "sa1MinADC", "sa1MaxADC", "sa1dMinADC", "sa1dMaxADC", "sa2dMinADC", "sa2dMaxADC", "sa3dMinADC", "sa3dMaxADC", "a0MinADC", "a0MaxADC", "a1MinADC", "a1MaxADC", "a2MinADC", "a2MaxADC", "a3MinADC", "a3MaxADC");
+		calibrationCrud.getGrid().setColumns("name", "comment");
 		calibrationCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
 		crudFormFactory.setVisibleProperties(new String[] {"name", "comment", "sa0MinADC", "sa0MaxADC", "sa1MinADC", "sa1MaxADC", "sa1dMinADC", "sa1dMaxADC", "sa2dMinADC", "sa2dMaxADC", "sa3dMinADC", "sa3dMaxADC", "a0MinADC", "a0MaxADC", "a1MinADC", "a1MaxADC", "a2MinADC", "a2MaxADC", "a3MinADC", "a3MaxADC"});

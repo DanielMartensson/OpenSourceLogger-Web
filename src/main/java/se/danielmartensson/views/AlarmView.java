@@ -38,7 +38,7 @@ public class AlarmView extends AppLayout {
 		GridCrud<Alarm> alarmCrud = new GridCrud<>(Alarm.class);
 		CrudFormFactory<Alarm> crudFormFactory = new DefaultCrudFormFactory<Alarm>(Alarm.class);
 		alarmCrud.setCrudFormFactory(crudFormFactory);
-		alarmCrud.getGrid().setColumns("name", "email", "message", "alarmActive", "messageHasBeenSent", "sa0MinBreak", "sa0MaxBreak", "sa1MinBreak", "sa1MaxBreak", "sa1dMinBreak", "sa1dMaxBreak", "sa2dMinBreak", "sa2dMaxBreak", "sa3dMinBreak", "sa3dMaxBreak", "a0MinBreak", "a0MaxBreak", "a1MinBreak", "a1MaxBreak", "a2MinBreak", "a2MaxBreak", "a3MinBreak", "a3MaxBreak");
+		alarmCrud.getGrid().setColumns("name", "email", "message", "alarmActive", "messageHasBeenSent");
 		alarmCrud.getGrid().setColumnReorderingAllowed(true);
 		crudFormFactory.setUseBeanValidation(true);
 		crudFormFactory.setVisibleProperties(new String[] { "name", "email", "message", "alarmActive", "messageHasBeenSent", "sa0MinBreak", "sa0MaxBreak", "sa1MinBreak", "sa1MaxBreak", "sa1dMinBreak", "sa1dMaxBreak", "sa2dMinBreak", "sa2dMaxBreak", "sa3dMinBreak", "sa3dMaxBreak", "a0MinBreak", "a0MaxBreak", "a1MinBreak", "a1MaxBreak", "a2MinBreak", "a2MaxBreak", "a3MinBreak", "a3MaxBreak" });
