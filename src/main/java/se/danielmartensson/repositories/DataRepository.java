@@ -20,6 +20,7 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 	
 	Data findFirstByOrderByLocalDateTimeDesc();
 	
+	@Transactional
 	void deleteByJobName(String jobName);
 	
 	@Transactional
