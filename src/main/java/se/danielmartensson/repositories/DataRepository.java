@@ -21,7 +21,9 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 	Data findFirstByOrderByLocalDateTimeDesc();
 	
 	@Transactional
-	void deleteByJobName(String jobName);
+	@Modifying
+	@Query("DELETE FROM Data data WHERE data.jobName = :jobName")
+	void deleteByJobName(@Param("jobName") String jobName);
 	
 	@Transactional
 	@Modifying
