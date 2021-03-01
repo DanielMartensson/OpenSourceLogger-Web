@@ -273,7 +273,7 @@ public class MySQLView extends AppLayout {
 						seriesList[seriesIndex] = createSerie(SA0, Data.SigmaDelta0);
 						break;
 					case 6:
-						seriesList[seriesIndex] = createSerie(SA1, Data.SigmaDelta0);
+						seriesList[seriesIndex] = createSerie(SA1, Data.SigmaDelta1);
 						break;
 					case 7:
 						seriesList[seriesIndex] = createSerie(SA1D, Data.SigmaDeltaDifferential1);
