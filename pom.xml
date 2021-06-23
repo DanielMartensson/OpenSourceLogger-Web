@@ -31,7 +31,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        
         <!-- Repository used by many Vaadin add-ons -->
         <repository>
             <id>Vaadin Directory</id>
