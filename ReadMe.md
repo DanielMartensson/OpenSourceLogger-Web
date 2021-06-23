@@ -121,11 +121,6 @@ Here you can set the configuration for your database IP address, user and passwo
 The `service.MailService.from` must be the same as `configuration.MailConfiguration.username`.
 
 ```
-server.port=8080
-# Ensure application is run in Vaadin 14/npm mode
-vaadin.compatibilityMode = false
-logging.level.org.atmosphere = warn
-
 # Database
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
