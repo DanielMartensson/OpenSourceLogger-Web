@@ -1,11 +1,10 @@
 # OpenSourceLogger
 
-This software creates a web application with Vaadin and with this web application you can control and measure analog inputs and outputs and 
+This software creates a web application with Spring Boot and with this web application you can control and measure analog inputs and outputs and 
 store them into a MySQL database.
 
 # Features
 
-* Vaadin 14 Long Time Support
 * 4 Analog inputs of 12-bit
 * 2 Analog inputs of 16-bit
 * 3 Analog inputs of 16-bit differential
