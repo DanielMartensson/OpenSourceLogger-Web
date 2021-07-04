@@ -27,24 +27,24 @@ Set an alarm and calibration of a special sensor you want to use. Store all data
 Then later you can bring the measurement back to a plot. Notice that you can close down the web browser while you logging.
 It will continue to sample in a separate thread. 
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/UiView.png)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger-Web/master/KiCad%20&%20STM32/UiView.png)
 
 This is made in KiCad. I have drag all the tracks on the board by my self. No auto-routing here.
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/3D%20Schematic.png)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger-Web/master/KiCad%20&%20STM32/3D%20Schematic.png)
 
 I have solder all components by my self.
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Produced.jpg)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger-Web/master/KiCad%20&%20STM32/Produced.jpg)
 
 I have solder this microcontroller by hand. 
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/HandSolder.jpg)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger-Web/master/KiCad%20&%20STM32/HandSolder.jpg)
 
 Applied inside a metallic box. Here I'm using Raspberry Pi to communicate with the board.
 You can use a regular computer as well, as long you have a USB to serial converter, e.g `USB/UART converter FTDI FT232` where you connect `RXD -> TX` and `TXD -> RX` on the board.
 
-![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger/master/KiCad%20&%20STM32/Box.jpg)
+![a](https://raw.githubusercontent.com/DanielMartensson/OpenSourceLogger-Web/master/KiCad%20&%20STM32/Box.jpg)
 
 
 # How to install - Ubuntu user
